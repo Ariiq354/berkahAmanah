@@ -6,6 +6,8 @@
     layout: "auth",
   });
 
+  const colorMode = useColorMode();
+
   const state = ref(getInitialFormData());
 
   const isLoading = ref(false);
@@ -30,15 +32,20 @@
     <Title>Login</Title>
     <UCard class="w-full max-w-md">
       <div class="space-y-6">
-        <div class="text-center">
-          <div class="pointer-events-none mb-2">
-            <UIcon
-              name="i-heroicons-lock-closed"
-              class="h-8 w-8 flex-shrink-0 text-gray-900 dark:text-white"
-            />
-          </div>
-          <div class="text-2xl font-bold text-gray-900 dark:text-white">
-            Selamat Datang
+        <div class="flex flex-col items-center text-center">
+          <NuxtImg
+            v-if="colorMode.value === 'light'"
+            src="/logo-dark.webp"
+            width="150"
+            alt="logo"
+          />
+          <NuxtImg v-else src="/logo-light.webp" width="150" alt="logo" />
+          <div
+            class="text-primary-500 dark:text-primary-400 text-2xl font-bold tracking-widest"
+          >
+            BERKAH
+
+            <span class="text-black dark:text-white">AMANAH</span>
           </div>
         </div>
         <UForm

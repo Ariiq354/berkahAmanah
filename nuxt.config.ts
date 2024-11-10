@@ -3,7 +3,13 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  modules: ["@nuxt/ui", "nuxt-security", "@nuxt/fonts", "@nuxt/eslint"],
+  modules: [
+    "@nuxt/ui",
+    "nuxt-security",
+    "@nuxt/fonts",
+    "@nuxt/eslint",
+    "@nuxt/image",
+  ],
 
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,

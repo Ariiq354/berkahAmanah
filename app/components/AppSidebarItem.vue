@@ -51,7 +51,6 @@
           'font-bold': route.fullPath === aloneItem.link,
           'text-sm': depth > 0,
         }"
-        class="text-black dark:text-white"
         :style="tabPadding"
       >
         {{ aloneItem.label }}

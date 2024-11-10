@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  defineTopbarTitle("Dashboard");
+</script>
 
 <template>
   <main>

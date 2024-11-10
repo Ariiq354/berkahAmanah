@@ -3,16 +3,176 @@
 
   const sidebarItems = [
     {
-      title: "User",
+      title: "Dashboard",
       items: [
         {
-          title: "User",
+          label: "Dashboard",
+          link: "/dashboard",
+          icon: "i-heroicons-home",
+        },
+        {
+          label: "User",
           link: "/dashboard/user",
           icon: "i-heroicons-user",
         },
       ],
     },
+    {
+      title: "Main",
+      items: [
+        {
+          label: "Shu",
+          icon: "i-heroicons-archive-box",
+        },
+        {
+          label: "Simpanan",
+          icon: "i-heroicons-briefcase",
+          children: [
+            {
+              label: "Setoran",
+            },
+            {
+              label: "Penarikan",
+            },
+            {
+              label: "Pemindahbukuan",
+            },
+            {
+              label: "Monitoring",
+            },
+          ],
+        },
+        {
+          label: "Pembiayaan",
+          icon: "i-heroicons-banknotes",
+          children: [
+            {
+              label: "Murabahah",
+            },
+            {
+              label: "Angsuran",
+            },
+            {
+              label: "Monitoring",
+            },
+          ],
+        },
+        {
+          label: "Persetujuan",
+          icon: "i-heroicons-clipboard-document-check",
+          children: [
+            {
+              label: "Setoran",
+            },
+            {
+              label: "Penarikan",
+            },
+            {
+              label: "Pemindahbukuan",
+            },
+            {
+              label: "Setoran Angsuran",
+            },
+            {
+              label: "Murabahah",
+            },
+            {
+              label: "Anggota Baru",
+            },
+            {
+              label: "Pembelian Barang",
+            },
+            {
+              label: "Penjualan Barang",
+            },
+          ],
+        },
+        {
+          label: "Jual Beli",
+          icon: "i-heroicons-briefcase",
+          children: [
+            {
+              label: "Pembelian",
+            },
+            {
+              label: "Penjualan",
+            },
+            {
+              label: "Monitoring",
+            },
+          ],
+        },
+        {
+          label: "Distributor Athar",
+          icon: "i-heroicons-briefcase",
+          children: [
+            {
+              label: "Pembelian",
+            },
+            {
+              label: "Penjualan",
+            },
+            {
+              label: "Monitoring",
+            },
+          ],
+        },
+        {
+          label: "Monitoring",
+          icon: "i-heroicons-presentation-chart-line",
+          children: [
+            {
+              label: "Simpanan",
+            },
+            {
+              label: "Pembiayaan",
+            },
+            {
+              label: "SHU",
+            },
+            {
+              label: "Anggota",
+            },
+          ],
+        },
+        {
+          label: "Transaksi",
+          icon: "i-heroicons-calculator",
+          children: [
+            {
+              label: "Daftar Akun",
+            },
+            {
+              label: "Daftar Transaksi",
+            },
+            {
+              label: "Generate SHU",
+            },
+            {
+              label: "Input Fee Management",
+            },
+          ],
+        },
+        {
+          label: "Laporan Keuangan",
+          icon: "i-heroicons-scale",
+          children: [
+            {
+              label: "Neraca",
+            },
+            {
+              label: "Rugi Laba",
+            },
+            {
+              label: "Posting",
+            },
+          ],
+        },
+      ],
+    },
   ];
+
+  const colorMode = useColorMode();
 </script>
 
 <template>
@@ -21,21 +181,13 @@
     :class="sidebarState ? '-left-72 md:left-0' : 'left-0 md:-left-72'"
   >
     <div class="text-primary flex items-center justify-center pb-8 pt-10">
-      <div class="flex items-center gap-2 text-2xl tracking-widest">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="currentColor"
-            fill-rule="evenodd"
-            d="M12 2C8.229 2 6.343 2 5.172 3.172C4.108 4.235 4.01 5.886 4 9H3a1 1 0 0 0-1 1v1a1 1 0 0 0 .4.8L4 13c.01 3.114.108 4.765 1.172 5.828c.242.243.514.435.828.587V21a1 1 0 0 0 1 1h1.5a1 1 0 0 0 1-1v-1.018C10.227 20 11.054 20 12 20s1.773 0 2.5-.018V21a1 1 0 0 0 1 1H17a1 1 0 0 0 1-1v-1.585a3 3 0 0 0 .828-.587C19.892 17.765 19.991 16.114 20 13l1.6-1.2a1 1 0 0 0 .4-.8v-1a1 1 0 0 0-1-1h-1c-.01-3.114-.108-4.765-1.172-5.828C17.657 2 15.771 2 12 2M5.5 9.5c0 1.414 0 2.121.44 2.56c.439.44 1.146.44 2.56.44h7c1.414 0 2.121 0 2.56-.44c.44-.439.44-1.146.44-2.56V7c0-1.414 0-2.121-.44-2.56C17.622 4 16.915 4 15.5 4h-7c-1.414 0-2.121 0-2.56.44C5.5 4.878 5.5 5.585 5.5 7zm.75 6.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H7a.75.75 0 0 1-.75-.75m11.5 0a.75.75 0 0 0-.75-.75h-1.5a.75.75 0 0 0 0 1.5H17a.75.75 0 0 0 .75-.75"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <span>ROMBIS</span>
+      <div class="flex items-center">
+        <NuxtImg
+          v-if="colorMode.value === 'light'"
+          src="/logo_barokah_dark.webp"
+          width="150"
+        />
+        <NuxtImg v-else width="150" src="/logo-barokah-white.webp" />
       </div>
     </div>
     <div v-for="(firstItem, firstIndex) in sidebarItems" :key="firstIndex">
