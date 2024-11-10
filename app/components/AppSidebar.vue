@@ -183,7 +183,7 @@
     <div class="text-primary flex items-center justify-center pb-8 pt-10">
       <div class="flex items-center">
         <NuxtImg
-          v-if="colorMode.value === 'light'"
+          v-if="colorMode.preference === 'light'"
           src="/logo_barokah_dark.webp"
           width="150"
         />

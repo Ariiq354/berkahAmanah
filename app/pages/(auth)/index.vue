@@ -34,7 +34,7 @@
       <div class="space-y-6">
         <div class="flex flex-col items-center text-center">
           <NuxtImg
-            v-if="colorMode.value === 'light'"
+            v-if="colorMode.preference === 'light'"
             src="/logo-dark.webp"
             width="150"
             alt="logo"
