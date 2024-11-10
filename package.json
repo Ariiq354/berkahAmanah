@@ -1,0 +1,44 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "check": "nuxt typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "cleanup": "nuxt cleanup",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@iconify-json/heroicons": "^1.2.1",
+    "@libsql/client": "^0.14.0",
+    "@node-rs/argon2": "^2.0.0",
+    "@nuxt/fonts": "^0.10.2",
+    "@nuxt/ui": "^2.19.2",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "drizzle-orm": "^0.36.1",
+    "nuxt": "^3.14.159",
+    "nuxt-security": "^2.0.0",
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.6.1",
+    "drizzle-kit": "^0.28.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "typescript": "^5.6.3",
+    "vue-tsc": "^2.1.10"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher"
+  ]
+}
