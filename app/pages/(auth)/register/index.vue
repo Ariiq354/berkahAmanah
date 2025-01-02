@@ -14,11 +14,15 @@
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     isLoading.value = true;
     try {
-      await $fetch("/api/auth/login", {
+      await $fetch("/api/auth/register", {
         method: "POST",
         body: event.data,
       });
-      await navigateTo("/dashboard");
+      useToastSuccess(
+        "Register Berhasil",
+        "Silahkan login menggunakan akun anda"
+      );
+      await navigateTo("/");
     } catch (error: any) {
       useToastError(String(error.statusCode), error.data.message);
     } finally {
@@ -44,8 +48,11 @@
             class="text-primary-500 dark:text-primary-400 text-2xl font-bold tracking-widest"
           >
             BERKAH
-
             <span class="text-black dark:text-white">AMANAH</span>
+          </div>
+          <div class="mt-2 text-center">
+            Sudah Punya Akun?
+            <NuxtLink href="/" class="text-primary"> Login! </NuxtLink>
           </div>
         </div>
         <UForm
@@ -55,31 +62,42 @@
           :validate-on="['submit']"
           @submit="onSubmit"
         >
-          <UFormGroup label="Username" name="username">
+          <UFormGroup label="Nama Lengkap" name="namaLengkap">
             <UInput
-              v-model="state.username"
-              :leading="true"
-              placeholder="Masukkan nama pengguna"
+              v-model="state.namaLengkap"
+              icon="i-heroicons-user"
+              placeholder="Nama Lengkap"
             />
           </UFormGroup>
-
+          <UFormGroup label="No Telepon" name="noTelepon">
+            <UInput
+              v-model="state.noTelepon"
+              icon="i-heroicons-phone"
+              placeholder="81XXX"
+            />
+          </UFormGroup>
+          <UFormGroup label="Email" name="email">
+            <UInput
+              v-model="state.email"
+              icon="i-heroicons-envelope"
+              placeholder="Email"
+            />
+          </UFormGroup>
           <UFormGroup label="Password" name="password">
             <UInput
               v-model="state.password"
-              :leading="true"
               type="password"
-              placeholder="Masukkan kata sandi"
+              icon="i-heroicons-lock-closed"
+              placeholder="Password"
             />
           </UFormGroup>
 
-          <UCheckbox v-model="state.rememberMe" label="Ingat saya" />
-
           <UButton
-            class="flex w-full justify-center"
+            class="flex w-full justify-center rounded-full"
             type="submit"
             :loading="isLoading"
           >
-            Lanjut
+            Daftar
           </UButton>
         </UForm>
       </div>

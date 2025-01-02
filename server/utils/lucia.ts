@@ -10,7 +10,7 @@ import {
   getUserSessionById,
   insertSessionData,
   updateSessionData,
-} from "./data-access/session";
+} from "./session";
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 

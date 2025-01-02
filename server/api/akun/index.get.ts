@@ -1,15 +1,14 @@
 export default defineEventHandler(async (event) => {
   protectFunction(event);
 
-  const res = await getAllUser();
+  const res = await getAllAkun();
 
   const data = res.map((item) => {
     return {
       id: item.id,
-      email: item.email,
-      namaLengkap: item.namaLengkap,
-      noTelepon: item.noTelepon,
-      role: item.role,
+      kodeAkun: item.kodeAkun,
+      namaAkun: item.namaAkun,
+      status: item.status,
     };
   });
 

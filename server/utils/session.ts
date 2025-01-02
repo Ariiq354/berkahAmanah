@@ -24,8 +24,10 @@ export async function getUserSessionById(
     .select({
       user: {
         id: userTable.id,
-        username: userTable.username,
-        isActive: userTable.isActive,
+        noTelepon: userTable.noTelepon,
+        namaLengkap: userTable.namaLengkap,
+        email: userTable.email,
+        role: userTable.role,
       },
       session: sessionTable,
     })

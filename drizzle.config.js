@@ -1,6 +1,6 @@
 /** @type { import("drizzle-kit").Config } */
 export default {
-  schema: "./server/database/schema/*",
+  schema: "./server/database/schema",
   dialect: "turso",
   dbCredentials: {
     url: process.env.DATABASE_URL ?? "",

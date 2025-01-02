@@ -8,9 +8,9 @@ export async function getAllUser() {
   });
 }
 
-export async function getUserByUsername(username: string) {
+export async function getUserByEmail(email: string) {
   return await db.query.userTable.findFirst({
-    where: eq(userTable.username, username),
+    where: eq(userTable.email, email),
   });
 }
 

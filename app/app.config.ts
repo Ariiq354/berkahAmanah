@@ -1,8 +1,11 @@
 export default defineAppConfig({
   ui: {
-    primary: "sky",
+    primary: "blue",
     card: {
       ring: "dark:ring-gray-700",
+      body: {
+        padding: "sm:p-8",
+      },
     },
     button: {
       default: {
@@ -40,6 +43,13 @@ export default defineAppConfig({
       default: {
         activeButton: {
           variant: "outline",
+        },
+      },
+    },
+    selectMenu: {
+      default: {
+        empty: {
+          label: "Opsi tidak ada",
         },
       },
     },

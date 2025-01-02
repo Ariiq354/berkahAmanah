@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const deleteSchema = z.object({
+const bodySchema = z.object({
   id: z.array(z.number()),
 });
 
@@ -8,10 +8,10 @@ export default defineEventHandler(async (event) => {
   protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
-    deleteSchema.parse(body)
+    bodySchema.parse(body)
   );
 
-  await deleteUser(formData.id);
+  await deleteTransaksi(formData.id);
 
   return;
 });

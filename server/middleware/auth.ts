@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const sessionToken = getCookie(event, "auth_session") ?? null;
+  const sessionToken = getCookie(event, sessionCookieName) ?? null;
   if (!sessionToken) {
     event.context.session = null;
     event.context.user = null;

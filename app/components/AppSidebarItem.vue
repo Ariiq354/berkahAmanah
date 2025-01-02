@@ -37,7 +37,7 @@
 <template>
   <div v-for="(aloneItem, aloneIndex) in linkItemAlone" :key="aloneIndex">
     <NuxtLink
-      class="flex w-full items-center gap-2 px-8 py-3 text-base transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+      class="flex w-full items-center gap-2 px-8 py-3 text-base text-black transition-all duration-200 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
       :to="aloneItem.link"
       @click="sidebarState = true"
     >

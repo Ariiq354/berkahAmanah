@@ -1,37 +1,35 @@
 import { verify } from "@node-rs/argon2";
 import { z } from "zod";
 
-const loginSchema = z.object({
-  username: z.string(),
+const bodySchema = z.object({
+  email: z.string(),
   password: z.string().min(8),
   rememberMe: z.boolean(),
 });
 
 export default eventHandler(async (event) => {
-  const formData = await readBody(event);
+  const formData = await readValidatedBody(event, (e) => bodySchema.parse(e));
 
-  const res = loginSchema.parse(formData);
-
-  const existingUser = await getUserByUsername(res.username);
+  const existingUser = await getUserByEmail(formData.email);
 
   if (!existingUser) {
     return createError({
-      message: "Username atau password salah",
+      message: "Email atau password salah",
       statusCode: 401,
     });
   }
 
-  const validPassword = await verify(existingUser.password, res.password);
+  const validPassword = await verify(existingUser.password, formData.password);
 
   if (!validPassword) {
     return createError({
-      message: "Username atau password salah",
+      message: "Email atau password salah",
       statusCode: 401,
     });
   }
 
   const session = await createSession(existingUser.id);
-  if (res.rememberMe) {
+  if (formData.rememberMe) {
     await extendSession(session.id, 1000 * 60 * 60 * 24 * 7);
   }
   setSessionTokenCookie(event, session.id, session.expiresAt);

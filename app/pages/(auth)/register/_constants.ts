@@ -1,15 +1,17 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  username: z.string(),
+  namaLengkap: z.string(),
+  noTelepon: z.string(),
+  email: z.string().email(),
   password: z.string().min(8, "Harus terdiri dari setidaknya 8 karakter."),
-  rememberMe: z.boolean(),
 });
 
 export const getInitialFormData = (): Partial<Schema> => ({
-  username: undefined,
+  email: undefined,
   password: undefined,
-  rememberMe: false,
+  noTelepon: undefined,
+  namaLengkap: undefined,
 });
 
 export type Schema = z.output<typeof loginSchema>;

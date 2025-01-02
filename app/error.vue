@@ -14,40 +14,43 @@
 
   const statusMessage: errorMessage = {
     "404": {
-      name: "Page not found",
+      name: "Halaman tidak ditemukan",
       message:
-        "Oops! We can’t seem to find the page you’re looking for. It might have been moved or deleted.",
+        "Oops! Kami tidak dapat menemukan halaman yang Anda cari. Mungkin telah dipindahkan atau dihapus.",
     },
     "401": {
-      name: "Unauthorized",
+      name: "Tidak terotorisasi",
       message:
-        "Oops! It looks like you need to log in to access this page. Please check your credentials and try again.",
+        "Oops! Sepertinya Anda perlu masuk untuk mengakses halaman ini. Silakan periksa kredensial Anda dan coba lagi.",
     },
     "403": {
-      name: "Forbidden",
+      name: "Dilarang",
       message:
-        "Sorry, you don’t have permission to access this page. If you believe this is an error, please contact support.",
+        "Maaf, Anda tidak memiliki izin untuk mengakses halaman ini. Jika Anda yakin ini adalah kesalahan, silakan hubungi dukungan.",
     },
     "500": {
-      name: "Internal Server Error",
+      name: "Kesalahan server internal",
       message:
-        "Uh-oh! Something went wrong on our end. We're working hard to fix it. Please try again later.",
+        "Uh-oh! Ada yang salah di sistem kami. Kami sedang bekerja keras untuk memperbaikinya. Silakan coba lagi nanti.",
     },
   };
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center">
-    <h1 class="text-primary text-base font-semibold">
+  <div
+    id="errorpage"
+    class="flex min-h-screen flex-col items-center justify-center"
+  >
+    <h1 class="text-primary text-[16px] font-semibold">
       {{ error?.statusCode }}
     </h1>
     <p
-      class="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white"
+      class="text-[30px] font-bold tracking-tight text-gray-900 sm:text-[48px] dark:text-white"
     >
       {{ statusMessage[String(error?.statusCode)]?.name }}
     </p>
     <p
-      class="mt-6 max-w-lg text-center text-base/7 text-gray-500 dark:text-gray-400"
+      class="mt-6 max-w-lg text-center text-[16px]/7 text-gray-500 dark:text-gray-400"
     >
       {{ statusMessage[String(error?.statusCode)]?.message }}
     </p>

@@ -11,7 +11,7 @@
           icon: "i-heroicons-home",
         },
         {
-          label: "User",
+          label: "Daftar Anggota",
           link: "/dashboard/user",
           icon: "i-heroicons-user",
         },
@@ -141,9 +141,11 @@
           children: [
             {
               label: "Daftar Akun",
+              link: "/dashboard/transaksi-akun",
             },
             {
               label: "Daftar Transaksi",
+              link: "/dashboard/transaksi-transaksi",
             },
             {
               label: "Generate SHU",

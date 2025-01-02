@@ -2,13 +2,20 @@ import { z } from "zod";
 
 export const columns = [
   {
-    key: "username",
-    label: "Username",
-    sortable: true,
+    key: "namaLengkap",
+    label: "Nama Lengkap",
   },
   {
-    key: "isActive",
-    label: "Status",
+    key: "noTelepon",
+    label: "No Telepon",
+  },
+  {
+    key: "email",
+    label: "Email",
+  },
+  {
+    key: "role",
+    label: "Role",
   },
 ];
 
@@ -17,7 +24,6 @@ export const schema = z
     id: z.number().optional(),
     username: z.string(),
     password: z.string(),
-    isActive: z.boolean(),
   })
   .refine(
     (data) => {
@@ -38,5 +44,4 @@ export const getInitialFormData = (): Partial<Schema> => ({
   id: undefined,
   username: undefined,
   password: undefined,
-  isActive: false,
 });
