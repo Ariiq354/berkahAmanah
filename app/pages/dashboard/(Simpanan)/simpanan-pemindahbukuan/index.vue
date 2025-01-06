@@ -170,7 +170,7 @@
     <UCard>
       <CrudCard :data="data" :add-function="clickAdd" :delete-button="false" />
       <AppTable
-        label="Kelola Proker"
+        label="Kelola Pemindahbukuan"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
