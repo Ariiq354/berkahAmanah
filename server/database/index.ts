@@ -1,6 +1,8 @@
 import { drizzle } from "drizzle-orm/libsql";
 import * as auth from "./schema/auth";
 import * as transaksi from "./schema/transaksi";
+import * as simpanan from "./schema/simpanan";
+import * as saham from "./schema/saham";
 
 const config = useRuntimeConfig();
 
@@ -12,6 +14,8 @@ export const db = drizzle({
   schema: {
     ...auth,
     ...transaksi,
+    ...simpanan,
+    ...saham,
   },
   casing: "snake_case",
 });

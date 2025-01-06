@@ -6,7 +6,7 @@ import { userTable } from "./auth";
 export const akunTable = sqliteTable("akun", {
   id: int().primaryKey({ autoIncrement: true }),
   namaAkun: text().notNull().unique(),
-  kodeAkun: text().notNull(),
+  kodeAkun: text().notNull().unique(),
   status: int({ mode: "boolean" }).notNull().default(true),
   ...timestamp,
 });
@@ -15,9 +15,9 @@ export const transaksiTable = sqliteTable("transaksi", {
   id: int().primaryKey({ autoIncrement: true }),
   kodeTransaksi: text().notNull(),
   tanggal: text().notNull(),
-  akunId: int()
+  kodeAkun: text()
     .notNull()
-    .references(() => akunTable.id),
+    .references(() => akunTable.kodeAkun),
   nilai: int().notNull(),
   anggotaId: int()
     .notNull()
@@ -32,8 +32,8 @@ export const transaksiRelations = relations(transaksiTable, ({ one }) => ({
     references: [userTable.id],
   }),
   akun: one(akunTable, {
-    fields: [transaksiTable.akunId],
-    references: [akunTable.id],
+    fields: [transaksiTable.kodeAkun],
+    references: [akunTable.kodeAkun],
   }),
 }));
 

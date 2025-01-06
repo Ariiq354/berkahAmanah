@@ -28,6 +28,7 @@ export async function getUserSessionById(
         namaLengkap: userTable.namaLengkap,
         email: userTable.email,
         role: userTable.role,
+        noUser: userTable.noUser,
       },
       session: sessionTable,
     })

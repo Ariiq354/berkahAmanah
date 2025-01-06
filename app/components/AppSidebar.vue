@@ -15,6 +15,11 @@
           link: "/dashboard/user",
           icon: "i-heroicons-user",
         },
+        {
+          label: "Nilai Saham",
+          link: "/dashboard/saham",
+          icon: "i-heroicons-chart-bar-square",
+        },
       ],
     },
     {
@@ -30,12 +35,15 @@
           children: [
             {
               label: "Setoran",
+              link: "/dashboard/simpanan-setoran",
             },
             {
               label: "Penarikan",
+              link: "/dashboard/simpanan-penarikan",
             },
             {
               label: "Pemindahbukuan",
+              link: "/dashboard/simpanan-pemindahbukuan",
             },
             {
               label: "Monitoring",
