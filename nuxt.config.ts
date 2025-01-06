@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   },
   modules: [
     "@nuxt/ui",
-    // "nuxt-security",
+    "nuxt-security",
     "@nuxt/fonts",
     "@nuxt/eslint",
     "@nuxt/image",
@@ -20,11 +20,11 @@ export default defineNuxtConfig({
     preference: "light",
   },
 
-  // $development: {
-  //   security: {
-  //     removeLoggers: false,
-  //   },
-  // },
+  $development: {
+    security: {
+      removeLoggers: false,
+    },
+  },
 
   $production: {
     ignorePrefix: "_",
