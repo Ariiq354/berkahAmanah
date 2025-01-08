@@ -14,7 +14,7 @@ export const setoranTable = sqliteTable("setoran", {
   tanggal: text().notNull(),
   jumlahSaham: int().notNull().default(0),
   keterangan: text().notNull(),
-  status: int({ mode: "boolean" }).notNull().default(false),
+  status: int().notNull().default(0),
   ...timestamp,
 });
 
@@ -27,7 +27,7 @@ export const penarikanTable = sqliteTable("penarikan", {
     .references(() => userTable.id),
   nilai: int().notNull(),
   keterangan: text().notNull(),
-  status: int({ mode: "boolean" }).notNull().default(false),
+  status: int().notNull().default(0),
   ...timestamp,
 });
 
@@ -41,7 +41,7 @@ export const pemindahbukuanTable = sqliteTable("pemindahbukuan", {
   jenis: text({ enum: ["Saham", "Anggota"] }).notNull(),
   tanggal: text().notNull(),
   keterangan: text().notNull(),
-  status: int({ mode: "boolean" }).notNull().default(false),
+  status: int().notNull().default(0),
   idSetoran: int()
     .notNull()
     .references(() => setoranTable.id),

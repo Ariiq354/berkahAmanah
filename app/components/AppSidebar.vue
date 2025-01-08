@@ -71,12 +71,15 @@
           children: [
             {
               label: "Setoran",
+              link: "/dashboard/persetujuan-setoran",
             },
             {
               label: "Penarikan",
+              link: "/dashboard/persetujuan-penarikan",
             },
             {
               label: "Pemindahbukuan",
+              link: "/dashboard/persetujuan-pemindahbukuan",
             },
             {
               label: "Setoran Angsuran",
@@ -97,7 +100,7 @@
         },
         {
           label: "Jual Beli",
-          icon: "i-heroicons-briefcase",
+          icon: "i-heroicons-shopping-cart",
           children: [
             {
               label: "Pembelian",
@@ -112,7 +115,7 @@
         },
         {
           label: "Distributor Athar",
-          icon: "i-heroicons-briefcase",
+          icon: "i-heroicons-truck",
           children: [
             {
               label: "Pembelian",
@@ -187,7 +190,7 @@
 
 <template>
   <aside
-    class="fixed top-0 z-20 h-full w-72 overflow-hidden border-r border-gray-200 bg-white shadow-xl transition-all duration-200 dark:border-gray-700 dark:bg-gray-900"
+    class="fixed top-0 z-20 h-full w-72 overflow-y-auto border-r border-gray-200 bg-white shadow-xl transition-all duration-200 dark:border-gray-700 dark:bg-gray-900"
     :class="sidebarState ? '-left-72 md:left-0' : 'left-0 md:-left-72'"
   >
     <div class="text-primary flex items-center justify-center pb-8 pt-10">

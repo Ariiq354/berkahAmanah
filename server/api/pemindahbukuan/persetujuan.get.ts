@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   protectFunction(event);
 
-  const res = await getAllPemindahbukuan();
+  const res = await getAllPemindahbukuanInactive();
 
   const data = res.map((item) => {
     return {
@@ -11,10 +11,12 @@ export default defineEventHandler(async (event) => {
       kodeTransaksi: item.kodeTransaksi,
       nilai: item.nilai,
       tanggal: item.tanggal,
-      status: item.status,
-      jenis: item.jenis,
       namaLengkap: item.anggota.namaLengkap,
-      jumlahSaham: item.setoran ? item.setoran.jumlahSaham : 0,
+      jenis: item.jenis,
+      noUser: item.anggota.noUser,
+      jumlahSaham: item.setoran.jumlahSaham,
+      idSetoran: item.idSetoran,
+      idPenarikan: item.idPenarikan,
     };
   });
 

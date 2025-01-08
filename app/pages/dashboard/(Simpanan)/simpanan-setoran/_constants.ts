@@ -50,21 +50,17 @@ export const jenisOptions = [
   },
 ];
 
-export function createSchema(min: number = 0) {
+export function createSchema(min: number = -Infinity) {
   return z.object({
     id: z.number().optional(),
     anggotaId: z.number(),
     keterangan: z.string(),
-    nilai: z
-      .number()
-      .min(0)
-      .refine((value) => value >= min, {
-        message: `Nilai tidak boleh kurang dari harga saham`,
-      }),
+    nilai: z.number().refine((value) => value >= min, {
+      message: `Nilai tidak boleh kurang dari harga saham`,
+    }),
     tanggal: z.string(),
     jenis: z.enum(["Saham", "Simpanan"]),
     jumlahSaham: z.number(),
-    status: z.boolean(),
   });
 }
 
@@ -76,7 +72,6 @@ export const getInitialFormData = (): Partial<Schema> => ({
   tanggal: undefined,
   jenis: undefined,
   jumlahSaham: 0,
-  status: true,
 });
 
 export type Schema = z.output<ReturnType<typeof createSchema>>;

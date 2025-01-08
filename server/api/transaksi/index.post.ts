@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const bodySchema = z.object({
   id: z.number().optional(),
-  akunId: z.number(),
+  kodeAkun: z.string(),
   anggotaId: z.number(),
   keterangan: z.string(),
   kodeTransaksi: z.string(),

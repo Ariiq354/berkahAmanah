@@ -33,7 +33,7 @@ export const columns = [
 
 export const schema = z.object({
   id: z.number().optional(),
-  akunId: z.number(),
+  kodeAkun: z.string(),
   anggotaId: z.number(),
   keterangan: z.string(),
   kodeTransaksi: z.string(),
@@ -43,7 +43,7 @@ export const schema = z.object({
 
 export const getInitialFormData = (): Partial<Schema> => ({
   id: undefined,
-  akunId: undefined,
+  kodeAkun: undefined,
   anggotaId: undefined,
   keterangan: undefined,
   kodeTransaksi: undefined,

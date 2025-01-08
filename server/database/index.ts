@@ -3,6 +3,7 @@ import * as auth from "./schema/auth";
 import * as transaksi from "./schema/transaksi";
 import * as simpanan from "./schema/simpanan";
 import * as saham from "./schema/saham";
+import * as persetujuan from "./schema/persetujuan";
 
 const config = useRuntimeConfig();
 
@@ -16,6 +17,7 @@ export const db = drizzle({
     ...transaksi,
     ...simpanan,
     ...saham,
+    ...persetujuan,
   },
   casing: "snake_case",
 });

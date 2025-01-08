@@ -77,9 +77,9 @@
         <UFormGroup label="Kode Transaksi" name="kodeTransaksi">
           <UInput v-model="state.kodeTransaksi" :disabled="isLoading" />
         </UFormGroup>
-        <UFormGroup label="Nama Akun" name="akunId">
+        <UFormGroup label="Nama Akun" name="kodeAkun">
           <USelectMenu
-            v-model="state.akunId"
+            v-model="state.kodeAkun"
             :options="akunOptions"
             option-attribute="namaAkun"
             value-attribute="id"

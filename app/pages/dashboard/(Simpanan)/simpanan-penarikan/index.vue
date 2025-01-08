@@ -94,9 +94,6 @@
             :disabled="isLoading || !!state.id"
           />
         </UFormGroup>
-        <UFormGroup label="Status" name="status">
-          <UToggle v-model="state.status" :disabled="isLoading" />
-        </UFormGroup>
 
         <div class="flex w-full justify-end gap-2">
           <UButton
@@ -129,8 +126,16 @@
         <template #status-data="{ row }">
           <UBadge
             size="xs"
-            :label="row.status ? 'Aktif' : 'Tidak Aktif'"
-            :color="row.status ? 'green' : 'red'"
+            :label="
+              row.status === 0
+                ? 'Belom Disetujui'
+                : row.status === 1
+                  ? 'Disetujui'
+                  : 'Ditolak'
+            "
+            :color="
+              row.status === 0 ? 'blue' : row.status === 1 ? 'green' : 'red'
+            "
             variant="solid"
             class="rounded-full"
           />

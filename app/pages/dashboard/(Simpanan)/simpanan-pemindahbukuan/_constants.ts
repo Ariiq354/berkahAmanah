@@ -58,7 +58,6 @@ export function createSchema(max: number = Infinity, min: number = 0) {
       }),
     tanggal: z.string(),
     jenis: z.enum(["Saham", "Anggota"]),
-    status: z.boolean(),
     noAnggota: z.number(),
     jumlahSaham: z.number(),
   });
@@ -71,7 +70,6 @@ export const getInitialFormData = (): Partial<Schema> => ({
   nilai: undefined,
   tanggal: undefined,
   jenis: undefined,
-  status: false,
   jumlahSaham: 0,
   noAnggota: 0,
 });

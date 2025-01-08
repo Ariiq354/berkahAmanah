@@ -12,7 +12,6 @@ const bodySchema = z.object({
   nilai: z.number(),
   tanggal: z.string(),
   jenis: z.enum(["Saham", "Anggota"]),
-  status: z.boolean(),
   noAnggota: z.number(),
   jumlahSaham: z.number(),
 });
@@ -33,7 +32,7 @@ export default defineEventHandler(async (event) => {
     kodeTransaksi: kodeSetoran,
     nilai: formData.nilai,
     tanggal: formData.tanggal,
-    status: formData.status,
+    status: 4,
   };
 
   const penarikanPayload = {
@@ -62,50 +61,10 @@ export default defineEventHandler(async (event) => {
   const [penarikan] = await createPenarikan(penarikanPayload);
   await createPemindahbukuan({
     ...formData,
-    idSetoran: setoran.insertedId,
-    idPenarikan: penarikan.insertedId,
+    idSetoran: setoran!.insertedId,
+    idPenarikan: penarikan!.insertedId,
     kodeTransaksi,
   });
-
-  const commonDataTransaksi = {
-    keterangan: formData.keterangan,
-    kodeTransaksi,
-    tanggal: formData.tanggal,
-  };
-
-  if (formData.jenis === "Anggota") {
-    // Debit Simpanan A
-    await createTransaksi({
-      ...commonDataTransaksi,
-      kodeAkun: "2010000",
-      anggotaId: formData.anggotaId,
-      nilai: formData.nilai,
-    });
-
-    // Kredit Simpanan B
-    await createTransaksi({
-      ...commonDataTransaksi,
-      kodeAkun: "2010000",
-      anggotaId: formData.noAnggota,
-      nilai: -formData.nilai,
-    });
-  } else {
-    // Debit Simpanan
-    await createTransaksi({
-      ...commonDataTransaksi,
-      kodeAkun: "2010000",
-      anggotaId: formData.anggotaId,
-      nilai: formData.nilai,
-    });
-
-    // Kredit Saham
-    await createTransaksi({
-      ...commonDataTransaksi,
-      kodeAkun: "2020200",
-      anggotaId: formData.noAnggota,
-      nilai: -formData.nilai,
-    });
-  }
 
   return;
 });

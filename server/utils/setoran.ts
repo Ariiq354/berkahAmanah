@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewSetoran,
@@ -8,6 +8,7 @@ import {
 
 export async function getAllSetoran() {
   return await db.query.setoranTable.findMany({
+    where: lt(setoranTable.status, 4),
     orderBy: desc(setoranTable.createdAt),
     with: {
       anggota: {
@@ -16,6 +17,27 @@ export async function getAllSetoran() {
         },
       },
     },
+  });
+}
+
+export async function getAllSetoranInactive() {
+  return await db.query.setoranTable.findMany({
+    orderBy: desc(setoranTable.createdAt),
+    where: eq(setoranTable.status, 0),
+    with: {
+      anggota: {
+        columns: {
+          namaLengkap: true,
+          noUser: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getSetoranById(id: number) {
+  return await db.query.setoranTable.findFirst({
+    where: eq(setoranTable.id, id),
   });
 }
 
@@ -29,7 +51,7 @@ export async function getSaldoSimpanan(anggotaId: number) {
       and(
         eq(setoranTable.anggotaId, anggotaId),
         eq(setoranTable.jenis, "Simpanan"),
-        eq(setoranTable.status, true)
+        eq(setoranTable.status, 1)
       )
     );
 
@@ -39,10 +61,7 @@ export async function getSaldoSimpanan(anggotaId: number) {
     })
     .from(penarikanTable)
     .where(
-      and(
-        eq(penarikanTable.anggotaId, anggotaId),
-        eq(penarikanTable.status, true)
-      )
+      and(eq(penarikanTable.anggotaId, anggotaId), eq(penarikanTable.status, 1))
     );
 
   return setoran!.sum - penarikan!.sum;
@@ -53,4 +72,13 @@ export async function createSetoran(data: NewSetoran) {
     .insert(setoranTable)
     .values(data)
     .returning({ insertedId: setoranTable.id });
+}
+
+export async function updateSetoranStatus(status: number, id: number) {
+  return await db
+    .update(setoranTable)
+    .set({
+      status,
+    })
+    .where(eq(setoranTable.id, id));
 }
