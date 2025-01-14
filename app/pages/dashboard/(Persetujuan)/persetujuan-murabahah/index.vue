@@ -3,33 +3,28 @@
   import {
     columns,
     getInitialFormData,
+    jaminanOptions,
     schema,
     type Schema,
   } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Persetujuan / Pemindahbukuan");
+    defineTopbarTitle("Persetujuan / Murabahah");
   });
 
   const state = ref(getInitialFormData());
   const { data, status, refresh } = await useLazyFetch(
-    "/api/pemindahbukuan/persetujuan"
+    "/api/murabahah/persetujuan"
   );
-  const { data: saham } = await useLazyFetch("/api/saham/now");
   const selectedItem = computed(() => {
-    return data.value?.find((item) => item.id === state.value.pemindahbukuanId);
-  });
-
-  watch(selectedItem, () => {
-    state.value.setoranId = selectedItem.value?.idSetoran;
-    state.value.penarikanId = selectedItem.value?.idPenarikan;
+    return data.value?.find((item) => item.id === state.value.pembiayaanId);
   });
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/pemindahbukuan/persetujuan",
+      path: "/api/murabahah/persetujuan",
       body: event.data,
       onSuccess() {
         modalOpen.value = false;
@@ -41,18 +36,19 @@
     });
   }
 
-  function clickAdd(id: number) {
-    state.value.pemindahbukuanId = id;
+  function clickAdd(id: number, nilai: number) {
+    state.value.pembiayaanId = id;
+    state.value.nilai = nilai;
     modalOpen.value = true;
   }
 </script>
 
 <template>
   <main>
-    <Title>Persetujuan | Pemindahbukuan</Title>
+    <Title>Persetujuan | Murabahah</Title>
     <LazyAppModal
       v-model="modalOpen"
-      title="Detail Pemindahbukuan"
+      title="Detail Murabahah"
       :pending="isLoading"
       :ui="{ width: 'sm:max-w-4xl' }"
     >
@@ -62,14 +58,9 @@
         class="space-y-4"
         @submit="onSubmit"
       >
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Kode Transaksi">
-            <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
-          </UFormGroup>
-          <UFormGroup label="Jenis Transaksi">
-            <UInput :model-value="selectedItem?.jenis" disabled />
-          </UFormGroup>
-        </div>
+        <UFormGroup label="Kode Transaksi">
+          <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
+        </UFormGroup>
         <div class="class grid grid-cols-2 gap-4">
           <UFormGroup label="No Anggota">
             <UInput :model-value="selectedItem?.noUser" disabled />
@@ -78,40 +69,63 @@
             <UInput :model-value="selectedItem?.namaLengkap" disabled />
           </UFormGroup>
         </div>
-        <div
-          v-if="selectedItem?.jenis === 'Saham'"
-          class="grid grid-cols-3 gap-2"
-        >
-          <UFormGroup label="Jumlah Saham">
-            <UInput :model-value="selectedItem?.jumlahSaham" disabled />
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Nilai Pengajuan">
+            <UInput :model-value="selectedItem?.jumlah" disabled />
           </UFormGroup>
-          <UFormGroup label="Harga Dasar">
+          <UFormGroup label="Tempo">
+            <UInput :model-value="selectedItem?.tempo" disabled />
+          </UFormGroup>
+        </div>
+        <UFormGroup label="Tujuan Pengajuan">
+          <UInput :model-value="selectedItem?.tujuan" disabled />
+        </UFormGroup>
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Nilai Pokok" name="nilai">
+            <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
+          </UFormGroup>
+          <UFormGroup label="Margin" name="margin">
+            <UInput
+              v-model="state.margin"
+              type="number"
+              :disabled="isLoading"
+            />
+          </UFormGroup>
+        </div>
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Nilai Pembiayaan Disetujui">
             <UInput
               :model-value="
-                (50000 * selectedItem!.jumlahSaham!).toLocaleString('id-ID')
+                state.margin && state.nilai
+                  ? (state.nilai + state.margin).toLocaleString('id-ID')
+                  : 0
               "
               disabled
             />
           </UFormGroup>
-          <UFormGroup label="Harga Saham">
+          <UFormGroup label="Persentase">
             <UInput
               :model-value="
-                (saham!.nilai * selectedItem!.jumlahSaham!).toLocaleString(
-                  'id-ID'
-                )
+                state.margin && state.nilai
+                  ? ((state.margin / state.nilai) * 100).toFixed(2)
+                  : 0
               "
               disabled
             />
           </UFormGroup>
         </div>
-        <UFormGroup label="Nilai Pemindahbukuan">
-          <UInput :model-value="selectedItem?.nilai" disabled />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
+        <UFormGroup label="Tanggal Akad" name="tanggal">
           <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
         </UFormGroup>
-        <UFormGroup label="Keterangan">
-          <UInput :model-value="selectedItem?.keterangan" disabled />
+        <UFormGroup label="Jaminan" name="jaminan">
+          <USelectMenu
+            v-model="state.jaminan"
+            :options="jaminanOptions"
+            :disabled="isLoading"
+          />
+        </UFormGroup>
+        <UFormGroup label="Tempo Disetujui" name="tempo">
+          <UInput v-model="state.tempo" type="number" :disabled="isLoading" />
         </UFormGroup>
         <UFormGroup label="Alasan Penolakan" name="alasan">
           <UInput v-model="state.alasan" :disabled="isLoading" />
@@ -140,7 +154,7 @@
     </LazyAppModal>
     <UCard>
       <AppTable
-        label="Kelola Pemindahbukuan"
+        label="Kelola Murabahah"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
@@ -150,7 +164,7 @@
           {{ row.nilai.toLocaleString("id-ID") }}
         </template>
         <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id)">Pilih</UButton>
+          <UButton @click="clickAdd(row.id, row.jumlah)">Pilih</UButton>
         </template>
       </AppTable>
     </UCard>

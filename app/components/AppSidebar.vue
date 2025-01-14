@@ -56,9 +56,11 @@
           children: [
             {
               label: "Murabahah",
+              link: "/dashboard/pembiayaan-murabahah",
             },
             {
               label: "Angsuran",
+              link: "/dashboard/pembiayaan-angsuran",
             },
             {
               label: "Monitoring",
@@ -82,10 +84,12 @@
               link: "/dashboard/persetujuan-pemindahbukuan",
             },
             {
-              label: "Setoran Angsuran",
+              label: "Murabahah",
+              link: "/dashboard/persetujuan-murabahah",
             },
             {
-              label: "Murabahah",
+              label: "Setoran Angsuran",
+              link: "/dashboard/persetujuan-angsuran",
             },
             {
               label: "Anggota Baru",

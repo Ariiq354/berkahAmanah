@@ -64,7 +64,7 @@
       v-model="modalOpen"
       :title="state.id ? 'Edit' : 'Tambah' + ' Akun'"
       :pending="isLoading"
-      :ui="{ width: 'OlaSeni:max-w-4xl' }"
+      :ui="{ width: 'sm:max-w-4xl' }"
     >
       <UForm
         :schema="schema"

@@ -14,7 +14,7 @@ export const setoranTable = sqliteTable("setoran", {
   tanggal: text().notNull(),
   jumlahSaham: int().notNull().default(0),
   keterangan: text().notNull(),
-  status: int().notNull().default(0),
+  status: int().notNull().default(0), // 0: Belum Distejui, 1: Disetujuai, 2:Ditolak,4: Ada di pemindahbukuan belom disetujui, jadi tidak dimunculkan
   ...timestamp,
 });
 

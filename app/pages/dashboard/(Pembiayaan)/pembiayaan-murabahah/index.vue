@@ -2,32 +2,28 @@
   import type { FormSubmitEvent } from "#ui/types";
   import {
     columns,
-    createSchema,
     getInitialFormData,
+    schema,
     type Schema,
   } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Simpanan / Penarikan");
+    defineTopbarTitle("Pembiayaan / Murabahah");
   });
 
-  const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/penarikan");
-  const { data: saldo, refresh: refreshSaldo } = await useLazyFetch(
-    () => `/api/setoran/saldo?anggotaId=${state.value.anggotaId}`
-  );
   const { data: anggota } = await useLazyFetch("/api/users");
+  const state = ref(getInitialFormData());
+  const { data, status, refresh } = await useLazyFetch("/api/murabahah");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/penarikan",
+      path: "/api/murabahah",
       body: event.data,
       onSuccess() {
         modalOpen.value = false;
         refresh();
-        refreshSaldo();
       },
       onError(error) {
         useToastError(String(error.statusCode), error.data.message);
@@ -39,7 +35,6 @@
     state.value = getInitialFormData();
     modalOpen.value = true;
   }
-
   async function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
     modalOpen.value = true;
     state.value = itemData;
@@ -48,15 +43,15 @@
 
 <template>
   <main>
-    <Title>Simpanan | Penarikan</Title>
+    <Title>Pembiayaan | Murabahah</Title>
     <LazyAppModal
       v-model="modalOpen"
-      :title="(state.id ? 'Detail' : 'Tambah') + ' Penarikan'"
+      title="Detail Murabahah"
       :pending="isLoading"
       :ui="{ width: 'sm:max-w-4xl' }"
     >
       <UForm
-        :schema="createSchema(saldo?.saldo)"
+        :schema="schema"
         :state="state"
         class="space-y-4"
         @submit="onSubmit"
@@ -70,29 +65,27 @@
             :disabled="isLoading || !!state.id"
           />
         </UFormGroup>
-        <UFormGroup label="Saldo Simpanan">
-          <UInput :model-value="saldo?.saldo" type="number" disabled />
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Jumlah Pengajuan" name="jumlah">
+            <UInput
+              v-model="state.jumlah"
+              type="number"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormGroup>
+          <UFormGroup label="Tempo" name="tempo">
+            <UInput
+              v-model="state.tempo"
+              type="number"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormGroup>
+        </div>
+        <UFormGroup label="Tujuan Pengajuan" name="tujuan">
+          <UInput v-model="state.tujuan" :disabled="isLoading || !!state.id" />
         </UFormGroup>
-        <UFormGroup label="Nilai Penarikan" name="nilai">
-          <UInput
-            v-model="state.nilai"
-            type="number"
-            min="0"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput
-            v-model="state.tanggal"
-            type="date"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <UFormGroup label="Keterangan" name="keterangan">
-          <UInput
-            v-model="state.keterangan"
-            :disabled="isLoading || !!state.id"
-          />
+        <UFormGroup label="Catatan" name="catatan">
+          <UInput v-model="state.catatan" :disabled="isLoading || !!state.id" />
         </UFormGroup>
 
         <div class="flex w-full justify-end gap-2">
@@ -110,7 +103,7 @@
             icon="i-heroicons-check-16-solid"
             :loading="isLoading"
           >
-            Simpan
+            Setuju
           </UButton>
         </div>
       </UForm>
@@ -118,7 +111,7 @@
     <UCard>
       <CrudCard :data="data" :delete-button="false" :add-function="clickAdd" />
       <AppTable
-        label="Kelola Penarikan"
+        label="Kelola Murabahah"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
@@ -141,8 +134,27 @@
             class="rounded-full"
           />
         </template>
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #jumlah-data="{ row }">
+          {{ row.jumlah.toLocaleString("id-ID") }}
+        </template>
+        <template #pokok-data="{ row }">
+          {{
+            row.status === 1 ? row.nilaiPersetujuan.toLocaleString("id-ID") : 0
+          }}
+        </template>
+        <template #margin-data="{ row }">
+          {{
+            row.status === 1 ? row.marginPersetujuan.toLocaleString("id-ID") : 0
+          }}
+        </template>
+        <template #total-data="{ row }">
+          {{
+            row.status === 1
+              ? (row.nilaiPersetujuan + row.marginPersetujuan).toLocaleString(
+                  "id-ID"
+                )
+              : 0
+          }}
         </template>
       </AppTable>
     </UCard>

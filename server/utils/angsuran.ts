@@ -1,0 +1,129 @@
+import { desc, eq, lt, sql } from "drizzle-orm";
+import { db } from "~~/server/database";
+import {
+  angsuranTable,
+  pembiayaanTable,
+  type NewAngsuran,
+} from "~~/server/database/schema/pembiayaan";
+import { persetujuanPembiayaanTable } from "../database/schema/persetujuan";
+import { userTable } from "../database/schema/auth";
+
+export async function getAllPembiayaanActive() {
+  const result = await db
+    .select({
+      id: pembiayaanTable.id,
+      kodeTransaksi: pembiayaanTable.kodeTransaksi,
+      namaLengkap: userTable.namaLengkap,
+      noUser: userTable.noUser,
+      tujuan: pembiayaanTable.tujuan,
+      pokok: persetujuanPembiayaanTable.nilai,
+      margin: persetujuanPembiayaanTable.margin,
+      tempo: persetujuanPembiayaanTable.tempo,
+      totalAngsuran: sql<number>`COALESCE(SUM(${angsuranTable.jumlah}), 0)`,
+    })
+    .from(pembiayaanTable)
+    .leftJoin(angsuranTable, eq(pembiayaanTable.id, angsuranTable.pembiayaanId))
+    .innerJoin(
+      persetujuanPembiayaanTable,
+      eq(persetujuanPembiayaanTable.pembiayaanId, pembiayaanTable.id)
+    )
+    .innerJoin(userTable, eq(pembiayaanTable.anggotaId, userTable.id))
+    .groupBy(pembiayaanTable.id)
+    .having(
+      lt(
+        sql`COALESCE(SUM(${angsuranTable.jumlah}), 0)`,
+        persetujuanPembiayaanTable.nilai
+      )
+    )
+    .where(eq(pembiayaanTable.status, 1));
+
+  return result;
+}
+
+export async function getAllAngsuran() {
+  return await db.query.angsuranTable.findMany({
+    orderBy: desc(angsuranTable.createdAt),
+    with: {
+      pembiayaan: {
+        columns: {
+          kodeTransaksi: true,
+        },
+        with: {
+          anggota: {
+            columns: {
+              namaLengkap: true,
+            },
+          },
+          persetujuan: {
+            columns: {
+              nilai: true,
+              margin: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getAllAngsuranInactive() {
+  return await db.query.angsuranTable.findMany({
+    orderBy: desc(angsuranTable.createdAt),
+    where: eq(angsuranTable.status, 0),
+    with: {
+      pembiayaan: {
+        with: {
+          anggota: {
+            columns: {
+              namaLengkap: true,
+              noUser: true,
+            },
+          },
+          persetujuan: {
+            columns: {
+              nilai: true,
+              margin: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getAngsuranById(id: number) {
+  return await db.query.angsuranTable.findFirst({
+    where: eq(angsuranTable.id, id),
+    with: {
+      pembiayaan: {
+        columns: {
+          anggotaId: true,
+        },
+        with: {
+          persetujuan: {
+            columns: {
+              nilai: true,
+              margin: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function createAngsuran(data: NewAngsuran) {
+  return await db
+    .insert(angsuranTable)
+    .values(data)
+    .returning({ insertedId: angsuranTable.id });
+}
+
+export async function updateAngsuranStatus(status: number, id: number) {
+  return await db
+    .update(angsuranTable)
+    .set({
+      status,
+    })
+    .where(eq(angsuranTable.id, id));
+}

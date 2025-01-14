@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { timestamp } from "./common";
 import { pemindahbukuanTable, penarikanTable, setoranTable } from "./simpanan";
+import { angsuranTable, pembiayaanTable } from "./pembiayaan";
 
 export const persetujuanSetoranTable = sqliteTable("persetujuan_setoran", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -39,6 +40,35 @@ export const persetujuanPemindahbukuanTable = sqliteTable(
   }
 );
 
+export const persetujuanPembiayaanTable = sqliteTable(
+  "persetujuan_pembiayaan",
+  {
+    id: int().primaryKey({ autoIncrement: true }),
+    pembiayaanId: int()
+      .notNull()
+      .references(() => pembiayaanTable.id),
+    nilai: int().notNull(),
+    jaminan: text().notNull(),
+    margin: int().notNull(),
+    tanggal: text().notNull(),
+    tempo: int().notNull(),
+    alasan: text().notNull(),
+    setuju: int({ mode: "boolean" }).notNull(),
+    ...timestamp,
+  }
+);
+
+export const persetujuanAngsuranTable = sqliteTable("persetujuan_angsuran", {
+  id: int().primaryKey({ autoIncrement: true }),
+  angsuranId: int()
+    .notNull()
+    .references(() => angsuranTable.id),
+  alasan: text().notNull(),
+  tanggal: text().notNull(),
+  setuju: int({ mode: "boolean" }).notNull(),
+  ...timestamp,
+});
+
 export const persetujuanSetoranRelations = relations(
   persetujuanSetoranTable,
   ({ one }) => ({
@@ -67,8 +97,31 @@ export const persetujuanPemindahbukuanRelations = relations(
   })
 );
 
+export const persetujuanPembiayaanRelations = relations(
+  persetujuanPembiayaanTable,
+  ({ one }) => ({
+    pembiayaan: one(pembiayaanTable, {
+      fields: [persetujuanPembiayaanTable.pembiayaanId],
+      references: [pembiayaanTable.id],
+    }),
+  })
+);
+export const persetujuanAngsuranRelations = relations(
+  persetujuanAngsuranTable,
+  ({ one }) => ({
+    angsuran: one(angsuranTable, {
+      fields: [persetujuanAngsuranTable.angsuranId],
+      references: [angsuranTable.id],
+    }),
+  })
+);
+
 export type NewPersetujuanSetoran = typeof persetujuanSetoranTable.$inferInsert;
 export type NewPersetujuanPenarikan =
   typeof persetujuanPenarikanTable.$inferInsert;
 export type NewPersetujuanPemindahbukuan =
   typeof persetujuanPemindahbukuanTable.$inferInsert;
+export type NewPersetujuanPembiayaan =
+  typeof persetujuanPembiayaanTable.$inferInsert;
+export type NewPersetujuanAngsuran =
+  typeof persetujuanAngsuranTable.$inferInsert;

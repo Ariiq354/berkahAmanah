@@ -8,28 +8,22 @@
   } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Persetujuan / Pemindahbukuan");
+    defineTopbarTitle("Persetujuan / Angsuran");
   });
 
   const state = ref(getInitialFormData());
   const { data, status, refresh } = await useLazyFetch(
-    "/api/pemindahbukuan/persetujuan"
+    "/api/angsuran/persetujuan"
   );
-  const { data: saham } = await useLazyFetch("/api/saham/now");
   const selectedItem = computed(() => {
-    return data.value?.find((item) => item.id === state.value.pemindahbukuanId);
-  });
-
-  watch(selectedItem, () => {
-    state.value.setoranId = selectedItem.value?.idSetoran;
-    state.value.penarikanId = selectedItem.value?.idPenarikan;
+    return data.value?.find((item) => item.id === state.value.angsuranId);
   });
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/pemindahbukuan/persetujuan",
+      path: "/api/angsuran/persetujuan",
       body: event.data,
       onSuccess() {
         modalOpen.value = false;
@@ -42,17 +36,17 @@
   }
 
   function clickAdd(id: number) {
-    state.value.pemindahbukuanId = id;
+    state.value.angsuranId = id;
     modalOpen.value = true;
   }
 </script>
 
 <template>
   <main>
-    <Title>Persetujuan | Pemindahbukuan</Title>
+    <Title>Persetujuan | Angsuran</Title>
     <LazyAppModal
       v-model="modalOpen"
-      title="Detail Pemindahbukuan"
+      title="Detail Angsuran"
       :pending="isLoading"
       :ui="{ width: 'sm:max-w-4xl' }"
     >
@@ -66,8 +60,8 @@
           <UFormGroup label="Kode Transaksi">
             <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
           </UFormGroup>
-          <UFormGroup label="Jenis Transaksi">
-            <UInput :model-value="selectedItem?.jenis" disabled />
+          <UFormGroup label="No Pembiayaan">
+            <UInput :model-value="selectedItem?.noPembiayaan" disabled />
           </UFormGroup>
         </div>
         <div class="class grid grid-cols-2 gap-4">
@@ -78,38 +72,22 @@
             <UInput :model-value="selectedItem?.namaLengkap" disabled />
           </UFormGroup>
         </div>
-        <div
-          v-if="selectedItem?.jenis === 'Saham'"
-          class="grid grid-cols-3 gap-2"
-        >
-          <UFormGroup label="Jumlah Saham">
-            <UInput :model-value="selectedItem?.jumlahSaham" disabled />
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Nilai Pokok">
+            <UInput :model-value="selectedItem?.pokok" disabled />
           </UFormGroup>
-          <UFormGroup label="Harga Dasar">
-            <UInput
-              :model-value="
-                (50000 * selectedItem!.jumlahSaham!).toLocaleString('id-ID')
-              "
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Harga Saham">
-            <UInput
-              :model-value="
-                (saham!.nilai * selectedItem!.jumlahSaham!).toLocaleString(
-                  'id-ID'
-                )
-              "
-              disabled
-            />
+          <UFormGroup label="Nilai Margin">
+            <UInput :model-value="selectedItem?.margin" disabled />
           </UFormGroup>
         </div>
-        <UFormGroup label="Nilai Pemindahbukuan">
-          <UInput :model-value="selectedItem?.nilai" disabled />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-        </UFormGroup>
+        <div class="class grid grid-cols-2 gap-4">
+          <UFormGroup label="Nilai Angsuran">
+            <UInput :model-value="selectedItem?.jumlah" disabled />
+          </UFormGroup>
+          <UFormGroup label="Tanggal" name="tanggal">
+            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
+          </UFormGroup>
+        </div>
         <UFormGroup label="Keterangan">
           <UInput :model-value="selectedItem?.keterangan" disabled />
         </UFormGroup>
@@ -140,14 +118,20 @@
     </LazyAppModal>
     <UCard>
       <AppTable
-        label="Kelola Pemindahbukuan"
+        label="Kelola Angsuran"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #jumlah-data="{ row }">
+          {{ row.jumlah.toLocaleString("id-ID") }}
+        </template>
+        <template #pokok-data="{ row }">
+          {{ row.pokok.toLocaleString("id-ID") }}
+        </template>
+        <template #margin-data="{ row }">
+          {{ row.margin.toLocaleString("id-ID") }}
         </template>
         <template #select-data="{ row }">
           <UButton @click="clickAdd(row.id)">Pilih</UButton>

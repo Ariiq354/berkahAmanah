@@ -54,7 +54,7 @@
       v-model="modalOpen"
       :title="(state.id ? 'Detail' : 'Tambah') + ' Setoran'"
       :pending="isLoading"
-      :ui="{ width: 'OlaSeni:max-w-4xl' }"
+      :ui="{ width: 'sm:max-w-4xl' }"
     >
       <UForm
         :schema="
@@ -142,9 +142,10 @@
             :disabled="isLoading"
             @click="modalOpen = false"
           >
-            Batal
+            {{ state.id ? "Tutup" : "Batal" }}
           </UButton>
           <UButton
+            v-if="!state.id"
             type="submit"
             icon="i-heroicons-check-16-solid"
             :loading="isLoading"
