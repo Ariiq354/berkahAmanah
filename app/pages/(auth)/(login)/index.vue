@@ -20,7 +20,7 @@
       });
       await navigateTo("/dashboard");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.data.message);
+      useToastError("Login Gagal", error.data.message);
     } finally {
       isLoading.value = false;
     }

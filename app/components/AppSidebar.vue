@@ -47,6 +47,7 @@
             },
             {
               label: "Monitoring",
+              link: "/dashboard/simpanan-monitoring",
             },
           ],
         },
@@ -64,6 +65,7 @@
             },
             {
               label: "Monitoring",
+              link: "/dashboard/pembiayaan-monitoring",
             },
           ],
         },

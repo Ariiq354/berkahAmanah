@@ -67,6 +67,23 @@ export async function getSaldoSimpanan(anggotaId: number) {
   return setoran!.sum - penarikan!.sum;
 }
 
+export async function getAllSetoranByAnggotaId(anggotaId: number) {
+  return await db.query.setoranTable.findMany({
+    where: eq(setoranTable.anggotaId, anggotaId),
+  });
+}
+
+export async function getTotalSaham() {
+  const [saham] = await db
+    .select({
+      sum: sql<number>`COALESCE(SUM(${setoranTable.nilai}), 0)`,
+    })
+    .from(setoranTable)
+    .where(and(eq(setoranTable.jenis, "Saham"), eq(setoranTable.status, 1)));
+
+  return saham.sum;
+}
+
 export async function createSetoran(data: NewSetoran) {
   return await db
     .insert(setoranTable)

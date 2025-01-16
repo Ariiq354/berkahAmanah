@@ -40,7 +40,7 @@
     modalOpen.value = true;
   }
 
-  async function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
+  function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
     modalOpen.value = true;
     state.value = itemData;
   }

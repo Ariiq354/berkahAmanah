@@ -1,9 +1,11 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
+  angsuranTable,
   type NewPembiayaan,
   pembiayaanTable,
 } from "~~/server/database/schema/pembiayaan";
+import { persetujuanPembiayaanTable } from "../database/schema/persetujuan";
 
 export async function getAllPembiayaan() {
   return await db.query.pembiayaanTable.findMany({
@@ -22,6 +24,34 @@ export async function getAllPembiayaan() {
       },
     },
   });
+}
+
+export async function getAllPembiayaanByAnggotaId(anggotaId: number) {
+  const result = await db
+    .select({
+      id: pembiayaanTable.id,
+      kodeTransaksi: pembiayaanTable.kodeTransaksi,
+      tujuan: pembiayaanTable.tujuan,
+      pokok: persetujuanPembiayaanTable.nilai,
+      margin: persetujuanPembiayaanTable.margin,
+      tempo: persetujuanPembiayaanTable.tempo,
+      totalAngsuran: sql<number>`COALESCE(SUM(${angsuranTable.jumlah}), 0)`,
+    })
+    .from(pembiayaanTable)
+    .leftJoin(angsuranTable, eq(pembiayaanTable.id, angsuranTable.pembiayaanId))
+    .innerJoin(
+      persetujuanPembiayaanTable,
+      eq(persetujuanPembiayaanTable.pembiayaanId, pembiayaanTable.id)
+    )
+    .groupBy(pembiayaanTable.id)
+    .where(
+      and(
+        eq(pembiayaanTable.status, 1),
+        eq(pembiayaanTable.anggotaId, anggotaId)
+      )
+    );
+
+  return result;
 }
 
 export async function getAllPembiayaanInactive() {

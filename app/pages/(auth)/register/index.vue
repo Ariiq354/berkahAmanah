@@ -24,7 +24,7 @@
       );
       await navigateTo("/");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.data.message);
+      useToastError("Register Gagal", error.data.message);
     } finally {
       isLoading.value = false;
     }

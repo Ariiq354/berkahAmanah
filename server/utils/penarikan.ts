@@ -40,6 +40,12 @@ export async function getPenarikanById(id: number) {
   });
 }
 
+export async function getAllPenarikanByAnggotaId(anggotaId: number) {
+  return await db.query.penarikanTable.findMany({
+    where: eq(penarikanTable.anggotaId, anggotaId),
+  });
+}
+
 export async function createPenarikan(data: NewPenarikan) {
   return await db
     .insert(penarikanTable)
