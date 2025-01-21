@@ -5,6 +5,8 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  protectFunction(event);
+
   const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
 
   const res = await getAllAngsuranByPembiayaanId(query.pembiayaanId);

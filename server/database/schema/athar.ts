@@ -2,6 +2,12 @@ import { relations } from "drizzle-orm";
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { timestamp } from "./common";
 
+export const atharTable = sqliteTable("athar", {
+  id: int().primaryKey({ autoIncrement: true }),
+  nilai: int().notNull(),
+  ...timestamp,
+});
+
 export const pembelianAtharTable = sqliteTable("pembelian_athar", {
   id: int().primaryKey({ autoIncrement: true }),
   kodeTransaksi: text().notNull(),
@@ -71,3 +77,4 @@ export type NewPenjualanAthar = typeof penjualanAtharTable.$inferInsert;
 export type NewPembayaranAthar = typeof pembayaranAtharTable.$inferInsert;
 export type NewPembayaranHutangAthar =
   typeof pembayaranHutangAtharTable.$inferInsert;
+export type NewAthar = typeof atharTable.$inferInsert;

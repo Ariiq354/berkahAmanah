@@ -3,7 +3,6 @@
   import {
     columns,
     getInitialFormData,
-    HARGA_ATHAR,
     schema,
     type Schema,
   } from "./_constants";
@@ -14,6 +13,7 @@
 
   const state = ref(getInitialFormData());
   const { data, status, refresh } = await useLazyFetch("/api/pembelian-athar");
+  const { data: HARGA_ATHAR } = await useLazyFetch("/api/athar/now");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -22,7 +22,7 @@
       path: "/api/pembelian-athar",
       body: {
         ...event.data,
-        nilai: event.data.jumlahGalon * HARGA_ATHAR,
+        nilai: event.data.jumlahGalon * HARGA_ATHAR.value!.nilai,
       },
       onSuccess() {
         modalOpen.value = false;
@@ -65,7 +65,7 @@
           </UFormGroup>
           <UFormGroup label="Harga / Galon">
             <UInput
-              :model-value="HARGA_ATHAR.toLocaleString('id-ID')"
+              :model-value="HARGA_ATHAR!.nilai.toLocaleString('id-ID')"
               disabled
             />
           </UFormGroup>
@@ -74,7 +74,9 @@
           <UFormGroup label="Nilai">
             <UInput
               :model-value="
-                (HARGA_ATHAR * state.jumlahGalon!).toLocaleString('id-ID')
+                (HARGA_ATHAR!.nilai * state.jumlahGalon!).toLocaleString(
+                  'id-ID'
+                )
               "
               disabled
             />

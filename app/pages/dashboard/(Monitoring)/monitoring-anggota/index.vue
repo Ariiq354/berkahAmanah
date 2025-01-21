@@ -11,13 +11,7 @@
 <template>
   <main>
     <Title>Monitoring | Anggota</Title>
-    <UCard
-      :ui="{
-        body: {
-          padding: 'sm:p-8',
-        },
-      }"
-    >
+    <UCard>
       <AppTable
         label="Daftar Anggota"
         :loading="status === 'pending'"

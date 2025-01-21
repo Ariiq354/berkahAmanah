@@ -15,6 +15,11 @@
           link: "/dashboard/saham",
           icon: "i-heroicons-chart-bar-square",
         },
+        {
+          label: "Nilai Athar",
+          link: "/dashboard/athar",
+          icon: "i-heroicons-chart-bar-square",
+        },
       ],
     },
     {
@@ -162,9 +167,11 @@
           children: [
             {
               label: "Neraca",
+              link: "/dashboard/keuangan-neraca",
             },
             {
-              label: "Rugi Laba",
+              label: "Laba Rugi",
+              link: "/dashboard/keuangan-labarugi",
             },
             {
               label: "Posting",

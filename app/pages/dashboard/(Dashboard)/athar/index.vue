@@ -8,17 +8,17 @@
   } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Dashbboard / Saham");
+    defineTopbarTitle("Dashbboard / Athar");
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/saham");
+  const { data, status, refresh } = await useLazyFetch("/api/athar");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/saham",
+      path: "/api/athar",
       body: event.data,
       onSuccess() {
         modalOpen.value = false;
@@ -39,7 +39,7 @@
   async function clickDelete() {
     async function onDelete() {
       const idArray = tableSelected.value.map((item) => item.id);
-      await $fetch("/api/saham", {
+      await $fetch("/api/athar", {
         method: "DELETE",
         body: {
           id: idArray,
@@ -59,10 +59,10 @@
 
 <template>
   <main>
-    <Title>Dashboard | Saham</Title>
+    <Title>Dashboard | Athar</Title>
     <LazyAppModal
       v-model="modalOpen"
-      :title="(state.id ? 'Edit' : 'Tambah') + ' Saham'"
+      :title="(state.id ? 'Edit' : 'Tambah') + ' Athar'"
       :pending="isLoading"
       :ui="{ width: 'sm:max-w-2xl' }"
     >
@@ -72,7 +72,7 @@
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormGroup label="Nilai Saham" name="nilai">
+        <UFormGroup label="Nilai Athar" name="nilai">
           <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
         </UFormGroup>
 
@@ -104,7 +104,7 @@
       />
       <AppTable
         v-model="tableSelected"
-        label="Kelola Saham"
+        label="Kelola Athar"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"

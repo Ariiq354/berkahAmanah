@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   protectFunction(event);
 
-  const res = await getSahamNow();
+  const res = await getAtharNow();
 
   if (res) {
     return {
