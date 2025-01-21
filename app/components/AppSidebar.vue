@@ -11,11 +11,6 @@
           icon: "i-heroicons-home",
         },
         {
-          label: "Daftar Anggota",
-          link: "/dashboard/user",
-          icon: "i-heroicons-user",
-        },
-        {
           label: "Nilai Saham",
           link: "/dashboard/saham",
           icon: "i-heroicons-chart-bar-square",
@@ -93,30 +88,6 @@
               label: "Setoran Angsuran",
               link: "/dashboard/persetujuan-angsuran",
             },
-            {
-              label: "Anggota Baru",
-            },
-            {
-              label: "Pembelian Barang",
-            },
-            {
-              label: "Penjualan Barang",
-            },
-          ],
-        },
-        {
-          label: "Jual Beli",
-          icon: "i-heroicons-shopping-cart",
-          children: [
-            {
-              label: "Pembelian",
-            },
-            {
-              label: "Penjualan",
-            },
-            {
-              label: "Monitoring",
-            },
           ],
         },
         {
@@ -125,9 +96,19 @@
           children: [
             {
               label: "Pembelian",
+              link: "/dashboard/athar-pembelian",
             },
             {
               label: "Penjualan",
+              link: "/dashboard/athar-penjualan",
+            },
+            {
+              label: "Pembayaran Hutang",
+              link: "/dashboard/athar-pembayaran-hutang",
+            },
+            {
+              label: "Pembayaran",
+              link: "/dashboard/athar-pembayaran",
             },
             {
               label: "Monitoring",
@@ -140,15 +121,18 @@
           children: [
             {
               label: "Simpanan",
+              link: "/dashboard/monitoring-simpanan",
             },
             {
               label: "Pembiayaan",
+              link: "/dashboard/monitoring-pembiayaan",
             },
             {
               label: "SHU",
             },
             {
               label: "Anggota",
+              link: "/dashboard/monitoring-anggota",
             },
           ],
         },

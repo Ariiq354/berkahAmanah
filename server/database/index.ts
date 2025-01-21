@@ -5,6 +5,7 @@ import * as simpanan from "./schema/simpanan";
 import * as saham from "./schema/saham";
 import * as persetujuan from "./schema/persetujuan";
 import * as pembiayaan from "./schema/pembiayaan";
+import * as athar from "./schema/athar";
 
 const config = useRuntimeConfig();
 
@@ -20,6 +21,7 @@ export const db = drizzle({
     ...saham,
     ...persetujuan,
     ...pembiayaan,
+    ...athar,
   },
   casing: "snake_case",
 });

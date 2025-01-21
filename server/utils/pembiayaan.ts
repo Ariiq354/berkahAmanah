@@ -26,7 +26,13 @@ export async function getAllPembiayaan() {
   });
 }
 
-export async function getAllPembiayaanByAnggotaId(anggotaId: number) {
+export async function getAllPembiayaanByAnggotaId(anggotaId?: number) {
+  const conditions = [eq(pembiayaanTable.status, 1)];
+
+  if (anggotaId) {
+    conditions.push(eq(pembiayaanTable.anggotaId, anggotaId));
+  }
+
   const result = await db
     .select({
       id: pembiayaanTable.id,
@@ -44,12 +50,7 @@ export async function getAllPembiayaanByAnggotaId(anggotaId: number) {
       eq(persetujuanPembiayaanTable.pembiayaanId, pembiayaanTable.id)
     )
     .groupBy(pembiayaanTable.id)
-    .where(
-      and(
-        eq(pembiayaanTable.status, 1),
-        eq(pembiayaanTable.anggotaId, anggotaId)
-      )
-    );
+    .where(and(...conditions));
 
   return result;
 }

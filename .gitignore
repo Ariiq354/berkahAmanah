@@ -20,6 +20,7 @@ logs
 .idea
 test.db
 seed
+count.ts
 
 # Local env files
 .env

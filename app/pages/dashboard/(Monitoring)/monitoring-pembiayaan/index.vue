@@ -2,16 +2,12 @@
   import { angsuranColumns, murabahahColumns } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Pembiayaan / Monitoring");
+    defineTopbarTitle("Monitoring / Pembiayaan");
   });
-
-  const user = useUser();
 
   const modalOpen = ref(false);
   const pembiayaanId = ref();
-  const { data, status } = await useLazyFetch(
-    () => `/api/monitoring/pembiayaan?anggotaId=${user.value?.id}`
-  );
+  const { data, status } = await useLazyFetch(`/api/monitoring/pembiayaan`);
   const { data: dataAngsuran, status: statusAngsuran } = await useLazyFetch(
     "/api/angsuran/anggota",
     {
@@ -30,7 +26,7 @@
 
 <template>
   <main>
-    <Title>Pembiayaan | Monitoring</Title>
+    <Title>Monitoring | Pembiayaan</Title>
     <LazyAppModal
       v-model="modalOpen"
       title="Detail Angsuran"

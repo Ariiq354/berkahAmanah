@@ -2,7 +2,7 @@
   import { columns } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Daftar Anggota");
+    defineTopbarTitle("Monitoring / Anggota");
   });
 
   const { data, status } = await useLazyFetch("/api/users");
@@ -10,7 +10,7 @@
 
 <template>
   <main>
-    <Title>Daftar User</Title>
+    <Title>Monitoring | Anggota</Title>
     <UCard
       :ui="{
         body: {
