@@ -1,8 +1,19 @@
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
-  const resMurabahah = await getAllPembiayaanActive();
-  const resAngsuran = await getAllAngsuran();
+  let resMurabahah;
+  if (user.role !== "admin") {
+    resMurabahah = await getAllPembiayaanActive(user.id);
+  } else {
+    resMurabahah = await getAllPembiayaanActive();
+  }
+
+  let resAngsuran;
+  if (user.role !== "admin") {
+    resAngsuran = await getAllAngsuran(user.id);
+  } else {
+    resAngsuran = await getAllAngsuran();
+  }
 
   const murabahah = resMurabahah.map((item) => {
     return {
@@ -22,20 +33,18 @@ export default defineEventHandler(async (event) => {
     return {
       id: item.id,
       kodeTransaksi: item.kodeTransaksi,
-      namaLengkap: item.pembiayaan.anggota.namaLengkap,
+      namaLengkap: item.namaLengkap,
       status: item.status,
       tanggal: item.tanggal,
-      noPembiayaan: item.pembiayaan.kodeTransaksi,
+      noPembiayaan: item.kodePembiayaan,
       jumlah: item.jumlah,
       pembiayaanId: item.pembiayaanId,
       pokok:
-        (item.jumlah * item.pembiayaan.persetujuan.nilai) /
-        (item.pembiayaan.persetujuan.nilai +
-          item.pembiayaan.persetujuan.margin),
+        (item.jumlah * item.nilaiPersetujuan) /
+        (item.nilaiPersetujuan + item.marginPersetujuan),
       margin:
-        (item.jumlah * item.pembiayaan.persetujuan.margin) /
-        (item.pembiayaan.persetujuan.nilai +
-          item.pembiayaan.persetujuan.margin),
+        (item.jumlah * item.marginPersetujuan) /
+        (item.nilaiPersetujuan + item.marginPersetujuan),
     };
   });
 

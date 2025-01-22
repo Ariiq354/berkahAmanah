@@ -1,5 +1,6 @@
 <script setup lang="ts">
   const sidebarState = useSidebarToggle();
+  const user = useUser();
 
   const sidebarItems = [
     {
@@ -10,20 +11,24 @@
           link: "/dashboard",
           icon: "i-heroicons-home",
         },
-        {
-          label: "Nilai Saham",
-          link: "/dashboard/saham",
-          icon: "i-heroicons-chart-bar-square",
-        },
-        {
-          label: "Nilai Athar",
-          link: "/dashboard/athar",
-          icon: "i-heroicons-chart-bar-square",
-        },
+        ...(user.value?.role === "admin"
+          ? [
+              {
+                label: "Nilai Saham",
+                link: "/dashboard/saham",
+                icon: "i-heroicons-chart-bar-square",
+              },
+              {
+                label: "Nilai Athar",
+                link: "/dashboard/athar",
+                icon: "i-heroicons-chart-bar-square",
+              },
+            ]
+          : []),
       ],
     },
     {
-      title: "Main",
+      title: "User",
       items: [
         {
           label: "Shu",
@@ -69,117 +74,126 @@
             },
           ],
         },
-        {
-          label: "Persetujuan",
-          icon: "i-heroicons-clipboard-document-check",
-          children: [
-            {
-              label: "Setoran",
-              link: "/dashboard/persetujuan-setoran",
-            },
-            {
-              label: "Penarikan",
-              link: "/dashboard/persetujuan-penarikan",
-            },
-            {
-              label: "Pemindahbukuan",
-              link: "/dashboard/persetujuan-pemindahbukuan",
-            },
-            {
-              label: "Murabahah",
-              link: "/dashboard/persetujuan-murabahah",
-            },
-            {
-              label: "Setoran Angsuran",
-              link: "/dashboard/persetujuan-angsuran",
-            },
-          ],
-        },
-        {
-          label: "Distributor Athar",
-          icon: "i-heroicons-truck",
-          children: [
-            {
-              label: "Pembelian",
-              link: "/dashboard/athar-pembelian",
-            },
-            {
-              label: "Penjualan",
-              link: "/dashboard/athar-penjualan",
-            },
-            {
-              label: "Pembayaran Hutang",
-              link: "/dashboard/athar-pembayaran-hutang",
-            },
-            {
-              label: "Pembayaran",
-              link: "/dashboard/athar-pembayaran",
-            },
-            {
-              label: "Monitoring",
-            },
-          ],
-        },
-        {
-          label: "Monitoring",
-          icon: "i-heroicons-presentation-chart-line",
-          children: [
-            {
-              label: "Simpanan",
-              link: "/dashboard/monitoring-simpanan",
-            },
-            {
-              label: "Pembiayaan",
-              link: "/dashboard/monitoring-pembiayaan",
-            },
-            {
-              label: "SHU",
-            },
-            {
-              label: "Anggota",
-              link: "/dashboard/monitoring-anggota",
-            },
-          ],
-        },
-        {
-          label: "Transaksi",
-          icon: "i-heroicons-calculator",
-          children: [
-            {
-              label: "Daftar Akun",
-              link: "/dashboard/transaksi-akun",
-            },
-            {
-              label: "Daftar Transaksi",
-              link: "/dashboard/transaksi-transaksi",
-            },
-            {
-              label: "Generate SHU",
-            },
-            {
-              label: "Input Fee Management",
-            },
-          ],
-        },
-        {
-          label: "Laporan Keuangan",
-          icon: "i-heroicons-scale",
-          children: [
-            {
-              label: "Neraca",
-              link: "/dashboard/keuangan-neraca",
-            },
-            {
-              label: "Laba Rugi",
-              link: "/dashboard/keuangan-labarugi",
-            },
-            {
-              label: "Posting",
-            },
-          ],
-        },
       ],
     },
+    ...(user.value?.role === "admin"
+      ? [
+          {
+            title: "Admin",
+            items: [
+              {
+                label: "Persetujuan",
+                icon: "i-heroicons-clipboard-document-check",
+                children: [
+                  {
+                    label: "Setoran",
+                    link: "/dashboard/persetujuan-setoran",
+                  },
+                  {
+                    label: "Penarikan",
+                    link: "/dashboard/persetujuan-penarikan",
+                  },
+                  {
+                    label: "Pemindahbukuan",
+                    link: "/dashboard/persetujuan-pemindahbukuan",
+                  },
+                  {
+                    label: "Murabahah",
+                    link: "/dashboard/persetujuan-murabahah",
+                  },
+                  {
+                    label: "Setoran Angsuran",
+                    link: "/dashboard/persetujuan-angsuran",
+                  },
+                ],
+              },
+              {
+                label: "Distributor Athar",
+                icon: "i-heroicons-truck",
+                children: [
+                  {
+                    label: "Pembelian",
+                    link: "/dashboard/athar-pembelian",
+                  },
+                  {
+                    label: "Penjualan",
+                    link: "/dashboard/athar-penjualan",
+                  },
+                  {
+                    label: "Pembayaran Hutang",
+                    link: "/dashboard/athar-pembayaran-hutang",
+                  },
+                  {
+                    label: "Pembayaran",
+                    link: "/dashboard/athar-pembayaran",
+                  },
+                  {
+                    label: "Monitoring",
+                  },
+                ],
+              },
+              {
+                label: "Monitoring",
+                icon: "i-heroicons-presentation-chart-line",
+                children: [
+                  {
+                    label: "Simpanan",
+                    link: "/dashboard/monitoring-simpanan",
+                  },
+                  {
+                    label: "Pembiayaan",
+                    link: "/dashboard/monitoring-pembiayaan",
+                  },
+                  {
+                    label: "SHU",
+                  },
+                  {
+                    label: "Anggota",
+                    link: "/dashboard/monitoring-anggota",
+                  },
+                ],
+              },
+              {
+                label: "Transaksi",
+                icon: "i-heroicons-calculator",
+                children: [
+                  {
+                    label: "Daftar Akun",
+                    link: "/dashboard/transaksi-akun",
+                  },
+                  {
+                    label: "Daftar Transaksi",
+                    link: "/dashboard/transaksi-transaksi",
+                  },
+                  {
+                    label: "Generate SHU",
+                  },
+                  {
+                    label: "Input Fee Management",
+                  },
+                ],
+              },
+              {
+                label: "Laporan Keuangan",
+                icon: "i-heroicons-scale",
+                children: [
+                  {
+                    label: "Neraca",
+                    link: "/dashboard/keuangan-neraca",
+                  },
+                  {
+                    label: "Laba Rugi",
+                    link: "/dashboard/keuangan-labarugi",
+                  },
+                  {
+                    label: "Posting",
+                  },
+                ],
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   const colorMode = useColorMode();

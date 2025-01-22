@@ -1,14 +1,19 @@
-import { desc, eq, lt } from "drizzle-orm";
+import { and, desc, eq, lt } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewPenarikan,
   penarikanTable,
 } from "~~/server/database/schema/simpanan";
 
-export async function getAllPenarikan() {
+export async function getAllPenarikan(anggotaId?: number) {
+  const condition = [lt(penarikanTable.status, 4)];
+  if (anggotaId) {
+    condition.push(eq(penarikanTable.anggotaId, anggotaId));
+  }
+
   return await db.query.penarikanTable.findMany({
     orderBy: desc(penarikanTable.createdAt),
-    where: lt(penarikanTable.status, 4),
+    where: and(...condition),
     with: {
       anggota: {
         columns: {

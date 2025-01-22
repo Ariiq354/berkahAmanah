@@ -1,10 +1,11 @@
-import { desc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray, ne } from "drizzle-orm";
 import { db } from "~~/server/database";
 import { type NewUser, userTable } from "~~/server/database/schema/auth";
 
 export async function getAllUser() {
   return await db.query.userTable.findMany({
     orderBy: desc(userTable.createdAt),
+    where: ne(userTable.email, "admin@gmail.com"),
   });
 }
 

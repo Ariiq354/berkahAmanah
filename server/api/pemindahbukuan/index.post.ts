@@ -17,7 +17,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
     bodySchema.parse(body)
@@ -26,6 +26,10 @@ export default defineEventHandler(async (event) => {
   const kodeSetoran = await getTransactionCode("STR", setoranTable);
   const kodePenarikan = await getTransactionCode("TRK", penarikanTable);
   const kodeTransaksi = await getTransactionCode("PBK", pemindahbukuanTable);
+
+  if (user.role !== "admin") {
+    formData.anggotaId = user.id;
+  }
 
   const commonData = {
     keterangan: formData.keterangan,

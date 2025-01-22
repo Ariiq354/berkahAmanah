@@ -1,7 +1,12 @@
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
-  const res = await getAllPenarikan();
+  let res;
+  if (user.role !== "admin") {
+    res = await getAllPenarikan(user.id);
+  } else {
+    res = await getAllPenarikan();
+  }
 
   const data = res.map((item) => {
     return {

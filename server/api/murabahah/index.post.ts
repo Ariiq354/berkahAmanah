@@ -10,13 +10,17 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
     bodySchema.parse(body)
   );
 
   const kodeTransaksi = await getTransactionCode("MRB", pembiayaanTable);
+
+  if (user.role !== "admin") {
+    formData.anggotaId = user.id;
+  }
 
   await createPembiayaan({
     ...formData,

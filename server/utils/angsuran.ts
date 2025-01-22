@@ -8,7 +8,12 @@ import {
 import { persetujuanPembiayaanTable } from "../database/schema/persetujuan";
 import { userTable } from "../database/schema/auth";
 
-export async function getAllPembiayaanActive() {
+export async function getAllPembiayaanActive(anggotaId?: number) {
+  const condition = [eq(pembiayaanTable.status, 1)];
+  if (anggotaId) {
+    condition.push(eq(pembiayaanTable.anggotaId, anggotaId));
+  }
+
   const result = await db
     .select({
       id: pembiayaanTable.id,
@@ -35,38 +40,44 @@ export async function getAllPembiayaanActive() {
         persetujuanPembiayaanTable.nilai
       )
     )
-    .where(eq(pembiayaanTable.status, 1));
+    .where(and(...condition));
 
   return result;
 }
 
-export async function getAllAngsuran() {
-  return await db.query.angsuranTable.findMany({
-    orderBy: desc(angsuranTable.createdAt),
-    with: {
-      pembiayaan: {
-        columns: {
-          kodeTransaksi: true,
-        },
-        with: {
-          anggota: {
-            columns: {
-              namaLengkap: true,
-            },
-          },
-          persetujuan: {
-            columns: {
-              nilai: true,
-              margin: true,
-            },
-          },
-        },
-      },
-    },
-  });
+export async function getAllAngsuran(anggotaId?: number) {
+  return await db
+    .select({
+      id: angsuranTable.id,
+      status: angsuranTable.status,
+      kodeTransaksi: angsuranTable.kodeTransaksi,
+      tanggal: angsuranTable.tanggal,
+      keterangan: angsuranTable.keterangan,
+      jumlah: angsuranTable.jumlah,
+      pembiayaanId: angsuranTable.pembiayaanId,
+      namaLengkap: userTable.namaLengkap,
+      kodePembiayaan: pembiayaanTable.kodeTransaksi,
+      nilaiPersetujuan: persetujuanPembiayaanTable.nilai,
+      marginPersetujuan: persetujuanPembiayaanTable.margin,
+    })
+    .from(angsuranTable)
+    .innerJoin(
+      pembiayaanTable,
+      eq(angsuranTable.pembiayaanId, pembiayaanTable.id)
+    )
+    .innerJoin(userTable, eq(pembiayaanTable.anggotaId, userTable.id))
+    .innerJoin(
+      persetujuanPembiayaanTable,
+      eq(persetujuanPembiayaanTable.pembiayaanId, pembiayaanTable.id)
+    )
+    .orderBy(desc(angsuranTable.createdAt))
+    .where(anggotaId ? eq(pembiayaanTable.anggotaId, anggotaId) : undefined);
 }
 
-export async function getAllAngsuranByPembiayaanId(pembiayaanId: number) {
+export async function getAllAngsuranByPembiayaanId(
+  pembiayaanId: number,
+  anggotaId?: number
+) {
   return await db
     .select({
       id: angsuranTable.id,
@@ -90,7 +101,8 @@ export async function getAllAngsuranByPembiayaanId(pembiayaanId: number) {
     .where(
       and(
         eq(angsuranTable.status, 1),
-        eq(angsuranTable.pembiayaanId, pembiayaanId)
+        eq(angsuranTable.pembiayaanId, pembiayaanId),
+        anggotaId ? eq(pembiayaanTable.anggotaId, anggotaId) : undefined
       )
     );
 }

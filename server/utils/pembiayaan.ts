@@ -7,9 +7,10 @@ import {
 } from "~~/server/database/schema/pembiayaan";
 import { persetujuanPembiayaanTable } from "../database/schema/persetujuan";
 
-export async function getAllPembiayaan() {
+export async function getAllPembiayaan(anggotaId?: number) {
   return await db.query.pembiayaanTable.findMany({
     orderBy: desc(pembiayaanTable.createdAt),
+    where: anggotaId ? eq(pembiayaanTable.anggotaId, anggotaId) : undefined,
     with: {
       anggota: {
         columns: {

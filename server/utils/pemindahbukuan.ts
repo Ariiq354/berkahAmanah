@@ -5,9 +5,10 @@ import {
   pemindahbukuanTable,
 } from "~~/server/database/schema/simpanan";
 
-export async function getAllPemindahbukuan() {
+export async function getAllPemindahbukuan(anggotaId?: number) {
   return await db.query.pemindahbukuanTable.findMany({
     orderBy: desc(pemindahbukuanTable.createdAt),
+    where: anggotaId ? eq(pemindahbukuanTable.anggotaId, anggotaId) : undefined,
     with: {
       anggota: {
         columns: {

@@ -5,7 +5,7 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  resourceFunction(event, "admin");
 
   const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
 

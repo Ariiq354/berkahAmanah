@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  resourceFunction(event, "admin");
 
   const res = await getAllPembiayaanInactive();
 

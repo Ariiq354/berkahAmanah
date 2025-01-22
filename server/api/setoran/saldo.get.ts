@@ -5,13 +5,18 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
   const formData = await getValidatedQuery(event, (query) =>
     querySchema.parse(query)
   );
 
-  const saldo = await getSaldoSimpanan(formData.anggotaId);
+  let saldo;
+  if (user.role !== "admin") {
+    saldo = await getSaldoSimpanan(user.id);
+  } else {
+    saldo = await getSaldoSimpanan(formData.anggotaId);
+  }
 
   return {
     saldo,

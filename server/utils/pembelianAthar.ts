@@ -32,7 +32,7 @@ export async function getTotalGalon() {
     })
     .from(penjualanAtharTable);
 
-  return pembelian.sum - penjualan.sum;
+  return pembelian!.sum - penjualan!.sum;
 }
 
 export async function createPembelianAthar(data: NewPembelianAthar) {

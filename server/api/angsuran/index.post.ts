@@ -9,11 +9,19 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
     bodySchema.parse(body)
   );
+
+  const check = await getPembiayaanById(formData.pembiayaanId);
+  if (user.role !== "admin" && check?.anggotaId !== user.id) {
+    throw createError({
+      statusCode: 403,
+      message: "Unauthorized",
+    });
+  }
 
   const kodeTransaksi = await getTransactionCode("AGS", pembiayaanTable);
 

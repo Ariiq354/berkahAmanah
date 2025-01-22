@@ -5,11 +5,16 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
   const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
 
-  const res = await getAllAngsuranByPembiayaanId(query.pembiayaanId);
+  let res;
+  if (user.role !== "admin") {
+    res = await getAllAngsuranByPembiayaanId(query.pembiayaanId, user.id);
+  } else {
+    res = await getAllAngsuranByPembiayaanId(query.pembiayaanId);
+  }
 
   const angsuran = res.map((item) => {
     return {

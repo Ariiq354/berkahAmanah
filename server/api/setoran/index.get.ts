@@ -1,7 +1,12 @@
 export default defineEventHandler(async (event) => {
-  protectFunction(event);
+  const user = protectFunction(event);
 
-  const res = await getAllSetoran();
+  let res;
+  if (user.role !== "admin") {
+    res = await getAllSetoran(user.id);
+  } else {
+    res = await getAllSetoran();
+  }
 
   const data = res.map((item) => {
     return {

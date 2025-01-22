@@ -11,6 +11,8 @@
     defineTopbarTitle("Pembiayaan / Murabahah");
   });
 
+  const user = useUser();
+
   const { data: anggota } = await useLazyFetch("/api/users");
   const state = ref(getInitialFormData());
   const { data, status, refresh } = await useLazyFetch("/api/murabahah");
@@ -34,6 +36,9 @@
   function clickAdd() {
     state.value = getInitialFormData();
     modalOpen.value = true;
+    if (user.value?.role !== "admin") {
+      state.value.anggotaId = user.value?.id;
+    }
   }
   function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
     modalOpen.value = true;
@@ -56,7 +61,11 @@
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormGroup label="Nama Anggota" name="anggotaId">
+        <UFormGroup
+          v-if="user?.role === 'admin'"
+          label="Nama Anggota"
+          name="anggotaId"
+        >
           <USelectMenu
             v-model="state.anggotaId"
             :options="anggota"

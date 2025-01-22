@@ -13,4 +13,22 @@ export default defineNuxtRouteMiddleware(async (to) => {
       statusCode: 401,
     });
   }
+
+  if (data) {
+    const routePermissions: string[] = [
+      "/dashboard/athar",
+      "/dashboard/saham",
+      "/dashboard/keuangan",
+      "/dashboard/monitoring",
+      "/dashboard/persetujuan",
+      "/dashboard/transaksi",
+    ];
+
+    for (const route of routePermissions) {
+      if (currentRoute.includes(route) && data.role !== "admin") {
+        await navigateTo("/dashboard");
+        break;
+      }
+    }
+  }
 });

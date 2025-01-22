@@ -6,9 +6,14 @@ import {
   setoranTable,
 } from "~~/server/database/schema/simpanan";
 
-export async function getAllSetoran() {
+export async function getAllSetoran(anggotaId?: number) {
+  const condition = [lt(setoranTable.status, 4)];
+  if (anggotaId) {
+    condition.push(eq(setoranTable.anggotaId, anggotaId));
+  }
+
   return await db.query.setoranTable.findMany({
-    where: lt(setoranTable.status, 4),
+    where: and(...condition),
     orderBy: desc(setoranTable.createdAt),
     with: {
       anggota: {
@@ -81,7 +86,7 @@ export async function getTotalSaham() {
     .from(setoranTable)
     .where(and(eq(setoranTable.jenis, "Saham"), eq(setoranTable.status, 1)));
 
-  return saham.sum;
+  return saham!.sum;
 }
 
 export async function createSetoran(data: NewSetoran) {

@@ -9,7 +9,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const user = protectFunction(event);
+  const user = resourceFunction(event, "admin");
 
   const formData = await readValidatedBody(event, (body) =>
     bodySchema.parse(body)

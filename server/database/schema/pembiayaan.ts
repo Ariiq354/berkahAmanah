@@ -31,16 +31,20 @@ export const angsuranTable = sqliteTable("angsuran", {
   ...timestamp,
 });
 
-export const pembiayaanRelations = relations(pembiayaanTable, ({ one }) => ({
-  anggota: one(userTable, {
-    fields: [pembiayaanTable.anggotaId],
-    references: [userTable.id],
-  }),
-  persetujuan: one(persetujuanPembiayaanTable, {
-    fields: [pembiayaanTable.id],
-    references: [persetujuanPembiayaanTable.pembiayaanId],
-  }),
-}));
+export const pembiayaanRelations = relations(
+  pembiayaanTable,
+  ({ one, many }) => ({
+    anggota: one(userTable, {
+      fields: [pembiayaanTable.anggotaId],
+      references: [userTable.id],
+    }),
+    persetujuan: one(persetujuanPembiayaanTable, {
+      fields: [pembiayaanTable.id],
+      references: [persetujuanPembiayaanTable.pembiayaanId],
+    }),
+    angsuran: many(angsuranTable),
+  })
+);
 
 export const angsuranRelations = relations(angsuranTable, ({ one }) => ({
   pembiayaan: one(pembiayaanTable, {

@@ -12,11 +12,16 @@
     defineTopbarTitle("Simpanan / Setoran");
   });
 
+  const user = useUser();
+
   const state = ref(getInitialFormData());
   const { data, status, refresh } = await useLazyFetch("/api/setoran");
   const { data: saham } = await useLazyFetch("/api/saham/now");
   const { data: saldo, refresh: refreshSaldo } = await useLazyFetch(
-    () => `/api/setoran/saldo?anggotaId=${state.value.anggotaId}`
+    () => `/api/setoran/saldo?anggotaId=${state.value.anggotaId}`,
+    {
+      immediate: false,
+    }
   );
   const { data: anggota } = await useLazyFetch("/api/users");
 
@@ -40,6 +45,9 @@
   function clickAdd() {
     state.value = getInitialFormData();
     modalOpen.value = true;
+    if (user.value?.role !== "admin") {
+      state.value.anggotaId = user.value?.id;
+    }
   }
   function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
     modalOpen.value = true;
@@ -66,7 +74,11 @@
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormGroup label="Nama Anggota" name="anggotaId">
+        <UFormGroup
+          v-if="user?.role === 'admin'"
+          label="Nama Anggota"
+          name="anggotaId"
+        >
           <USelectMenu
             v-model="state.anggotaId"
             :options="anggota"
