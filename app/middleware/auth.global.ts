@@ -24,11 +24,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
       "/dashboard/transaksi",
     ];
 
-    for (const route of routePermissions) {
-      if (currentRoute.includes(route) && data.role !== "admin") {
-        await navigateTo("/dashboard");
-        break;
-      }
+    const isRestricted = routePermissions.some(
+      (route) => currentRoute.includes(route) && data.role !== "admin"
+    );
+
+    if (isRestricted) {
+      throw createError({
+        statusCode: 403,
+      });
     }
   }
 });
