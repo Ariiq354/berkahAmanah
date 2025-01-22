@@ -1,4 +1,4 @@
-import { desc, eq, inArray, sql } from "drizzle-orm";
+import { desc, eq, inArray, like, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   akunTable,
@@ -19,6 +19,21 @@ export async function getAllTransaksi() {
       anggota: {
         columns: {
           namaLengkap: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getAllTransaksiInput() {
+  return await db.query.transaksiTable.findMany({
+    orderBy: desc(transaksiTable.createdAt),
+    where: like(transaksiTable.kodeTransaksi, "TRX%"),
+    with: {
+      akun: {
+        columns: {
+          kodeAkun: true,
+          namaAkun: true,
         },
       },
     },

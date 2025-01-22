@@ -170,6 +170,10 @@
                     link: "/dashboard/transaksi-transaksi",
                   },
                   {
+                    label: "Input Transaksi",
+                    link: "/dashboard/transaksi-input",
+                  },
+                  {
                     label: "Generate SHU",
                   },
                   {
