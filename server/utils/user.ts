@@ -1,4 +1,4 @@
-import { desc, eq, inArray, ne } from "drizzle-orm";
+import { and, desc, eq, inArray, ne } from "drizzle-orm";
 import { db } from "~~/server/database";
 import { type NewUser, userTable } from "~~/server/database/schema/auth";
 
@@ -6,6 +6,16 @@ export async function getAllUser() {
   return await db.query.userTable.findMany({
     orderBy: desc(userTable.createdAt),
     where: ne(userTable.email, "admin@gmail.com"),
+  });
+}
+
+export async function getAllUserInactive() {
+  return await db.query.userTable.findMany({
+    orderBy: desc(userTable.createdAt),
+    where: and(
+      ne(userTable.email, "admin@gmail.com"),
+      eq(userTable.status, false)
+    ),
   });
 }
 

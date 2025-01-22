@@ -105,6 +105,10 @@
                     label: "Setoran Angsuran",
                     link: "/dashboard/persetujuan-angsuran",
                   },
+                  {
+                    label: "Anggota",
+                    link: "/dashboard/persetujuan-anggota",
+                  },
                 ],
               },
               {

@@ -13,6 +13,7 @@ export const userTable = sqliteTable("user", {
   })
     .notNull()
     .default("user"),
+  status: int({ mode: "boolean" }).notNull().default(false),
   ...timestamp,
 });
 
