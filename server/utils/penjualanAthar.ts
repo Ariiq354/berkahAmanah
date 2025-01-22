@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewPenjualanAthar,
@@ -86,4 +86,30 @@ export async function getRemainingGalon() {
     .orderBy(sql`${matched.price}`);
 
   return result;
+}
+
+export async function getDataPenjualan() {
+  const res = await db
+    .select({
+      month: sql<string>`strftime('%m', ${penjualanAtharTable.tanggal})`.as(
+        "month"
+      ),
+      sum: sql<string>`COALESCE(SUM(${penjualanAtharTable.jumlahGalon}), 0)`,
+    })
+    .from(penjualanAtharTable)
+    .where(
+      and(
+        eq(penjualanAtharTable.status, true),
+        sql`strftime('%Y', ${penjualanAtharTable.tanggal}) = strftime('%Y', 'now')`
+      )
+    )
+    .groupBy(sql`strftime('%m', ${penjualanAtharTable.tanggal})`)
+    .orderBy(sql`month`);
+
+  const monthlyArray = Array.from({ length: 12 }, (_, i) => {
+    const monthData = res.find((item) => parseInt(item.month, 10) === i + 1);
+    return monthData ? parseFloat(monthData.sum) : 0; // Default to 0 if no data for the month
+  });
+
+  return monthlyArray;
 }

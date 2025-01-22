@@ -11,20 +11,7 @@
           link: "/dashboard",
           icon: "i-heroicons-home",
         },
-        ...(user.value?.role === "admin"
-          ? [
-              {
-                label: "Nilai Saham",
-                link: "/dashboard/saham",
-                icon: "i-heroicons-chart-bar-square",
-              },
-              {
-                label: "Nilai Athar",
-                link: "/dashboard/athar",
-                icon: "i-heroicons-chart-bar-square",
-              },
-            ]
-          : []),
+        ...(user.value?.role === "admin" ? [] : []),
       ],
     },
     {
@@ -81,6 +68,16 @@
           {
             title: "Admin",
             items: [
+              {
+                label: "Nilai Saham",
+                link: "/dashboard/saham",
+                icon: "i-heroicons-chart-bar-square",
+              },
+              {
+                label: "Nilai Athar",
+                link: "/dashboard/athar",
+                icon: "i-heroicons-chart-bar-square",
+              },
               {
                 label: "Persetujuan",
                 icon: "i-heroicons-clipboard-document-check",

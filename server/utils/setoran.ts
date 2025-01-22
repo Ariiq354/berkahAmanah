@@ -1,4 +1,4 @@
-import { and, desc, eq, lt, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, lt, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewSetoran,
@@ -103,4 +103,26 @@ export async function updateSetoranStatus(status: number, id: number) {
       status,
     })
     .where(eq(setoranTable.id, id));
+}
+
+export async function getPemilikSaham() {
+  const [res] = await db
+    .select({
+      count: countDistinct(setoranTable.anggotaId),
+    })
+    .from(setoranTable)
+    .where(eq(setoranTable.jenis, "Saham"));
+
+  return res!.count;
+}
+
+export async function getPemilikSimpanan() {
+  const [res] = await db
+    .select({
+      count: countDistinct(setoranTable.anggotaId),
+    })
+    .from(setoranTable)
+    .where(eq(setoranTable.jenis, "Simpanan"));
+
+  return res!.count;
 }

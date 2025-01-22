@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   angsuranTable,
@@ -91,4 +91,54 @@ export async function updatePembiayaanStatus(status: number, id: number) {
       status,
     })
     .where(eq(pembiayaanTable.id, id));
+}
+
+export async function getNasabahPembiayaan() {
+  const [res] = await db
+    .select({
+      count: count(pembiayaanTable.id),
+    })
+    .from(pembiayaanTable)
+    .where(eq(pembiayaanTable.status, 1));
+
+  return res!.count;
+}
+
+export async function getAntrianPembiayaan() {
+  const [res] = await db
+    .select({
+      count: count(pembiayaanTable.id),
+    })
+    .from(pembiayaanTable)
+    .where(eq(pembiayaanTable.status, 0));
+
+  return res!.count;
+}
+
+export async function getDataPembiayaan() {
+  const res = await db
+    .select({
+      year: sql<string>`strftime('%Y', ${pembiayaanTable.createdAt})`.as(
+        "year"
+      ),
+      sum: sql<string>`COALESCE(SUM(${pembiayaanTable.jumlah}), 0)`,
+    })
+    .from(pembiayaanTable)
+    .where(
+      and(
+        eq(pembiayaanTable.status, 1),
+        sql`strftime('%Y', ${pembiayaanTable.createdAt}) BETWEEN strftime('%Y', 'now', '-7 years') AND strftime('%Y', 'now')`
+      )
+    )
+    .groupBy(sql`strftime('%Y', ${pembiayaanTable.createdAt})`)
+    .orderBy(sql`year`);
+
+  const currentYear = new Date().getFullYear();
+  const yearlyArray = Array.from({ length: 8 }, (_, i) => {
+    const year = currentYear - 7 + i;
+    const yearData = res.find((item) => parseInt(item.year, 10) === year);
+    return yearData ? parseFloat(yearData.sum) : 0; // Default to 0 if no data for the year
+  });
+
+  return yearlyArray;
 }
