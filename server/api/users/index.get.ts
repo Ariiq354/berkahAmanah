@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
         namaLengkap: item.namaLengkap,
         noTelepon: item.noTelepon,
         role: item.role,
+        noUser: item.noUser,
       };
     });
   }

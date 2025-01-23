@@ -175,6 +175,7 @@
                   },
                   {
                     label: "Input Fee Management",
+                    link: "/dashboard/transaksi-fee",
                   },
                 ],
               },

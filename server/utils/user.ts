@@ -8,6 +8,12 @@ export async function getAllUser() {
     where: ne(userTable.email, "admin@gmail.com"),
   });
 }
+export async function getAllUserAdmin() {
+  return await db.query.userTable.findMany({
+    orderBy: desc(userTable.createdAt),
+    where: ne(userTable.role, "user"),
+  });
+}
 
 export async function getAllUserInactive() {
   return await db.query.userTable.findMany({
