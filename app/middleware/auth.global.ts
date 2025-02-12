@@ -1,17 +1,16 @@
-import type { UserLucia } from "~~/server/database/schema/auth";
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = useUser();
-  //@ts-ignore
-  const data: UserLucia = await useRequestFetch()("/api/auth/session");
+  const { data: res } = await useFetch("/api/auth/session");
+  const data = res.value;
   if (data) {
     user.value = data;
   }
   const currentRoute = to.fullPath;
   if (!data && currentRoute.includes("/dashboard")) {
-    throw createError({
-      statusCode: 401,
-    });
+    return navigateTo("/");
+  }
+  if (data && (currentRoute === "/" || currentRoute === "/register")) {
+    return navigateTo("/dashboard");
   }
 
   if (data) {
@@ -29,9 +28,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     );
 
     if (isRestricted) {
-      throw createError({
-        statusCode: 403,
-      });
+      return navigateTo("/dashboard");
     }
   }
 });

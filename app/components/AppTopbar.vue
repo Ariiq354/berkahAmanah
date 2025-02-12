@@ -55,19 +55,21 @@
       </h1>
     </div>
     <div class="flex items-center gap-6">
-      <UButton
-        class="rounded-full p-2 text-black dark:text-white"
-        variant="ghost"
-        aria-label="Color mode toggle"
-        @click="toggleColorMode"
-      >
-        <UIcon
-          v-if="colorMode.value === 'dark'"
-          name="i-heroicons-moon-solid"
-          class="h-4 w-4"
-        />
-        <UIcon v-else name="i-heroicons-sun-solid" class="h-4 w-4" />
-      </UButton>
+      <ClientOnly>
+        <UButton
+          class="rounded-full p-2 text-black dark:text-white"
+          variant="ghost"
+          aria-label="Color mode toggle"
+          @click="toggleColorMode"
+        >
+          <UIcon
+            v-if="colorMode.value === 'dark'"
+            name="i-heroicons-moon-solid"
+            class="h-4 w-4"
+          />
+          <UIcon v-else name="i-heroicons-sun-solid" class="h-4 w-4" />
+        </UButton>
+      </ClientOnly>
       <UDropdown :items="items">
         <UAvatar
           class="bg-white"

@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import { bulanLabels, tahunLabels } from "./constants";
 
-  defineTopbarTitle("Dashboard");
+  onMounted(() => {
+    defineTopbarTitle("Dashboard");
+  });
 
-  const { data } = useLazyFetch("/api/dashboard");
+  const { data } = useFetch("/api/dashboard");
   const dataAthar = computed(() => {
     return data.value?.dataAthar;
   });
@@ -13,11 +15,14 @@
   const dataPembiayaan = computed(() => {
     return data.value?.dataPembiayaan;
   });
+  const dataLaba = computed(() => {
+    return data.value?.dataLaba;
+  });
 
   const labaDatasets = [
     {
       label: "Profit",
-      data: [24, 32, 60, 75, 62, 12, 89],
+      data: dataLaba.value!,
       borderWidth: 1,
     },
   ];
@@ -96,8 +101,10 @@
         </div>
       </UCard>
     </div>
-    <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-      <div class="rounded-lg bg-white">
+    <div class="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div
+        class="rounded-lg bg-white ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+      >
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Pertumbuhan Laba</p>
           <div class="p-4">
@@ -105,7 +112,9 @@
           </div>
         </div>
       </div>
-      <div class="rounded-lg bg-white">
+      <div
+        class="rounded-lg bg-white ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+      >
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Penjualan Athar</p>
           <div class="p-4">
@@ -117,7 +126,9 @@
           </div>
         </div>
       </div>
-      <div class="rounded-lg bg-white">
+      <div
+        class="rounded-lg bg-white ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+      >
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Pertumbuhan Nilai Saham</p>
           <div class="p-4">
@@ -129,7 +140,9 @@
           </div>
         </div>
       </div>
-      <div class="rounded-lg bg-white">
+      <div
+        class="rounded-lg bg-white ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+      >
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Pembiayaan</p>
           <div class="p-4">

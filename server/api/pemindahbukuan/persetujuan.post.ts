@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       // Debit Simpanan A
       await createTransaksi({
         ...commonDataTransaksi,
-        kodeAkun: "2010000",
+        kodeAkun: "3102",
         anggotaId: res!.anggotaId,
         nilai: res!.nilai,
       });
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
       // Kredit Simpanan B
       await createTransaksi({
         ...commonDataTransaksi,
-        kodeAkun: "2010000",
+        kodeAkun: "3102",
         anggotaId: res!.setoran.anggotaId,
         nilai: -res!.nilai,
       });
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       // Debit Simpanan
       await createTransaksi({
         ...commonDataTransaksi,
-        kodeAkun: "2010000",
+        kodeAkun: "3102",
         anggotaId: res!.anggotaId,
         nilai: res!.nilai,
       });
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
       // Kredit Saham
       await createTransaksi({
         ...commonDataTransaksi,
-        kodeAkun: "2020200",
+        kodeAkun: "3101",
         anggotaId: res!.setoran.anggotaId,
         nilai: -res!.nilai,
       });

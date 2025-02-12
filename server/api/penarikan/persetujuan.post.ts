@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     // Kredit Bank
     await createTransaksi({
       ...commonData,
-      kodeAkun: "1010200",
+      kodeAkun: "1102",
       anggotaId: res!.anggotaId,
       nilai: -res!.nilai,
     });
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     // Debit Simpanan
     await createTransaksi({
       ...commonData,
-      kodeAkun: "2010000",
+      kodeAkun: "3102",
       anggotaId: res!.anggotaId,
       nilai: res!.nilai,
     });

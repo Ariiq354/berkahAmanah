@@ -6,8 +6,6 @@
     layout: "auth",
   });
 
-  const colorMode = useColorMode();
-
   const state = ref(getInitialFormData());
 
   const isLoading = ref(false);
@@ -33,13 +31,7 @@
     <UCard class="w-full max-w-md">
       <div class="space-y-6">
         <div class="flex flex-col items-center text-center">
-          <NuxtImg
-            v-if="colorMode.preference === 'light'"
-            src="/logo-dark.webp"
-            width="150"
-            alt="logo"
-          />
-          <NuxtImg v-else src="/logo-light.webp" width="150" alt="logo" />
+          <NuxtImg src="/logo.webp" width="130" alt="logo" class="m-8" />
           <div
             class="text-primary-500 dark:text-primary-400 text-2xl font-bold tracking-widest"
           >

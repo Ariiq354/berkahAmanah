@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     keterangan: formData.keterangan,
     tanggal: formData.tanggal,
     kodeTransaksi,
-    kodeAkun: "1010200",
+    kodeAkun: "1102",
     anggotaId: user.id,
     nilai: -formData.nilai,
   });

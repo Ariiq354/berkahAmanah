@@ -29,6 +29,7 @@ export async function getUserSessionById(
         email: userTable.email,
         role: userTable.role,
         noUser: userTable.noUser,
+        status: userTable.status,
       },
       session: sessionTable,
     })

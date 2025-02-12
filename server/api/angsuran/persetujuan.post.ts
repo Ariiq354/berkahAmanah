@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     // Debit Bank
     await createTransaksi({
       ...commonData,
-      kodeAkun: "1010200",
+      kodeAkun: "1102",
       anggotaId: res!.pembiayaan.anggotaId,
       nilai: pokok,
     });
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
     // Kredit Piutang Murabahah
     await createTransaksi({
       ...commonData,
-      kodeAkun: "1020101",
+      kodeAkun: "1201",
       anggotaId: res!.pembiayaan.anggotaId,
       nilai: -pokok,
     });
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
     // Debit pendapatan murabahah ditangguhkan
     await createTransaksi({
       ...commonData,
-      kodeAkun: "1020101",
+      kodeAkun: "1202",
       anggotaId: res!.pembiayaan.anggotaId,
       nilai: margin,
     });
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     // Kredit pendapatan murabahah
     await createTransaksi({
       ...commonData,
-      kodeAkun: "3010101",
+      kodeAkun: "4101",
       anggotaId: res!.pembiayaan.anggotaId,
       nilai: -margin,
     });

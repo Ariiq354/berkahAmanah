@@ -1,4 +1,4 @@
-export const useTopbarTitle = () => useState("topbar-title");
+export const useTopbarTitle = () => useState("topbar-title", () => "");
 
 export const useSidebarToggle = () => useState("sidebar-state", () => true);
 

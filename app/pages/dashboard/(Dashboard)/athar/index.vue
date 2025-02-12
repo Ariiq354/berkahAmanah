@@ -8,7 +8,7 @@
   } from "./_constants";
 
   onMounted(() => {
-    defineTopbarTitle("Dashbboard / Athar");
+    defineTopbarTitle("Dashboard / Athar");
   });
 
   const state = ref(getInitialFormData());

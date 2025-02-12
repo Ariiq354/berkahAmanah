@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  devtools: { enabled: false },
   modules: [
     "@nuxt/ui",
     "nuxt-security",
@@ -14,10 +15,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
     databaseAuthToken: process.env.DATABASE_AUTH_TOKEN,
-  },
-
-  colorMode: {
-    preference: "light",
   },
 
   $development: {

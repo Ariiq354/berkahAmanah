@@ -8,6 +8,7 @@ export default eventHandler(async (event) => {
   const dataAthar = await getDataPenjualan();
   const dataPembiayaan = await getDataPembiayaan();
   const dataSaham = await getDataSaham();
+  const dataLaba = await getLaba();
 
   return {
     pemilikSaham,
@@ -17,5 +18,6 @@ export default eventHandler(async (event) => {
     dataAthar,
     dataPembiayaan,
     dataSaham,
+    dataLaba,
   };
 });

@@ -1,4 +1,4 @@
-import { desc, eq, inArray, like, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, like, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   akunTable,
@@ -78,4 +78,31 @@ export async function getAccountsData(tahun: string, accountPrefix: string) {
     .where(
       sql`${akunTable.kodeAkun} LIKE ${accountPrefix} AND (strftime('%Y', ${transaksiTable.tanggal}) = ${tahun} OR ${transaksiTable.tanggal} IS NULL)`
     );
+}
+
+export async function getLaba() {
+  const res = await db
+    .select({
+      year: sql<string>`strftime('%Y', ${transaksiTable.createdAt})`.as("year"),
+      sum: sql<string>`COALESCE(SUM(CASE WHEN ${transaksiTable.kodeAkun} LIKE '4%' THEN ${transaksiTable.nilai} ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN ${transaksiTable.kodeAkun} LIKE '5%' THEN ${transaksiTable.nilai} ELSE 0 END), 0)`.as(
+        "labaRugi"
+      ),
+    })
+    .from(transaksiTable)
+    .where(
+      and(
+        sql`strftime('%Y', ${transaksiTable.createdAt}) BETWEEN strftime('%Y', 'now', '-7 years') AND strftime('%Y', 'now')`
+      )
+    )
+    .groupBy(sql`strftime('%Y', ${transaksiTable.createdAt})`)
+    .orderBy(sql`year`);
+
+  const currentYear = new Date().getFullYear();
+  const yearlyArray = Array.from({ length: 8 }, (_, i) => {
+    const year = currentYear - 7 + i;
+    const yearData = res.find((item) => parseInt(item.year, 10) === year);
+    return yearData ? parseFloat(yearData.sum) : 0; // Default to 0 if no data for the year
+  });
+
+  return yearlyArray;
 }

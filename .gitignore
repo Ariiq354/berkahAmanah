@@ -21,6 +21,7 @@ logs
 test.db
 seed
 count.ts
+test.ts
 
 # Local env files
 .env

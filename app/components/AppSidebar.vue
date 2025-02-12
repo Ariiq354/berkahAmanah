@@ -201,8 +201,6 @@
         ]
       : []),
   ];
-
-  const colorMode = useColorMode();
 </script>
 
 <template>
@@ -211,13 +209,14 @@
     :class="sidebarState ? '-left-72 md:left-0' : 'left-0 md:-left-72'"
   >
     <div class="text-primary flex items-center justify-center pb-8 pt-10">
-      <div class="flex items-center">
-        <NuxtImg
-          v-if="colorMode.preference === 'light'"
-          src="/logo_barokah_dark.webp"
-          width="150"
-        />
-        <NuxtImg v-else width="150" src="/logo-barokah-white.webp" />
+      <div
+        class="text flex items-center gap-4 text-xl leading-6 tracking-widest"
+      >
+        <NuxtImg src="/logo.webp" class="h-12 w-12" />
+        <span>
+          BERKAH <br />
+          AMANAH
+        </span>
       </div>
     </div>
     <div v-for="(firstItem, firstIndex) in sidebarItems" :key="firstIndex">

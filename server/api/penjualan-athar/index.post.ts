@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   // Debit Piutang Athar
   await createTransaksi({
-    kodeAkun: "1020300",
+    kodeAkun: "1203",
     anggotaId: user.id,
     nilai: formData.nilai,
     ...commonData,
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   // Kredit Pendapatan Athar Ditangguhkan
   await createTransaksi({
-    kodeAkun: "1020301",
+    kodeAkun: "1204",
     anggotaId: user.id,
     nilai: -formData.margin,
     ...commonData,
@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
 
   // Kredit Persediaan Barang Dagang
   await createTransaksi({
-    kodeAkun: "1030100",
+    kodeAkun: "1301",
     anggotaId: user.id,
     nilai: -(formData.nilai - formData.margin),
     ...commonData,

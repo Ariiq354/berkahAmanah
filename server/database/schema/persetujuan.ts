@@ -8,7 +8,7 @@ export const persetujuanSetoranTable = sqliteTable("persetujuan_setoran", {
   id: int().primaryKey({ autoIncrement: true }),
   setoranId: int()
     .notNull()
-    .references(() => setoranTable.id),
+    .references(() => setoranTable.id, { onDelete: "cascade" }),
   alasan: text().notNull(),
   tanggal: text().notNull(),
   setuju: int({ mode: "boolean" }).notNull(),
@@ -19,7 +19,7 @@ export const persetujuanPenarikanTable = sqliteTable("persetujuan_penarikan", {
   id: int().primaryKey({ autoIncrement: true }),
   penarikanId: int()
     .notNull()
-    .references(() => penarikanTable.id),
+    .references(() => penarikanTable.id, { onDelete: "cascade" }),
   alasan: text().notNull(),
   tanggal: text().notNull(),
   setuju: int({ mode: "boolean" }).notNull(),
@@ -32,7 +32,7 @@ export const persetujuanPemindahbukuanTable = sqliteTable(
     id: int().primaryKey({ autoIncrement: true }),
     pemindahbukuanId: int()
       .notNull()
-      .references(() => pemindahbukuanTable.id),
+      .references(() => pemindahbukuanTable.id, { onDelete: "cascade" }),
     alasan: text().notNull(),
     tanggal: text().notNull(),
     setuju: int({ mode: "boolean" }).notNull(),
@@ -46,7 +46,7 @@ export const persetujuanPembiayaanTable = sqliteTable(
     id: int().primaryKey({ autoIncrement: true }),
     pembiayaanId: int()
       .notNull()
-      .references(() => pembiayaanTable.id),
+      .references(() => pembiayaanTable.id, { onDelete: "cascade" }),
     nilai: int().notNull(),
     jaminan: text().notNull(),
     margin: int().notNull(),
@@ -62,7 +62,7 @@ export const persetujuanAngsuranTable = sqliteTable("persetujuan_angsuran", {
   id: int().primaryKey({ autoIncrement: true }),
   angsuranId: int()
     .notNull()
-    .references(() => angsuranTable.id),
+    .references(() => angsuranTable.id, { onDelete: "cascade" }),
   alasan: text().notNull(),
   tanggal: text().notNull(),
   setuju: int({ mode: "boolean" }).notNull(),
