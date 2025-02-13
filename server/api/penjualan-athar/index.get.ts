@@ -18,6 +18,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     data,
-    remainingGalon,
+    remainingGalon: remainingGalon.filter((i) => i.jumlahGalon > 0),
   };
 });

@@ -11,6 +11,17 @@ export const akunTable = sqliteTable("akun", {
   ...timestamp,
 });
 
+export const shuTable = sqliteTable("shu", {
+  id: int().primaryKey({ autoIncrement: true }),
+  anggotaId: int()
+    .notNull()
+    .references(() => userTable.id),
+  sumSetoran: int().notNull(),
+  sumSaham: int().notNull(),
+  tahun: int().notNull(),
+  ...timestamp,
+});
+
 export const transaksiTable = sqliteTable("transaksi", {
   id: int().primaryKey({ autoIncrement: true }),
   kodeTransaksi: text().notNull(),
@@ -38,6 +49,13 @@ export const feeManagementTable = sqliteTable("fee_management", {
   ...timestamp,
 });
 
+export const shuRelations = relations(shuTable, ({ one }) => ({
+  anggota: one(userTable, {
+    fields: [shuTable.anggotaId],
+    references: [userTable.id],
+  }),
+}));
+
 export const transaksiRelations = relations(transaksiTable, ({ one }) => ({
   anggota: one(userTable, {
     fields: [transaksiTable.anggotaId],
@@ -61,4 +79,5 @@ export const feeManagementRelations = relations(
 
 export type NewAkun = typeof akunTable.$inferInsert;
 export type NewTransaksi = typeof transaksiTable.$inferInsert;
+export type NewShu = typeof shuTable.$inferInsert;
 export type NewFeeManagement = typeof feeManagementTable.$inferInsert;

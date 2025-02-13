@@ -1,4 +1,4 @@
-import { and, countDistinct, desc, eq, lt, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, like, lt, sql } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewSetoran,
@@ -22,6 +22,12 @@ export async function getAllSetoran(anggotaId?: number) {
         },
       },
     },
+  });
+}
+
+export async function getAllSetoranByTahun(tahun: number) {
+  return await db.query.setoranTable.findMany({
+    where: like(setoranTable.tanggal, `${tahun}%`),
   });
 }
 

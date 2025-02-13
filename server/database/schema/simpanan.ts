@@ -79,6 +79,8 @@ export const pemindahbukuanRelations = relations(
   })
 );
 
+export type Setoran = typeof setoranTable.$inferSelect;
 export type NewSetoran = typeof setoranTable.$inferInsert;
+export type Penarikan = typeof penarikanTable.$inferSelect;
 export type NewPenarikan = typeof penarikanTable.$inferInsert;
 export type NewPemindahbukuan = typeof pemindahbukuanTable.$inferInsert;

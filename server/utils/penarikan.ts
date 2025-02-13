@@ -1,4 +1,4 @@
-import { and, desc, eq, lt } from "drizzle-orm";
+import { and, desc, eq, like, lt } from "drizzle-orm";
 import { db } from "~~/server/database";
 import {
   type NewPenarikan,
@@ -42,6 +42,12 @@ export async function getAllPenarikanInactive() {
 export async function getPenarikanById(id: number) {
   return await db.query.penarikanTable.findFirst({
     where: eq(penarikanTable.id, id),
+  });
+}
+
+export async function getAllPenarikanByTahun(tahun: number) {
+  return await db.query.penarikanTable.findMany({
+    where: like(penarikanTable.tanggal, `${tahun}%`),
   });
 }
 

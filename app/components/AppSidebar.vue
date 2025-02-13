@@ -130,6 +130,7 @@
                   },
                   {
                     label: "Monitoring",
+                    link: "/dashboard/athar-monitoring",
                   },
                 ],
               },

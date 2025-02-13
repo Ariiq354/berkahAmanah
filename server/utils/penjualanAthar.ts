@@ -40,6 +40,7 @@ export async function getRemainingGalon() {
   const penjualan = db
     .select({
       jumlahGalon: penjualanAtharTable.jumlahGalon,
+      price: penjualanAtharTable.nilai,
       originalPrice:
         sql<number>`(${penjualanAtharTable.nilai} - ${penjualanAtharTable.margin}) / ${penjualanAtharTable.jumlahGalon}`.as(
           "originalPrice"
@@ -66,6 +67,12 @@ export async function getRemainingGalon() {
     .select({
       price: pembelian.price, // Price per pillow in Buy Table
       jumlahGalon: pembelian.jumlahGalon, // Buy Amount
+      nilaiPembelian: sql`COALESCE(SUM(${pembelian.price}), 0)`.as(
+        "nilaiPembelian"
+      ),
+      nilaiPenjualan: sql`COALESCE(SUM(${penjualan.price}), 0)`.as(
+        "nilaiPenjelian"
+      ),
       totalJual: sql`
         COALESCE(SUM(${penjualan.jumlahGalon}), 0)
       `.as("totalJual"),
@@ -79,10 +86,11 @@ export async function getRemainingGalon() {
   const result = await db
     .select({
       price: matched.price,
-      jumlahGalon: sql`${matched.jumlahGalon} - ${matched.totalJual}`,
+      nilaiPembelian: matched.nilaiPembelian,
+      nilaiPenjualan: matched.nilaiPenjualan,
+      jumlahGalon: sql<number>`${matched.jumlahGalon} - ${matched.totalJual}`,
     })
     .from(matched)
-    .where(sql`${matched.jumlahGalon} - ${matched.totalJual} > 0`)
     .orderBy(sql`${matched.price}`);
 
   return result;
