@@ -87,7 +87,7 @@
           </UFormGroup>
           <UFormGroup label="Persentase">
             <UInput
-              :model-value="selectedItem?.pokok / selectedItem!.margin"
+              :model-value="selectedItem!.pokok / selectedItem!.margin"
               disabled
             />
           </UFormGroup>

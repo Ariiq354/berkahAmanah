@@ -6,6 +6,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     user.value = data;
   }
   const currentRoute = to.fullPath;
+
+  // Basic Protection
   if (!data && currentRoute.includes("/dashboard")) {
     return navigateTo("/");
   }
@@ -13,6 +15,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo("/dashboard");
   }
 
+  // Custom Protection
   if (data) {
     const routePermissions: string[] = [
       "/dashboard/athar",

@@ -49,7 +49,6 @@
           :schema="loginSchema"
           :state="state"
           class="w-full space-y-6"
-          :validate-on="['submit']"
           @submit="onSubmit"
         >
           <UFormGroup label="Email" name="email">

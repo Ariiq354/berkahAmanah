@@ -6,6 +6,7 @@ import type {
 type Role = keyof typeof ROLES;
 export type Permission = (typeof ROLES)[Role][number];
 type ROLESTYPE = Record<userRole, Array<(typeof RESOURCE)[number]>>;
+
 const RESOURCE = ["admin"] as const;
 
 const ROLES: ROLESTYPE = {

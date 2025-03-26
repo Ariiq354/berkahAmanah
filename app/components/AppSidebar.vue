@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import { hasPermission } from "~~/shared/role";
+
   const sidebarState = useSidebarToggle();
   const user = useUser();
 
@@ -11,7 +13,6 @@
           link: "/dashboard",
           icon: "i-heroicons-home",
         },
-        ...(user.value?.role === "admin" ? [] : []),
       ],
     },
     {
@@ -63,7 +64,7 @@
         },
       ],
     },
-    ...(user.value?.role === "admin"
+    ...(hasPermission(user.value!, "admin")
       ? [
           {
             title: "Admin",
