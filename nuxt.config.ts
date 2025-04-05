@@ -11,16 +11,11 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/image",
   ],
+  css: ["~/assets/main.css"],
 
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
     databaseAuthToken: process.env.DATABASE_AUTH_TOKEN,
-  },
-
-  $development: {
-    security: {
-      removeLoggers: false,
-    },
   },
 
   $production: {
