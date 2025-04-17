@@ -90,6 +90,7 @@
         :data="data"
         :loading="status === 'pending'"
         :action="false"
+        :select="false"
       >
         <template #select-cell="{ row }">
           <UButton @click="clickAdd(row.original.id)">Pilih</UButton>

@@ -123,6 +123,7 @@
         :data="data"
         :loading="status === 'pending'"
         :action="false"
+        :select="false"
       >
         <template #jumlah-cell="{ row }">
           {{ row.original.jumlah.toLocaleString("id-ID") }}

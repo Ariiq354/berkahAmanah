@@ -112,6 +112,7 @@
         :data="data"
         :loading="status === 'pending'"
         :action="false"
+        :select="false"
       >
         <template #nilai-cell="{ row }">
           {{ row.original.nilai.toLocaleString("id-ID") }}
