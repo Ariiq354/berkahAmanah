@@ -1,8 +1,3 @@
-import { sha256 } from "@oslojs/crypto/sha2";
-import {
-  encodeBase32LowerCaseNoPadding,
-  encodeHexLowerCase,
-} from "@oslojs/encoding";
 import type { H3Event } from "h3";
 import type { Session, UserLucia } from "../database/schema/auth";
 import {
@@ -18,13 +13,21 @@ export const sessionCookieName = "auth_session";
 
 function generateSessionToken(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(20));
-  const token = encodeBase32LowerCaseNoPadding(bytes);
-  return token;
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+async function sha256Hex(data: Uint8Array): Promise<string> {
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export async function createSession(userId: number): Promise<Session> {
   const token = generateSessionToken();
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+  const sessionId = await sha256Hex(new TextEncoder().encode(token));
   const session = {
     id: sessionId,
     userId,

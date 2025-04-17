@@ -43,7 +43,7 @@
       datasets,
       labels,
     }"
-    :options="{
+    :items="{
       plugins: {
         legend: {
           position: 'bottom',

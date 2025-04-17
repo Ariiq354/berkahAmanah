@@ -1,54 +1,54 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode",
+    accessorKey: "kodeTransaksi",
+    header: "Kode",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "kodeAkun",
-    label: "Kode Akun",
+    accessorKey: "kodeAkun",
+    header: "Kode Akun",
   },
   {
-    key: "namaAkun",
-    label: "Nama Akun",
+    accessorKey: "namaAkun",
+    header: "Nama Akun",
   },
   {
-    key: "nilai",
-    label: "Nilai",
+    accessorKey: "nilai",
+    header: "Nilai",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "keterangan",
-    label: "Keterangan",
+    accessorKey: "keterangan",
+    header: "Keterangan",
   },
 ];
 
-export const schema = z.object({
-  id: z.number().optional(),
-  kodeAkun: z.string(),
-  anggotaId: z.number(),
-  keterangan: z.string(),
-  kodeTransaksi: z.string(),
-  nilai: z.number(),
-  tanggal: z.string(),
+export const schema = v.object({
+  id: v.optional(v.number()),
+  kodeAkun: v.pipe(v.string(), v.minLength(1, "Required")),
+  anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+  keterangan: v.pipe(v.string(), v.minLength(1, "Required")),
+  kodeTransaksi: v.pipe(v.string(), v.minLength(1, "Required")),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
+export const getInitialFormData = (): Schema => ({
   id: undefined,
-  kodeAkun: undefined,
-  anggotaId: undefined,
-  keterangan: undefined,
-  kodeTransaksi: undefined,
-  nilai: undefined,
-  tanggal: undefined,
+  kodeAkun: "",
+  anggotaId: 0,
+  keterangan: "",
+  kodeTransaksi: "",
+  nilai: 0,
+  tanggal: "",
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;

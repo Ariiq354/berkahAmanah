@@ -1,99 +1,100 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const murabahahColumns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "tujuan",
-    label: "Tujuan Pembiayaan",
+    accessorKey: "tujuan",
+    header: "Tujuan Pembiayaan",
   },
   {
-    key: "pokok",
-    label: "Pokok",
+    accessorKey: "pokok",
+    header: "Pokok",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "total",
-    label: "Total",
+    accessorKey: "total",
+    header: "Total",
   },
   {
-    key: "tempo",
-    label: "Tempo",
+    accessorKey: "tempo",
+    header: "Tempo",
   },
   {
-    key: "angsuran",
-    label: "Angsuran/bulan",
+    accessorKey: "angsuran",
+    header: "Angsuran/bulan",
   },
   {
-    key: "sisa",
-    label: "Sisa Pembiayaan",
+    accessorKey: "sisa",
+    header: "Sisa Pembiayaan",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
 export const angsuranColumns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "noPembiayaan",
-    label: "No Pembiayaan",
+    accessorKey: "noPembiayaan",
+    header: "No Pembiayaan",
   },
   {
-    key: "jumlah",
-    label: "Jumlah Angsuran",
+    accessorKey: "jumlah",
+    header: "Jumlah Angsuran",
   },
   {
-    key: "pokok",
-    label: "Pokok",
+    accessorKey: "pokok",
+    header: "Pokok",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "status",
-    label: "Status",
+    accessorKey: "status",
+    header: "Status",
   },
 ];
 
 export function createSchema(max: number = Infinity) {
-  return z.object({
-    pembiayaanId: z.number(),
-    jumlah: z.number().refine((value) => value <= max, {
-      message: `Nilai tidak boleh lebih dari sisa`,
-    }),
-    tanggal: z.string(),
-    keterangan: z.string(),
+  return v.object({
+    pembiayaanId: v.pipe(v.number(), v.minValue(1, "Required")),
+    jumlah: v.pipe(
+      v.number(),
+      v.check((value) => value <= max, "Nilai tidak boleh lebih dari sisa")
+    ),
+    tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+    keterangan: v.pipe(v.string(), v.minLength(1, "Required")),
   });
 }
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  pembiayaanId: undefined,
+export const getInitialFormData = (): Schema => ({
+  pembiayaanId: 0,
   keterangan: "",
-  jumlah: undefined,
-  tanggal: undefined,
+  jumlah: 0,
+  tanggal: "",
 });
 
-export type Schema = z.output<ReturnType<typeof createSchema>>;
+export type Schema = v.InferOutput<ReturnType<typeof createSchema>>;

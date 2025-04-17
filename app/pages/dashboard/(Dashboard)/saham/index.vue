@@ -12,7 +12,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/saham");
+  const { data, status, refresh } = await useFetch("/api/saham");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -58,43 +58,44 @@
 </script>
 
 <template>
+  <Title>Dashboard | Saham</Title>
   <main>
-    <Title>Dashboard | Saham</Title>
-    <LazyAppModal
-      v-model="modalOpen"
+    <LazyUModal
+      v-model:open="modalOpen"
       :title="(state.id ? 'Edit' : 'Tambah') + ' Saham'"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-2xl' }"
     >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Nilai Saham" name="nilai">
-          <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+      <template #body>
+        <UForm
+          id="saham-form"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <UFormField label="Nilai Saham" name="nilai">
+            <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="saham-form"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard
         :data="data"
@@ -104,14 +105,16 @@
       />
       <AppTable
         v-model="tableSelected"
-        label="Kelola Saham"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
         @edit-click="(e) => clickUpdate(e)"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
+        </template>
+        <template #tanggal-cell="{ row }">
+          {{ formatDate(row.original.tanggal) }}
         </template>
       </AppTable>
     </UCard>

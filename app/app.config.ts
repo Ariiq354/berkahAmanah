@@ -1,56 +1,51 @@
 export default defineAppConfig({
   ui: {
-    primary: "blue",
     card: {
-      ring: "dark:ring-gray-700",
-      body: {
-        padding: "sm:p-8",
+      slots: {
+        root: "shadow-lg",
+      },
+    },
+    colors: {
+      primary: "blue",
+    },
+    input: {
+      defaultVariants: {
+        size: "lg",
+      },
+      slots: {
+        root: "w-full",
+      },
+    },
+    textarea: {
+      defaultVariants: {
+        size: "lg",
+      },
+      slots: {
+        root: "w-full",
       },
     },
     button: {
-      default: {
+      defaultVariants: {
         size: "lg",
-      },
-    },
-    input: {
-      default: {
-        size: "lg",
-      },
-    },
-    select: {
-      default: {
-        size: "lg",
-      },
-    },
-    table: {
-      td: {
-        size: "text-base",
-      },
-      th: {
-        size: "text-base",
-        font: "font-medium",
-      },
-      default: {
-        sortButton: {
-          class: "text-base p-0",
-        },
-      },
-    },
-    pagination: {
-      wrapper: "flex items-center gap-1",
-      base: "w-8 h-8 justify-center",
-      rounded: "!rounded-full",
-      default: {
-        activeButton: {
-          variant: "outline",
-        },
       },
     },
     selectMenu: {
-      default: {
-        empty: {
-          label: "Opsi tidak ada",
-        },
+      defaultVariants: {
+        size: "lg",
+      },
+      slots: {
+        base: "w-full",
+      },
+    },
+    table: {
+      slots: {
+        th: "text-base",
+        td: "text-base",
+      },
+    },
+    modal: {
+      slots: {
+        footer: "justify-end",
       },
     },
   },

@@ -1,20 +1,20 @@
-import { z } from "zod";
+import * as v from "valibot";
 
-const bodySchema = z.object({
-  id: z.number().optional(),
-  kodeAkun: z.string(),
-  anggotaId: z.number(),
-  keterangan: z.string(),
-  kodeTransaksi: z.string(),
-  nilai: z.number(),
-  tanggal: z.string(),
+const bodySchema = v.object({
+  id: v.optional(v.number()),
+  kodeAkun: v.string(),
+  anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+  keterangan: v.string(),
+  kodeTransaksi: v.string(),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
 });
 
 export default defineEventHandler(async (event) => {
-  resourceFunction(event, "admin");
+  resourceFunction(event, "role:admin");
 
   const formData = await readValidatedBody(event, (body) =>
-    bodySchema.parse(body)
+    v.parse(bodySchema, body)
   );
 
   if (formData.id) {

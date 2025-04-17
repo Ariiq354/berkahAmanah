@@ -1,63 +1,67 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const galonColumns = [
   {
-    key: "price",
-    label: "Harga",
+    accessorKey: "price",
+    header: "Harga",
   },
   {
-    key: "jumlahGalon",
-    label: "Jumlah Galon",
+    accessorKey: "jumlahGalon",
+    header: "Jumlah Galon",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "jumlahGalon",
-    label: "Jumlah Galon",
+    accessorKey: "jumlahGalon",
+    header: "Jumlah Galon",
   },
   {
-    key: "nilai",
-    label: "Nilai Transaksi",
+    accessorKey: "nilai",
+    header: "Nilai Transaksi",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "status",
-    label: "Status",
+    accessorKey: "status",
+    header: "Status",
   },
 ];
 
 export function schema(max: number = Infinity) {
-  return z.object({
-    id: z.number().optional(),
-    jumlahGalon: z.number().refine((value) => value <= max, {
-      message: `Nilai tidak boleh lebih dari jumlah galon`,
-    }),
-    tanggal: z.string(),
-    nilai: z.number(),
+  return v.object({
+    id: v.optional(v.number()),
+    jumlahGalon: v.pipe(
+      v.number(),
+      v.check(
+        (value) => value <= max,
+        `Nilai tidak boleh lebih dari jumlah galon`
+      )
+    ),
+    tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+    nilai: v.pipe(v.number(), v.minValue(1, "Required")),
   });
 }
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  id: undefined,
+export const getInitialFormData = (): Schema => ({
+  id: 0,
   jumlahGalon: 0,
-  tanggal: undefined,
+  tanggal: "",
   nilai: 0,
 });
 
-export type Schema = z.output<ReturnType<typeof schema>>;
+export type Schema = v.InferOutput<ReturnType<typeof schema>>;

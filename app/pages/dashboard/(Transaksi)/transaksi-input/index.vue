@@ -13,7 +13,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/transaksi/input");
+  const { data, status, refresh } = await useFetch("/api/transaksi/input");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -38,58 +38,56 @@
 </script>
 
 <template>
+  <Title>Transaksi | Daftar Transaksi</Title>
   <main>
-    <Title>Transaksi | Daftar Transaksi</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Tambah Transaksi"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Nama Akun" name="kodeAkun">
-          <USelectMenu
-            v-model="state.kodeAkun"
-            :options="akunOptions"
-            option-attribute="name"
-            value-attribute="value"
-            :disabled="isLoading"
-          />
-        </UFormGroup>
-        <UFormGroup label="Nilai" name="nilai">
-          <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Keterangan" name="keterangan">
-          <UInput v-model="state.keterangan" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Tambah Transaksi">
+      <template #body>
+        <UForm
+          id="transaksi-input"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <UFormField label="Nama Akun" name="kodeAkun">
+            <USelectMenu
+              v-model="state.kodeAkun"
+              :items="akunOptions"
+              label-key="name"
+              value-key="value"
+              :disabled="isLoading"
+            />
+          </UFormField>
+          <UFormField label="Nilai" name="nilai">
+            <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Tanggal" name="tanggal">
+            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Keterangan" name="keterangan">
+            <UInput v-model="state.keterangan" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="transaksi-input"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard :data="data" :add-function="clickAdd" :delete-button="false" />
       <AppTable
@@ -99,8 +97,8 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

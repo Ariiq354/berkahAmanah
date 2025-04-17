@@ -12,7 +12,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/users/inactive");
+  const { data, status, refresh } = await useFetch("/api/users/inactive");
   const selectedItem = computed(() => {
     return data.value?.find((item) => item.id === state.value.id);
   });
@@ -40,51 +40,49 @@
 </script>
 
 <template>
+  <Title>Persetujuan | Anggota</Title>
   <main>
-    <Title>Persetujuan | Anggota</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Anggota"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Nama Lengkap">
-          <UInput :model-value="selectedItem?.namaLengkap" disabled />
-        </UFormGroup>
-        <UFormGroup label="No Telepon">
-          <UInput :model-value="selectedItem?.noTelepon" disabled />
-        </UFormGroup>
-        <UFormGroup label="Email">
-          <UInput :model-value="selectedItem?.email" disabled />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            color="red"
-            type="submit"
-            :disabled="isLoading"
-            @click="state.status = false"
-          >
-            Tolak
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-            @click="state.status = true"
-          >
-            Setuju
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Detail Anggota">
+      <template #body>
+        <UForm
+          id="persetujuan-anggota"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <UFormField label="Nama Lengkap">
+            <UInput :model-value="selectedItem?.namaLengkap" disabled />
+          </UFormField>
+          <UFormField label="No Telepon">
+            <UInput :model-value="selectedItem?.noTelepon" disabled />
+          </UFormField>
+          <UFormField label="Email">
+            <UInput :model-value="selectedItem?.email" disabled />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          color="error"
+          type="submit"
+          :disabled="isLoading"
+          @click="state.status = false"
+        >
+          Tolak
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          @click="state.status = true"
+          form="persetujuan-anggota"
+        >
+          Setuju
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Kelola Setoran"
@@ -93,8 +91,8 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickAdd(row.original.id)">Pilih</UButton>
         </template>
       </AppTable>
     </UCard>

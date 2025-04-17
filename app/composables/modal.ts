@@ -1,12 +1,13 @@
 import ModalConfirm from "~/components/ModalConfirm.vue";
 
 export function openConfirmModal(anyFunction: () => Promise<void>) {
-  const modal = useModal();
+  const overlay = useOverlay();
 
-  modal.open(ModalConfirm, {
-    function: anyFunction,
-    async onSuccess() {
-      modal.close();
+  const modal = overlay.create(ModalConfirm, {
+    props: {
+      function: anyFunction,
     },
   });
+
+  modal.open();
 }

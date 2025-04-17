@@ -9,7 +9,7 @@
 
   const modalOpen = ref(false);
   const jenis = ref();
-  const { data, status } = await useLazyFetch(
+  const { data, status } = await useFetch(
     () => `/api/monitoring/simpanan?anggotaId=${user.value?.id}`
   );
 
@@ -20,42 +20,49 @@
 </script>
 
 <template>
+  <Title>Simpanan | Monitoring</Title>
   <main>
-    <Title>Simpanan | Monitoring</Title>
-    <LazyAppModal
-      v-model="modalOpen"
+    <LazyUModal
+      v-model:open="modalOpen"
       :title="jenis === 'Saham' ? 'Detail Saham' : 'Detail Simpanan'"
-      :pending="false"
-      :ui="{ width: 'sm:max-w-4xl' }"
+      fullscreen
     >
-      <AppTable
-        :label="jenis === 'Saham' ? 'Monitoring Saham' : 'Monitoring Simpanan'"
-        :columns="modalColumns"
-        :data="jenis === 'Saham' ? data?.sahamDetail : data?.simpananDetail"
-        :loading="status === 'pending'"
-        :action="false"
-      >
-        <template #jumlah-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
-        </template>
-      </AppTable>
-    </LazyAppModal>
+      <template #body>
+        <AppTable
+          :columns="modalColumns"
+          :data="jenis === 'Saham' ? data?.sahamDetail : data?.simpananDetail"
+          :loading="status === 'pending'"
+          :action="false"
+        >
+          <template #jumlah-cell="{ row }">
+            {{ row.original.nilai.toLocaleString("id-ID") }}
+          </template>
+        </AppTable>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
-        label="Monitoring Simpanan"
         :columns="columns"
         :data="data?.data"
         :loading="status === 'pending'"
         @edit-click="clickUpdate"
       >
-        <template #jumlahSimpanan-data="{ row }">
-          {{ row.jumlahSimpanan.toLocaleString("id-ID") }}
+        <template #jumlahSimpanan-cell="{ row }">
+          {{ row.original.jumlahSimpanan.toLocaleString("id-ID") }}
         </template>
-        <template #jumlahLembar-data="{ row }">
-          {{ row.jumlahLembar ? row.jumlahLembar.toLocaleString("id-ID") : "" }}
+        <template #jumlahLembar-cell="{ row }">
+          {{
+            row.original.jumlahLembar
+              ? row.original.jumlahLembar.toLocaleString("id-ID")
+              : ""
+          }}
         </template>
-        <template #persenSaham-data="{ row }">
-          {{ row.persenSaham ? (row.persenSaham * 100).toFixed(2) + "%" : "" }}
+        <template #persenSaham-cell="{ row }">
+          {{
+            row.original.persenSaham
+              ? (row.original.persenSaham * 100).toFixed(2) + "%"
+              : ""
+          }}
         </template>
       </AppTable>
     </UCard>

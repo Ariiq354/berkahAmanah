@@ -1,13 +1,15 @@
-import { z } from "zod";
+import * as v from "valibot";
 
-const querySchema = z.object({
-  tahun: z.string(),
+const querySchema = v.object({
+  tahun: v.string(),
 });
 
 export default defineEventHandler(async (event) => {
-  resourceFunction(event, "admin");
+  resourceFunction(event, "role:admin");
 
-  const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
+  const query = await getValidatedQuery(event, (query) =>
+    v.parse(querySchema, query)
+  );
 
   const res = await getAccountsData(query.tahun, "4%");
 

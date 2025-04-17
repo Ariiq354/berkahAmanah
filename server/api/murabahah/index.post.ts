@@ -1,19 +1,19 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { pembiayaanTable } from "~~/server/database/schema/pembiayaan";
 
-const bodySchema = z.object({
-  anggotaId: z.number(),
-  catatan: z.string(),
-  jumlah: z.number(),
-  tempo: z.number(),
-  tujuan: z.string(),
+const bodySchema = v.object({
+  anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+  catatan: v.string(),
+  jumlah: v.number(),
+  tempo: v.number(),
+  tujuan: v.string(),
 });
 
 export default defineEventHandler(async (event) => {
   const user = protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
-    bodySchema.parse(body)
+    v.parse(bodySchema, body)
   );
 
   const kodeTransaksi = await getTransactionCode("MRB", pembiayaanTable);

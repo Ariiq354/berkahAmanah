@@ -12,7 +12,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch(
+  const { data, status, refresh } = await useFetch(
     "/api/pembelian-athar/pembayaran"
   );
   const selectedItem = computed(() => {
@@ -45,54 +45,52 @@
 </script>
 
 <template>
+  <Title>Athar | Pembayaran Hutang</Title>
   <main>
-    <Title>Athar | Pembayaran Hutang</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Tambah Pembayaran Hutang"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-2xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <UFormGroup label="Jumlah Galon">
-            <UInput :model-value="selectedItem?.jumlahGalon" disabled />
-          </UFormGroup>
-          <UFormGroup label="Nilai">
-            <UInput
-              :model-value="selectedItem?.nilai.toLocaleString('id-ID')"
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Bayar
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Tambah Pembayaran Hutang">
+      <template #body>
+        <UForm
+          id="athar-pembayaran-hutang"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <UFormField label="Jumlah Galon">
+              <UInput :model-value="selectedItem?.jumlahGalon" disabled />
+            </UFormField>
+            <UFormField label="Nilai">
+              <UInput
+                :model-value="selectedItem?.nilai.toLocaleString('id-ID')"
+                disabled
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Tanggal" name="tanggal">
+            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="athar-pembayaran-hutang"
+        >
+          Bayar
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Kelola Pembelian"
@@ -101,11 +99,11 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickAdd(row.original.id)">Pilih</UButton>
         </template>
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

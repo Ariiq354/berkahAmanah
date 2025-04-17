@@ -3,17 +3,16 @@
     function: () => Promise<void>;
   }>();
 
-  const emit = defineEmits(["success"]);
+  const emit = defineEmits(["close"]);
 
-  const modal = useModal();
   const loading = ref(false);
   async function onClick() {
     loading.value = true;
     try {
       await props.function();
-      emit("success");
+      emit("close");
     } catch (error: any) {
-      useToastError(String(error.statusCode), error.data.message);
+      useToastError(String(error.statusCode), error.statusText);
     } finally {
       loading.value = false;
     }
@@ -21,44 +20,38 @@
 </script>
 
 <template>
-  <UModal prevent-close :ui="{ width: 'sm:max-w-lg' }">
-    <div class="space-y-5 p-5">
-      <div class="flex items-center justify-between">
-        <h1 class="text-xl font-semibold text-black dark:text-white">
-          Konfimasi
-        </h1>
-        <UButton
-          color="gray"
-          variant="ghost"
-          icon="i-heroicons-x-mark-20-solid"
-          class="-my-1 rounded-full"
-          @click="modal.close()"
-        />
+  <UModal
+    :close="{ onClick: () => emit('close', false) }"
+    :ui="{ body: 'sm:max-w-lg' }"
+    title="Confirm"
+  >
+    <template #body>
+      <div class="space-y-5">
+        <div class="flex items-center gap-4">
+          <UIcon name="i-heroicons-exclamation-triangle" size="36" />
+          Are you sure you want to delete the selected products?
+        </div>
+        <div class="flex w-full justify-end gap-2">
+          <UButton
+            icon="i-heroicons-x-mark-16-solid"
+            variant="ghost"
+            :disabled="loading"
+            class="text-base"
+            @click="emit('close')"
+          >
+            No
+          </UButton>
+          <UButton
+            icon="i-heroicons-check-16-solid"
+            variant="ghost"
+            :loading="loading"
+            class="text-base"
+            @click="onClick"
+          >
+            Yes
+          </UButton>
+        </div>
       </div>
-      <div class="flex items-center gap-4">
-        <UIcon name="i-heroicons-exclamation-triangle" size="36" />
-        Apakah Anda yakin ingin menghapus item yang dipilih?
-      </div>
-      <div class="flex w-full justify-end gap-2">
-        <UButton
-          icon="i-heroicons-x-mark-16-solid"
-          variant="ghost"
-          :disabled="loading"
-          class="text-base"
-          @click="modal.close()"
-        >
-          Tidak
-        </UButton>
-        <UButton
-          icon="i-heroicons-check-16-solid"
-          variant="ghost"
-          :loading="loading"
-          class="text-base"
-          @click="onClick"
-        >
-          Iya
-        </UButton>
-      </div>
-    </div>
+    </template>
   </UModal>
 </template>

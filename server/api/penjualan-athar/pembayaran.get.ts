@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  resourceFunction(event, "admin");
+  resourceFunction(event, "role:admin");
 
   const res = await getAllPenjualanAtharInactive();
 

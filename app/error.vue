@@ -41,7 +41,7 @@
     id="errorpage"
     class="flex min-h-screen flex-col items-center justify-center"
   >
-    <h1 class="text-primary text-[16px] font-semibold">
+    <h1 class="text-[16px] font-semibold text-(--ui-primary)">
       {{ error?.statusCode }}
     </h1>
     <p

@@ -1,13 +1,15 @@
-import { z } from "zod";
+import * as v from "valibot";
 
-const querySchema = z.object({
-  pembiayaanId: z.coerce.number(),
+const querySchema = v.object({
+  pembiayaanId: v.pipe(v.string(), v.transform(Number)),
 });
 
 export default defineEventHandler(async (event) => {
   const user = protectFunction(event);
 
-  const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
+  const query = await getValidatedQuery(event, (query) =>
+    v.parse(querySchema, query)
+  );
 
   let res;
   if (user.role !== "admin") {

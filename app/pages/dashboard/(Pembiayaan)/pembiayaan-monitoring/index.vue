@@ -9,10 +9,10 @@
 
   const modalOpen = ref(false);
   const pembiayaanId = ref();
-  const { data, status } = await useLazyFetch(
+  const { data, status } = await useFetch(
     () => `/api/monitoring/pembiayaan?anggotaId=${user.value?.id}`
   );
-  const { data: dataAngsuran, status: statusAngsuran } = await useLazyFetch(
+  const { data: dataAngsuran, status: statusAngsuran } = await useFetch(
     "/api/angsuran/anggota",
     {
       immediate: false,
@@ -29,60 +29,63 @@
 </script>
 
 <template>
+  <Title>Pembiayaan | Monitoring</Title>
   <main>
-    <Title>Pembiayaan | Monitoring</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Angsuran"
-      :pending="false"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <AppTable
-        label="Monitoring Angsuran"
-        :columns="angsuranColumns"
-        :data="dataAngsuran"
-        :loading="statusAngsuran === 'pending'"
-        :action="false"
-      >
-        <template #jumlah-data="{ row }">
-          {{ row.jumlah.toLocaleString("id-ID") }}
-        </template>
-        <template #pokok-data="{ row }">
-          {{ row.pokok.toLocaleString("id-ID") }}
-        </template>
-        <template #margin-data="{ row }">
-          {{ row.margin.toLocaleString("id-ID") }}
-        </template>
-      </AppTable>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Detail Angsuran">
+      <template #body>
+        <AppTable
+          :columns="angsuranColumns"
+          :data="dataAngsuran"
+          :loading="statusAngsuran === 'pending'"
+          :action="false"
+        >
+          <template #jumlah-cell="{ row }">
+            {{ row.original.jumlah.toLocaleString("id-ID") }}
+          </template>
+          <template #pokok-cell="{ row }">
+            {{ row.original.pokok.toLocaleString("id-ID") }}
+          </template>
+          <template #margin-cell="{ row }">
+            {{ row.original.margin.toLocaleString("id-ID") }}
+          </template>
+        </AppTable>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
-        label="Daftar Murabahah"
         :columns="murabahahColumns"
         :data="data"
         :loading="status === 'pending'"
         :action="false"
+        :select="false"
       >
-        <template #jumlah-data="{ row }">
-          {{ row.jumlah.toLocaleString("id-ID") }}
+        <template #jumlah-cell="{ row }">
+          {{ row.original.jumlah.toLocaleString("id-ID") }}
         </template>
-        <template #pokok-data="{ row }">
-          {{ row.pokok.toLocaleString("id-ID") }}
+        <template #pokok-cell="{ row }">
+          {{ row.original.pokok.toLocaleString("id-ID") }}
         </template>
-        <template #margin-data="{ row }">
-          {{ row.margin.toLocaleString("id-ID") }}
+        <template #margin-cell="{ row }">
+          {{ row.original.margin.toLocaleString("id-ID") }}
         </template>
-        <template #total-data="{ row }">
-          {{ (row.pokok + row.margin).toLocaleString("id-ID") }}
+        <template #total-cell="{ row }">
+          {{
+            (row.original.pokok + row.original.margin).toLocaleString("id-ID")
+          }}
         </template>
-        <template #angsuran-data="{ row }">
-          {{ ((row.pokok + row.margin) / row.tempo).toLocaleString("id-ID") }}
+        <template #angsuran-cell="{ row }">
+          {{
+            (
+              (row.original.pokok + row.original.margin) /
+              row.original.tempo
+            ).toLocaleString("id-ID")
+          }}
         </template>
-        <template #sisa-data="{ row }">
-          {{ row.sisa.toLocaleString("id-ID") }}
+        <template #sisa-cell="{ row }">
+          {{ row.original.sisa.toLocaleString("id-ID") }}
         </template>
-        <template #select-data="{ row }">
-          <UButton @click="clickUpdate(row.id)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickUpdate(row.original.id)">Pilih</UButton>
         </template>
       </AppTable>
     </UCard>

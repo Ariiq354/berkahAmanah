@@ -1,25 +1,30 @@
-type FetchOptions = {
+type FetchOptions<TBody = any> = {
   path: string;
-  body: any;
-  onSuccess: () => void | Promise<void>;
-  onError: (error: any) => void;
+  body?: TBody;
+  onSuccess?: () => void | Promise<void>;
+  onError?: (error: any) => void;
 };
 
-export function useSubmit() {
+export function useSubmit<TResponse = Record<string, any>>() {
   const isLoading = shallowRef(false);
-  const result = shallowRef<undefined | Record<string, any>>();
+  const data = shallowRef<TResponse | null>(null);
+  const error = shallowRef<unknown | null>(null);
 
-  const execute = async ({ path, body, onError, onSuccess }: FetchOptions) => {
+  const execute = async ({ path, body, onSuccess, onError }: FetchOptions) => {
+    isLoading.value = true;
+    error.value = null;
+
     try {
-      isLoading.value = true;
-      const res = await $fetch<any>(path, {
+      const res = await $fetch<TResponse>(path, {
         method: "POST",
         body,
       });
-      await onSuccess();
-      result.value = res;
-    } catch (error: any) {
-      onError(error);
+
+      data.value = res;
+      if (onSuccess) await onSuccess();
+    } catch (err: any) {
+      error.value = err;
+      if (onError) onError(err);
     } finally {
       isLoading.value = false;
     }
@@ -27,7 +32,8 @@ export function useSubmit() {
 
   return {
     isLoading,
+    data,
+    error,
     execute,
-    result,
   };
 }

@@ -1,56 +1,56 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "jumlah",
-    label: "Jumlah Diajukan",
+    accessorKey: "jumlah",
+    header: "Jumlah Diajukan",
   },
   {
-    key: "pokok",
-    label: "Pokok",
+    accessorKey: "pokok",
+    header: "Pokok",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "total",
-    label: "Total",
+    accessorKey: "total",
+    header: "Total",
   },
   {
-    key: "tempo",
-    label: "Tempo",
+    accessorKey: "tempo",
+    header: "Tempo",
   },
   {
-    key: "status",
-    label: "Status",
+    accessorKey: "status",
+    header: "Status",
   },
 ];
 
-export const schema = z.object({
-  id: z.number().optional(),
-  anggotaId: z.number(),
-  jumlah: z.number(),
-  tempo: z.number(),
-  tujuan: z.string(),
-  catatan: z.string(),
+export const schema = v.object({
+  id: v.optional(v.number()),
+  anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+  jumlah: v.pipe(v.number(), v.minValue(1, "Required")),
+  tempo: v.pipe(v.number(), v.minValue(1, "Required")),
+  tujuan: v.pipe(v.string(), v.minLength(1, "Required")),
+  catatan: v.pipe(v.string(), v.minLength(1, "Required")),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
+export const getInitialFormData = (): Schema => ({
   id: undefined,
-  anggotaId: undefined,
+  anggotaId: 0,
   catatan: "",
-  jumlah: undefined,
-  tempo: undefined,
-  tujuan: undefined,
+  jumlah: 0,
+  tempo: 0,
+  tujuan: "",
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;

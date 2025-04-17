@@ -1,59 +1,59 @@
 export const columns = [
   {
-    key: "namaAkun",
-    label: "Nama Akun",
+    accessorKey: "namaAkun",
+    header: "Nama Akun",
   },
   {
-    key: "jan",
-    label: "Januari",
+    accessorKey: "jan",
+    header: "Januari",
   },
   {
-    key: "feb",
-    label: "Februari",
+    accessorKey: "feb",
+    header: "Februari",
   },
   {
-    key: "mar",
-    label: "Maret",
+    accessorKey: "mar",
+    header: "Maret",
   },
   {
-    key: "apr",
-    label: "April",
+    accessorKey: "apr",
+    header: "April",
   },
   {
-    key: "may",
-    label: "Mei",
+    accessorKey: "may",
+    header: "Mei",
   },
   {
-    key: "jun",
-    label: "Juni",
+    accessorKey: "jun",
+    header: "Juni",
   },
   {
-    key: "jul",
-    label: "Juli",
+    accessorKey: "jul",
+    header: "Juli",
   },
   {
-    key: "aug",
-    label: "Agustus",
+    accessorKey: "aug",
+    header: "Agustus",
   },
   {
-    key: "sep",
-    label: "September",
+    accessorKey: "sep",
+    header: "September",
   },
   {
-    key: "oct",
-    label: "Oktober",
+    accessorKey: "oct",
+    header: "Oktober",
   },
   {
-    key: "nov",
-    label: "November",
+    accessorKey: "nov",
+    header: "November",
   },
   {
-    key: "dec",
-    label: "Desember",
+    accessorKey: "dec",
+    header: "Desember",
   },
   {
-    key: "total",
-    label: "Total",
+    accessorKey: "total",
+    header: "Total",
   },
 ];
 

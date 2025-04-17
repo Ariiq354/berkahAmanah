@@ -13,7 +13,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/angsuran");
+  const { data, status, refresh } = await useFetch("/api/angsuran");
   const selectedItem = computed(() => {
     return data.value?.murabahah.find(
       (item) => item.id === state.value.pembiayaanId
@@ -43,115 +43,117 @@
 </script>
 
 <template>
+  <Title>Pembiayaan | Angsuran</Title>
   <main>
-    <Title>Pembiayaan | Angsuran</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Angsuran"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="createSchema(selectedItem!.sisa)"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <div class="grid grid-cols-3 gap-4">
-          <UFormGroup label="Kode Transaksi">
-            <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
-          </UFormGroup>
-          <UFormGroup label="Total">
-            <UInput
-              :model-value="
-                (selectedItem!.pokok + selectedItem!.margin).toLocaleString(
-                  'id-ID'
-                )
-              "
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Tempo">
-            <UInput :model-value="selectedItem?.tempo" disabled />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Tujuan">
-          <UInput :model-value="selectedItem?.tujuan" disabled />
-        </UFormGroup>
-        <div class="grid grid-cols-2 gap-4">
-          <UFormGroup label="Sisa">
-            <UInput
-              :model-value="selectedItem?.sisa.toLocaleString('id-ID')"
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Persentase">
-            <UInput
-              :model-value="selectedItem!.pokok / selectedItem!.margin"
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Jumlah Angsuran" name="jumlah">
-            <UInput
-              v-model="state.jumlah"
-              type="number"
-              :max="selectedItem?.sisa"
-              :disabled="isLoading"
-            />
-          </UFormGroup>
-          <UFormGroup label="Tanggal" name="tanggal">
-            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-          </UFormGroup>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <UFormGroup label="Nilai Pokok">
-            <UInput
-              :model-value="
-                state.jumlah
-                  ? (state.jumlah * selectedItem!.pokok) /
-                    (selectedItem!.pokok + selectedItem!.margin)
-                  : 0
-              "
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Nilai Margin">
-            <UInput
-              :model-value="
-                state.jumlah
-                  ? (state.jumlah * selectedItem!.margin) /
-                    (selectedItem!.pokok + selectedItem!.margin)
-                  : 0
-              "
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Keterangan" name="keterangan">
-          <UInput v-model="state.keterangan" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Setuju
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Detail Angsuran">
+      <template #body>
+        <UForm
+          id="angsuran-form"
+          :schema="createSchema(selectedItem!.sisa)"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <div class="grid grid-cols-3 gap-4">
+            <UFormField label="Kode Transaksi">
+              <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
+            </UFormField>
+            <UFormField label="Total">
+              <UInput
+                :model-value="
+                  (selectedItem!.pokok + selectedItem!.margin).toLocaleString(
+                    'id-ID'
+                  )
+                "
+                disabled
+              />
+            </UFormField>
+            <UFormField label="Tempo">
+              <UInput :model-value="selectedItem?.tempo" disabled />
+            </UFormField>
+          </div>
+          <UFormField label="Tujuan">
+            <UInput :model-value="selectedItem?.tujuan" disabled />
+          </UFormField>
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="Sisa">
+              <UInput
+                :model-value="selectedItem?.sisa.toLocaleString('id-ID')"
+                disabled
+              />
+            </UFormField>
+            <UFormField label="Persentase">
+              <UInput
+                :model-value="selectedItem!.pokok / selectedItem!.margin"
+                disabled
+              />
+            </UFormField>
+          </div>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Jumlah Angsuran" name="jumlah">
+              <UInput
+                v-model="state.jumlah"
+                type="number"
+                :max="selectedItem?.sisa"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Tanggal" name="tanggal">
+              <UInput
+                v-model="state.tanggal"
+                type="date"
+                :disabled="isLoading"
+              />
+            </UFormField>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="Nilai Pokok">
+              <UInput
+                :model-value="
+                  state.jumlah
+                    ? (state.jumlah * selectedItem!.pokok) /
+                      (selectedItem!.pokok + selectedItem!.margin)
+                    : 0
+                "
+                disabled
+              />
+            </UFormField>
+            <UFormField label="Nilai Margin">
+              <UInput
+                :model-value="
+                  state.jumlah
+                    ? (state.jumlah * selectedItem!.margin) /
+                      (selectedItem!.pokok + selectedItem!.margin)
+                    : 0
+                "
+                disabled
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Keterangan" name="keterangan">
+            <UInput v-model="state.keterangan" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="angsuran-form"
+        >
+          Setuju
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Daftar Murabahah"
@@ -160,60 +162,71 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #jumlah-data="{ row }">
-          {{ row.jumlah.toLocaleString("id-ID") }}
+        <template #jumlah-cell="{ row }">
+          {{ row.original.jumlah.toLocaleString("id-ID") }}
         </template>
-        <template #pokok-data="{ row }">
-          {{ row.pokok.toLocaleString("id-ID") }}
+        <template #pokok-cell="{ row }">
+          {{ row.original.pokok.toLocaleString("id-ID") }}
         </template>
-        <template #margin-data="{ row }">
-          {{ row.margin.toLocaleString("id-ID") }}
+        <template #margin-cell="{ row }">
+          {{ row.original.margin.toLocaleString("id-ID") }}
         </template>
-        <template #total-data="{ row }">
-          {{ (row.pokok + row.margin).toLocaleString("id-ID") }}
+        <template #total-cell="{ row }">
+          {{
+            (row.original.pokok + row.original.margin).toLocaleString("id-ID")
+          }}
         </template>
-        <template #angsuran-data="{ row }">
-          {{ ((row.pokok + row.margin) / row.tempo).toLocaleString("id-ID") }}
+        <template #angsuran-cell="{ row }">
+          {{
+            (
+              (row.original.pokok + row.original.margin) /
+              row.original.tempo
+            ).toLocaleString("id-ID")
+          }}
         </template>
-        <template #sisa-data="{ row }">
-          {{ row.sisa.toLocaleString("id-ID") }}
+        <template #sisa-cell="{ row }">
+          {{ row.original.sisa.toLocaleString("id-ID") }}
         </template>
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickAdd(row.original.id)">Pilih</UButton>
         </template>
       </AppTable>
       <AppTable
-        label="Kelola Angsuran"
         :columns="angsuranColumns"
         :data="data?.angsuran"
         :loading="status === 'pending'"
         :action="false"
+        :select="false"
       >
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
             size="xs"
             :label="
-              row.status === 0
+              row.original.status === 0
                 ? 'Belom Disetujui'
-                : row.status === 1
+                : row.original.status === 1
                   ? 'Disetujui'
                   : 'Ditolak'
             "
             :color="
-              row.status === 0 ? 'blue' : row.status === 1 ? 'green' : 'red'
+              row.original.status === 0
+                ? 'info'
+                : row.original.status === 1
+                  ? 'success'
+                  : 'error'
             "
             variant="solid"
             class="rounded-full"
           />
         </template>
-        <template #jumlah-data="{ row }">
-          {{ row.jumlah.toLocaleString("id-ID") }}
+        <template #jumlah-cell="{ row }">
+          {{ row.original.jumlah.toLocaleString("id-ID") }}
         </template>
-        <template #pokok-data="{ row }">
-          {{ row.pokok.toLocaleString("id-ID") }}
+        <template #pokok-cell="{ row }">
+          {{ row.original.pokok.toLocaleString("id-ID") }}
         </template>
-        <template #margin-data="{ row }">
-          {{ row.margin.toLocaleString("id-ID") }}
+        <template #margin-cell="{ row }">
+          {{ row.original.margin.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

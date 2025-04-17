@@ -14,14 +14,14 @@
   const user = useUser();
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/penarikan");
-  const { data: saldo, refresh: refreshSaldo } = await useLazyFetch(
+  const { data, status, refresh } = await useFetch("/api/penarikan");
+  const { data: saldo, refresh: refreshSaldo } = await useFetch(
     () => `/api/setoran/saldo?anggotaId=${state.value.anggotaId}`,
     {
       immediate: false,
     }
   );
-  const { data: anggota } = await useLazyFetch("/api/users");
+  const { data: anggota } = await useFetch("/api/users");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -44,7 +44,7 @@
     state.value = getInitialFormData();
     modalOpen.value = true;
     if (user.value?.role !== "admin") {
-      state.value.anggotaId = user.value?.id;
+      state.value.anggotaId = user.value!.id;
     }
   }
 
@@ -55,106 +55,110 @@
 </script>
 
 <template>
+  <Title>Simpanan | Penarikan</Title>
   <main>
-    <Title>Simpanan | Penarikan</Title>
-    <LazyAppModal
-      v-model="modalOpen"
+    <LazyUModal
+      v-model:open="modalOpen"
       :title="(state.id ? 'Detail' : 'Tambah') + ' Penarikan'"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
     >
-      <UForm
-        :schema="createSchema(saldo?.saldo)"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup
-          v-if="user?.role === 'admin'"
-          label="Nama Anggota"
-          name="anggotaId"
+      <template #body>
+        <UForm
+          id="penarikan-form"
+          :schema="createSchema(saldo?.saldo)"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
         >
-          <USelectMenu
-            v-model="state.anggotaId"
-            :options="anggota"
-            option-attribute="namaLengkap"
-            value-attribute="id"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <UFormGroup label="Saldo Simpanan">
-          <UInput :model-value="saldo?.saldo" type="number" disabled />
-        </UFormGroup>
-        <UFormGroup label="Nilai Penarikan" name="nilai">
-          <UInput
-            v-model="state.nilai"
-            type="number"
-            min="0"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput
-            v-model="state.tanggal"
-            type="date"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <UFormGroup label="Keterangan" name="keterangan">
-          <UInput
-            v-model="state.keterangan"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
+          <UFormField
+            v-if="user?.role === 'admin'"
+            label="Nama Anggota"
+            name="anggotaId"
           >
-            {{ state.id ? "Tutup" : "Batal" }}
-          </UButton>
-          <UButton
-            v-if="!state.id"
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+            <USelectMenu
+              v-model="state.anggotaId"
+              :items="anggota"
+              label-key="namaLengkap"
+              value-key="id"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormField>
+          <UFormField label="Saldo Simpanan">
+            <UInput :model-value="saldo?.saldo" type="number" disabled />
+          </UFormField>
+          <UFormField label="Nilai Penarikan" name="nilai">
+            <UInput
+              v-model="state.nilai"
+              type="number"
+              min="0"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormField>
+          <UFormField label="Tanggal" name="tanggal">
+            <UInput
+              v-model="state.tanggal"
+              type="date"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormField>
+          <UFormField label="Keterangan" name="keterangan">
+            <UInput
+              v-model="state.keterangan"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          {{ state.id ? "Tutup" : "Batal" }}
+        </UButton>
+        <UButton
+          v-if="!state.id"
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="penarikan-form"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard :data="data" :delete-button="false" :add-function="clickAdd" />
       <AppTable
-        label="Kelola Penarikan"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
         @edit-click="(e) => clickUpdate(e)"
       >
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
             size="xs"
             :label="
-              row.status === 0
+              row.original.status === 0
                 ? 'Belom Disetujui'
-                : row.status === 1
+                : row.original.status === 1
                   ? 'Disetujui'
                   : 'Ditolak'
             "
             :color="
-              row.status === 0 ? 'blue' : row.status === 1 ? 'green' : 'red'
+              row.original.status === 0
+                ? 'info'
+                : row.original.status === 1
+                  ? 'success'
+                  : 'error'
             "
             variant="solid"
             class="rounded-full"
           />
         </template>
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

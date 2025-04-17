@@ -3,7 +3,7 @@ import type { SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
 import type { H3Event } from "h3";
 import { db } from "../database";
 import { userTable } from "../database/schema/auth";
-import { hasPermission, type Permission } from "~~/shared/role";
+import { hasPermission, type ResourcePermissions } from "~~/shared/role";
 
 export function protectFunction(event: H3Event) {
   if (!event.context.session) {
@@ -16,7 +16,10 @@ export function protectFunction(event: H3Event) {
   return event.context.user!;
 }
 
-export function resourceFunction(event: H3Event, resource: Permission) {
+export function resourceFunction(
+  event: H3Event,
+  resource: ResourcePermissions
+) {
   const user = protectFunction(event);
 
   if (!hasPermission(user, resource)) {

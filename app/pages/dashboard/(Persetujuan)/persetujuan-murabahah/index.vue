@@ -13,7 +13,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch(
+  const { data, status, refresh } = await useFetch(
     "/api/murabahah/persetujuan"
   );
   const selectedItem = computed(() => {
@@ -44,114 +44,116 @@
 </script>
 
 <template>
+  <Title>Persetujuan | Murabahah</Title>
   <main>
-    <Title>Persetujuan | Murabahah</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Murabahah"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Kode Transaksi">
-          <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
-        </UFormGroup>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="No Anggota">
-            <UInput :model-value="selectedItem?.noUser" disabled />
-          </UFormGroup>
-          <UFormGroup label="Nama Anggota">
-            <UInput :model-value="selectedItem?.namaLengkap" disabled />
-          </UFormGroup>
-        </div>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Nilai Pengajuan">
-            <UInput :model-value="selectedItem?.jumlah" disabled />
-          </UFormGroup>
-          <UFormGroup label="Tempo">
-            <UInput :model-value="selectedItem?.tempo" disabled />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Tujuan Pengajuan">
-          <UInput :model-value="selectedItem?.tujuan" disabled />
-        </UFormGroup>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Nilai Pokok" name="nilai">
-            <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
-          </UFormGroup>
-          <UFormGroup label="Margin" name="margin">
-            <UInput
-              v-model="state.margin"
-              type="number"
+    <LazyUModal v-model:open="modalOpen" title="Detail Murabahah">
+      <template #body>
+        <UForm
+          id="persetujuan-murabahah"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <UFormField label="Kode Transaksi">
+            <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
+          </UFormField>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="No Anggota">
+              <UInput :model-value="selectedItem?.noUser" disabled />
+            </UFormField>
+            <UFormField label="Nama Anggota">
+              <UInput :model-value="selectedItem?.namaLengkap" disabled />
+            </UFormField>
+          </div>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Nilai Pengajuan">
+              <UInput :model-value="selectedItem?.jumlah" disabled />
+            </UFormField>
+            <UFormField label="Tempo">
+              <UInput :model-value="selectedItem?.tempo" disabled />
+            </UFormField>
+          </div>
+          <UFormField label="Tujuan Pengajuan">
+            <UInput :model-value="selectedItem?.tujuan" disabled />
+          </UFormField>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Nilai Pokok" name="nilai">
+              <UInput
+                v-model="state.nilai"
+                type="number"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Margin" name="margin">
+              <UInput
+                v-model="state.margin"
+                type="number"
+                :disabled="isLoading"
+              />
+            </UFormField>
+          </div>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Nilai Pembiayaan Disetujui">
+              <UInput
+                :model-value="
+                  state.margin && state.nilai
+                    ? (state.nilai + state.margin).toLocaleString('id-ID')
+                    : 0
+                "
+                disabled
+              />
+            </UFormField>
+            <UFormField label="Persentase">
+              <UInput
+                :model-value="
+                  state.margin && state.nilai
+                    ? ((state.margin / state.nilai) * 100).toFixed(2)
+                    : 0
+                "
+                disabled
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Tanggal Akad" name="tanggal">
+            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Jaminan" name="jaminan">
+            <USelectMenu
+              v-model="state.jaminan"
+              :items="jaminanOptions"
               :disabled="isLoading"
             />
-          </UFormGroup>
-        </div>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Nilai Pembiayaan Disetujui">
-            <UInput
-              :model-value="
-                state.margin && state.nilai
-                  ? (state.nilai + state.margin).toLocaleString('id-ID')
-                  : 0
-              "
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Persentase">
-            <UInput
-              :model-value="
-                state.margin && state.nilai
-                  ? ((state.margin / state.nilai) * 100).toFixed(2)
-                  : 0
-              "
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Tanggal Akad" name="tanggal">
-          <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Jaminan" name="jaminan">
-          <USelectMenu
-            v-model="state.jaminan"
-            :options="jaminanOptions"
-            :disabled="isLoading"
-          />
-        </UFormGroup>
-        <UFormGroup label="Tempo Disetujui" name="tempo">
-          <UInput v-model="state.tempo" type="number" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Alasan Penolakan" name="alasan">
-          <UInput v-model="state.alasan" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            color="red"
-            type="submit"
-            :disabled="isLoading"
-            @click="state.setuju = false"
-          >
-            Tolak
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-            @click="state.setuju = true"
-          >
-            Setuju
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+          </UFormField>
+          <UFormField label="Tempo Disetujui" name="tempo">
+            <UInput v-model="state.tempo" type="number" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Alasan Penolakan" name="alasan">
+            <UInput v-model="state.alasan" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          color="error"
+          type="submit"
+          :disabled="isLoading"
+          @click="state.setuju = false"
+        >
+          Tolak
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          @click="state.setuju = true"
+          form="persetujuan-murabahah"
+        >
+          Setuju
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Kelola Murabahah"
@@ -160,11 +162,13 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id, row.jumlah)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickAdd(row.original.id, row.original.jumlah)"
+            >Pilih</UButton
+          >
         </template>
       </AppTable>
     </UCard>

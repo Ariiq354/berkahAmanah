@@ -5,7 +5,6 @@
 
   const sidebarState = useSidebarToggle();
 
-  const user = useUser();
   const topbarTitle = useTopbarTitle();
   const modalOpen = ref(false);
 
@@ -14,14 +13,14 @@
       {
         label: "Profil",
         icon: "i-heroicons-user",
-        click: () => {
+        onSelect: () => {
           modalOpen.value = true;
         },
       },
       {
         label: "Keluar",
         icon: "i-heroicons-arrow-left-on-rectangle",
-        click: () => {
+        onSelect: () => {
           props.logout();
         },
       },
@@ -40,17 +39,17 @@
 </script>
 
 <template>
-  <ModalProfile v-model="modalOpen" />
+  <ModalProfile v-model:open="modalOpen" />
   <header class="mb-8 flex justify-between">
     <div class="flex items-center gap-8">
       <UButton
-        class="hover:bg-primary rounded-full bg-transparent p-2 text-black transition-all duration-300 hover:text-white dark:bg-transparent dark:text-white"
+        class="cursor-pointer rounded-full bg-transparent p-2 text-black transition-all duration-300 hover:bg-(--ui-primary) hover:text-white dark:bg-transparent dark:text-white"
         aria-label="Sidebar toggle"
         @click="sidebarState = !sidebarState"
       >
         <UIcon name="i-heroicons-bars-3" class="h-7 w-7" />
       </UButton>
-      <h1 class="font-semibold text-gray-500 dark:text-gray-400">
+      <h1 class="font-semibold text-(--ui-text-muted)">
         {{ topbarTitle }}
       </h1>
     </div>
@@ -70,13 +69,11 @@
           <UIcon v-else name="i-heroicons-sun-solid" class="h-4 w-4" />
         </UButton>
       </ClientOnly>
-      <UDropdown :items="items">
-        <UAvatar
-          class="bg-white"
-          crossorigin
-          :alt="user ? user.email : 'Avatar'"
-        />
-      </UDropdown>
+      <UDropdownMenu :items="items">
+        <div>
+          <UAvatar icon="i-heroicons-photo" size="md" />
+        </div>
+      </UDropdownMenu>
     </div>
   </header>
 </template>

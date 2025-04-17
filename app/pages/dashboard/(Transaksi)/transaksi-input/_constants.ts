@@ -1,47 +1,47 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode",
+    accessorKey: "kodeTransaksi",
+    header: "Kode",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "kodeAkun",
-    label: "Kode Akun",
+    accessorKey: "kodeAkun",
+    header: "Kode Akun",
   },
   {
-    key: "namaAkun",
-    label: "Nama Akun",
+    accessorKey: "namaAkun",
+    header: "Nama Akun",
   },
   {
-    key: "nilai",
-    label: "Nilai",
+    accessorKey: "nilai",
+    header: "Nilai",
   },
   {
-    key: "keterangan",
-    label: "Keterangan",
+    accessorKey: "keterangan",
+    header: "Keterangan",
   },
 ];
 
-export const schema = z.object({
-  kodeAkun: z.string(),
-  keterangan: z.string(),
-  nilai: z.number(),
-  tanggal: z.string(),
+export const schema = v.object({
+  kodeAkun: v.string(),
+  keterangan: v.string(),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  kodeAkun: undefined,
+export const getInitialFormData = (): Schema => ({
+  kodeAkun: "",
   keterangan: "",
-  nilai: undefined,
-  tanggal: undefined,
+  nilai: 0,
+  tanggal: "",
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;
 
 export const akunOptions = [
   {

@@ -13,9 +13,9 @@
 
   const user = useUser();
 
-  const { data: anggota } = await useLazyFetch("/api/users");
+  const { data: anggota } = await useFetch("/api/users");
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/murabahah");
+  const { data, status, refresh } = await useFetch("/api/murabahah");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -37,7 +37,7 @@
     state.value = getInitialFormData();
     modalOpen.value = true;
     if (user.value?.role !== "admin") {
-      state.value.anggotaId = user.value?.id;
+      state.value.anggotaId = user.value!.id;
     }
   }
   function clickUpdate(itemData: ExtractObjectType<typeof data.value>) {
@@ -47,121 +47,133 @@
 </script>
 
 <template>
+  <Title>Pembiayaan | Murabahah</Title>
   <main>
-    <Title>Pembiayaan | Murabahah</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Murabahah"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup
-          v-if="user?.role === 'admin'"
-          label="Nama Anggota"
-          name="anggotaId"
+    <LazyUModal v-model:open="modalOpen" title="Murabahah">
+      <template #body>
+        <UForm
+          id="murabahah-form"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
         >
-          <USelectMenu
-            v-model="state.anggotaId"
-            :options="anggota"
-            option-attribute="namaLengkap"
-            value-attribute="id"
-            :disabled="isLoading || !!state.id"
-          />
-        </UFormGroup>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Jumlah Pengajuan" name="jumlah">
-            <UInput
-              v-model="state.jumlah"
-              type="number"
+          <UFormField
+            v-if="user?.role === 'admin'"
+            label="Nama Anggota"
+            name="anggotaId"
+          >
+            <USelectMenu
+              v-model="state.anggotaId"
+              :items="anggota"
+              label-key="namaLengkap"
+              value-key="id"
               :disabled="isLoading || !!state.id"
             />
-          </UFormGroup>
-          <UFormGroup label="Tempo" name="tempo">
+          </UFormField>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Jumlah Pengajuan" name="jumlah">
+              <UInput
+                v-model="state.jumlah"
+                type="number"
+                :disabled="isLoading || !!state.id"
+              />
+            </UFormField>
+            <UFormField label="Tempo" name="tempo">
+              <UInput
+                v-model="state.tempo"
+                type="number"
+                :disabled="isLoading || !!state.id"
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Tujuan Pengajuan" name="tujuan">
             <UInput
-              v-model="state.tempo"
-              type="number"
+              v-model="state.tujuan"
               :disabled="isLoading || !!state.id"
             />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Tujuan Pengajuan" name="tujuan">
-          <UInput v-model="state.tujuan" :disabled="isLoading || !!state.id" />
-        </UFormGroup>
-        <UFormGroup label="Catatan" name="catatan">
-          <UInput v-model="state.catatan" :disabled="isLoading || !!state.id" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            {{ state.id ? "Tutup" : "Batal" }}
-          </UButton>
-          <UButton
-            v-if="!state.id"
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Setuju
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+          </UFormField>
+          <UFormField label="Catatan" name="catatan">
+            <UInput
+              v-model="state.catatan"
+              :disabled="isLoading || !!state.id"
+            />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          {{ state.id ? "Tutup" : "Batal" }}
+        </UButton>
+        <UButton
+          v-if="!state.id"
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="murabahah-form"
+        >
+          Setuju
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard :data="data" :delete-button="false" :add-function="clickAdd" />
       <AppTable
-        label="Kelola Murabahah"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
+        :select="false"
         @edit-click="(e) => clickUpdate(e)"
       >
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
             size="xs"
             :label="
-              row.status === 0
+              row.original.status === 0
                 ? 'Belom Disetujui'
-                : row.status === 1
+                : row.original.status === 1
                   ? 'Disetujui'
                   : 'Ditolak'
             "
             :color="
-              row.status === 0 ? 'blue' : row.status === 1 ? 'green' : 'red'
+              row.original.status === 0
+                ? 'info'
+                : row.original.status === 1
+                  ? 'success'
+                  : 'error'
             "
             variant="solid"
             class="rounded-full"
           />
         </template>
-        <template #jumlah-data="{ row }">
-          {{ row.jumlah.toLocaleString("id-ID") }}
+        <template #jumlah-cell="{ row }">
+          {{ row.original.jumlah.toLocaleString("id-ID") }}
         </template>
-        <template #pokok-data="{ row }">
+        <template #pokok-cell="{ row }">
           {{
-            row.status === 1 ? row.nilaiPersetujuan.toLocaleString("id-ID") : 0
+            row.original.status === 1
+              ? row.original.nilaiPersetujuan.toLocaleString("id-ID")
+              : 0
           }}
         </template>
-        <template #margin-data="{ row }">
+        <template #margin-cell="{ row }">
           {{
-            row.status === 1 ? row.marginPersetujuan.toLocaleString("id-ID") : 0
+            row.original.status === 1
+              ? row.original.marginPersetujuan.toLocaleString("id-ID")
+              : 0
           }}
         </template>
-        <template #total-data="{ row }">
+        <template #total-cell="{ row }">
           {{
-            row.status === 1
-              ? (row.nilaiPersetujuan + row.marginPersetujuan).toLocaleString(
-                  "id-ID"
-                )
+            row.original.status === 1
+              ? (
+                  row.original.nilaiPersetujuan + row.original.marginPersetujuan
+                ).toLocaleString("id-ID")
               : 0
           }}
         </template>

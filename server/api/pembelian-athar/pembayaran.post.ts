@@ -1,17 +1,17 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { pembelianAtharTable } from "~~/server/database/schema/athar";
 
-const bodySchema = z.object({
-  idPembelian: z.number(),
-  tanggal: z.string(),
-  nilai: z.number(),
+const bodySchema = v.object({
+  idPembelian: v.number(),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
 });
 
 export default defineEventHandler(async (event) => {
-  const user = resourceFunction(event, "admin");
+  const user = resourceFunction(event, "role:admin");
 
   const formData = await readValidatedBody(event, (body) =>
-    bodySchema.parse(body)
+    v.parse(bodySchema, body)
   );
 
   const kodeTransaksi = await getTransactionCode("ATR", pembelianAtharTable);

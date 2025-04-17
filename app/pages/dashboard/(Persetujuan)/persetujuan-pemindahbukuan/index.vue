@@ -12,17 +12,17 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch(
+  const { data, status, refresh } = await useFetch(
     "/api/pemindahbukuan/persetujuan"
   );
-  const { data: saham } = await useLazyFetch("/api/saham/now");
+  const { data: saham } = await useFetch("/api/saham/now");
   const selectedItem = computed(() => {
     return data.value?.find((item) => item.id === state.value.pemindahbukuanId);
   });
 
   watch(selectedItem, () => {
-    state.value.setoranId = selectedItem.value?.idSetoran;
-    state.value.penarikanId = selectedItem.value?.idPenarikan;
+    state.value.setoranId = selectedItem.value!.idSetoran;
+    state.value.penarikanId = selectedItem.value!.idPenarikan;
   });
 
   const modalOpen = ref(false);
@@ -48,96 +48,94 @@
 </script>
 
 <template>
+  <Title>Persetujuan | Pemindahbukuan</Title>
   <main>
-    <Title>Persetujuan | Pemindahbukuan</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Detail Pemindahbukuan"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="Kode Transaksi">
-            <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
-          </UFormGroup>
-          <UFormGroup label="Jenis Transaksi">
-            <UInput :model-value="selectedItem?.jenis" disabled />
-          </UFormGroup>
-        </div>
-        <div class="class grid grid-cols-2 gap-4">
-          <UFormGroup label="No Anggota">
-            <UInput :model-value="selectedItem?.noUser" disabled />
-          </UFormGroup>
-          <UFormGroup label="Nama Anggota">
-            <UInput :model-value="selectedItem?.namaLengkap" disabled />
-          </UFormGroup>
-        </div>
-        <div
-          v-if="selectedItem?.jenis === 'Saham'"
-          class="grid grid-cols-3 gap-2"
+    <LazyUModal v-model:open="modalOpen" title="Detail Pemindahbukuan">
+      <template #body>
+        <UForm
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+          id="persetujuan-pemindahbukuan"
         >
-          <UFormGroup label="Jumlah Saham">
-            <UInput :model-value="selectedItem?.jumlahSaham" disabled />
-          </UFormGroup>
-          <UFormGroup label="Harga Dasar">
-            <UInput
-              :model-value="
-                (50000 * selectedItem!.jumlahSaham!).toLocaleString('id-ID')
-              "
-              disabled
-            />
-          </UFormGroup>
-          <UFormGroup label="Harga Saham">
-            <UInput
-              :model-value="
-                (saham!.nilai * selectedItem!.jumlahSaham!).toLocaleString(
-                  'id-ID'
-                )
-              "
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Nilai Pemindahbukuan">
-          <UInput :model-value="selectedItem?.nilai" disabled />
-        </UFormGroup>
-        <UFormGroup label="Tanggal" name="tanggal">
-          <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Keterangan">
-          <UInput :model-value="selectedItem?.keterangan" disabled />
-        </UFormGroup>
-        <UFormGroup label="Alasan Penolakan" name="alasan">
-          <UInput v-model="state.alasan" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            color="red"
-            type="submit"
-            :disabled="isLoading"
-            @click="state.setuju = false"
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="Kode Transaksi">
+              <UInput :model-value="selectedItem?.kodeTransaksi" disabled />
+            </UFormField>
+            <UFormField label="Jenis Transaksi">
+              <UInput :model-value="selectedItem?.jenis" disabled />
+            </UFormField>
+          </div>
+          <div class="class grid grid-cols-2 gap-4">
+            <UFormField label="No Anggota">
+              <UInput :model-value="selectedItem?.noUser" disabled />
+            </UFormField>
+            <UFormField label="Nama Anggota">
+              <UInput :model-value="selectedItem?.namaLengkap" disabled />
+            </UFormField>
+          </div>
+          <div
+            v-if="selectedItem?.jenis === 'Saham'"
+            class="grid grid-cols-3 gap-2"
           >
-            Tolak
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-            @click="state.setuju = true"
-          >
-            Setuju
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+            <UFormField label="Jumlah Saham">
+              <UInput :model-value="selectedItem?.jumlahSaham" disabled />
+            </UFormField>
+            <UFormField label="Harga Dasar">
+              <UInput
+                :model-value="
+                  (50000 * selectedItem!.jumlahSaham!).toLocaleString('id-ID')
+                "
+                disabled
+              />
+            </UFormField>
+            <UFormField label="Harga Saham">
+              <UInput
+                :model-value="
+                  (saham!.nilai * selectedItem!.jumlahSaham!).toLocaleString(
+                    'id-ID'
+                  )
+                "
+                disabled
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Nilai Pemindahbukuan">
+            <UInput :model-value="selectedItem?.nilai" disabled />
+          </UFormField>
+          <UFormField label="Tanggal" name="tanggal">
+            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Keterangan">
+            <UInput :model-value="selectedItem?.keterangan" disabled />
+          </UFormField>
+          <UFormField label="Alasan Penolakan" name="alasan">
+            <UInput v-model="state.alasan" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          color="error"
+          type="submit"
+          :disabled="isLoading"
+          @click="state.setuju = false"
+        >
+          Tolak
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          @click="state.setuju = true"
+          form="persetujuan-pemindahbukuan"
+        >
+          Setuju
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Kelola Pemindahbukuan"
@@ -146,11 +144,11 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.id)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton @click="clickAdd(row.original.id)">Pilih</UButton>
         </template>
       </AppTable>
     </UCard>

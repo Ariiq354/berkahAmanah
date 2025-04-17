@@ -1,16 +1,16 @@
 <script setup lang="ts">
-  import { z } from "zod";
+  import * as v from "valibot";
   import type { FormSubmitEvent } from "#ui/types";
 
   const modalOpen = defineModel<boolean>();
   const user = useUser();
-  const initialFormData = (): Partial<Schema> => ({
+  const initialFormData = (): Schema => ({
     password: undefined,
   });
   const state = ref(initialFormData());
 
-  const schema = z.object({
-    password: z.string().optional(),
+  const schema = v.object({
+    password: v.optional(v.string()),
   });
 
   watch(modalOpen, () => {
@@ -19,7 +19,7 @@
     }
   });
 
-  type Schema = z.output<typeof schema>;
+  type Schema = v.InferOutput<typeof schema>;
 
   const modalLoading = ref(false);
   async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -40,22 +40,8 @@
 </script>
 
 <template>
-  <UModal v-model="modalOpen" :ui="{ width: 'sm:max-w-2xl' }" prevent-close>
-    <div class="px-4 py-5">
-      <div class="mb-4 flex items-center justify-between">
-        <h3
-          class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-        >
-          Profil Anda
-        </h3>
-        <UButton
-          color="gray"
-          variant="ghost"
-          icon="i-heroicons-x-mark-20-solid"
-          class="-my-1 rounded-full"
-          @click="modalOpen = false"
-        />
-      </div>
+  <UModal v-model:open="modalOpen" title="Profil Anda">
+    <template #body>
       <UForm
         :schema="schema"
         :state="state"
@@ -64,20 +50,20 @@
       >
         <div class="flex gap-4">
           <div class="flex w-full flex-col gap-4">
-            <UFormGroup label="Email" class="w-full">
+            <UFormField label="Email">
               <UInput :model-value="user?.email" disabled />
-            </UFormGroup>
-            <UFormGroup label="No Telepon" class="w-full">
+            </UFormField>
+            <UFormField label="No Telepon">
               <UInput :model-value="user?.noTelepon" disabled />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Password" name="password" class="w-full">
+            <UFormField label="Password" name="password">
               <UInput
                 v-model="state.password"
                 :disabled="modalLoading"
                 type="password"
               />
-            </UFormGroup>
+            </UFormField>
           </div>
         </div>
         <div class="flex w-full justify-end gap-2">
@@ -98,6 +84,6 @@
           </UButton>
         </div>
       </UForm>
-    </div>
+    </template>
   </UModal>
 </template>

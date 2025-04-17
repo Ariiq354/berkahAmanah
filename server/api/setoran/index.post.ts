@@ -1,20 +1,20 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { setoranTable } from "~~/server/database/schema/simpanan";
 
-const bodySchema = z.object({
-  anggotaId: z.number(),
-  keterangan: z.string(),
-  nilai: z.number(),
-  tanggal: z.string(),
-  jenis: z.enum(["Saham", "Simpanan"]),
-  jumlahSaham: z.number(),
+const bodySchema = v.object({
+  anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+  keterangan: v.string(),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+  jenis: v.picklist(["Saham", "Simpanan"]),
+  jumlahSaham: v.number(),
 });
 
 export default defineEventHandler(async (event) => {
   const user = protectFunction(event);
 
   const formData = await readValidatedBody(event, (body) =>
-    bodySchema.parse(body)
+    v.parse(bodySchema, body)
   );
 
   const kodeTransaksi = await getTransactionCode("STR", setoranTable);

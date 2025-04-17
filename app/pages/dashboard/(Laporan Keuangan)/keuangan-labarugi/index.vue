@@ -6,7 +6,7 @@
   });
 
   const tahun = ref();
-  const { data: pendapatan, status: statusPendapatan } = await useLazyFetch(
+  const { data: pendapatan, status: statusPendapatan } = await useFetch(
     "/api/keuangan/pendapatan",
     {
       query: {
@@ -15,7 +15,7 @@
       immediate: false,
     }
   );
-  const { data: biaya, status: statusBiaya } = await useLazyFetch(
+  const { data: biaya, status: statusBiaya } = await useFetch(
     "/api/keuangan/biaya",
     {
       query: {
@@ -30,9 +30,9 @@
   <main>
     <Title>Laporan keuangan | Neraca</Title>
     <UCard class="mb-4">
-      <UFormGroup label="Tahun">
-        <USelectMenu v-model="tahun" :options="tahunOptions" />
-      </UFormGroup>
+      <UFormField label="Tahun">
+        <USelectMenu v-model="tahun" :items="tahunOptions" />
+      </UFormField>
     </UCard>
     <UCard>
       <AppTable
@@ -42,20 +42,20 @@
         :columns="columns"
         :action="false"
       >
-        <template #total-data="{ row }">
+        <template #total-cell="{ row }">
           {{
-            row.jan +
-            row.feb +
-            row.mar +
-            row.apr +
-            row.may +
-            row.jun +
-            row.jul +
-            row.aug +
-            row.sep +
-            row.oct +
-            row.nov +
-            row.dec
+            row.original.jan +
+            row.original.feb +
+            row.original.mar +
+            row.original.apr +
+            row.original.may +
+            row.original.jun +
+            row.original.jul +
+            row.original.aug +
+            row.original.sep +
+            row.original.oct +
+            row.original.nov +
+            row.original.dec
           }}
         </template>
       </AppTable>
@@ -66,20 +66,20 @@
         :columns="columns"
         :action="false"
       >
-        <template #total-data="{ row }">
+        <template #total-cell="{ row }">
           {{
-            row.jan +
-            row.feb +
-            row.mar +
-            row.apr +
-            row.may +
-            row.jun +
-            row.jul +
-            row.aug +
-            row.sep +
-            row.oct +
-            row.nov +
-            row.dec
+            row.original.jan +
+            row.original.feb +
+            row.original.mar +
+            row.original.apr +
+            row.original.may +
+            row.original.jun +
+            row.original.jul +
+            row.original.aug +
+            row.original.sep +
+            row.original.oct +
+            row.original.nov +
+            row.original.dec
           }}
         </template>
       </AppTable>

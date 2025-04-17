@@ -1,52 +1,52 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "jenis",
-    label: "Tujuan",
+    accessorKey: "jenis",
+    header: "Tujuan",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "nilai",
-    label: "Nilai",
+    accessorKey: "nilai",
+    header: "Nilai",
   },
   {
-    key: "keterangan",
-    label: "Keterangan",
+    accessorKey: "keterangan",
+    header: "Keterangan",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
-export const schema = z.object({
-  pemindahbukuanId: z.number(),
-  penarikanId: z.number(),
-  setoranId: z.number(),
-  alasan: z.string(),
-  tanggal: z.string(),
-  setuju: z.boolean(),
+export const schema = v.object({
+  pemindahbukuanId: v.number(),
+  penarikanId: v.number(),
+  setoranId: v.number(),
+  alasan: v.string(),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+  setuju: v.boolean(),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  pemindahbukuanId: undefined,
-  penarikanId: undefined,
-  setoranId: undefined,
+export const getInitialFormData = (): Schema => ({
+  pemindahbukuanId: 0,
+  penarikanId: 0,
+  setoranId: 0,
   alasan: "",
-  tanggal: undefined,
-  setuju: undefined,
+  tanggal: "",
+  setuju: false,
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;

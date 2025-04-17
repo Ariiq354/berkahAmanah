@@ -1,13 +1,15 @@
-import { z } from "zod";
+import * as v from "valibot";
 
-const querySchema = z.object({
-  anggotaId: z.coerce.number(),
+const querySchema = v.object({
+  anggotaId: v.pipe(v.string(), v.transform(Number)),
 });
 
 export default defineEventHandler(async (event) => {
-  resourceFunction(event, "admin");
+  resourceFunction(event, "role:admin");
 
-  const query = await getValidatedQuery(event, (q) => querySchema.parse(q));
+  const query = await getValidatedQuery(event, (query) =>
+    v.parse(querySchema, query)
+  );
 
   const setoran = await getAllSetoranByAnggotaId(query.anggotaId);
   const penarikan = await getAllPenarikanByAnggotaId(query.anggotaId);

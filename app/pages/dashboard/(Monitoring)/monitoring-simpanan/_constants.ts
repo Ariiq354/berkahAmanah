@@ -1,41 +1,41 @@
 export const columns = [
   {
-    key: "jenis",
-    label: "Jenis Simpanan",
+    accessorKey: "jenis",
+    header: "Jenis Simpanan",
   },
   {
-    key: "jumlahSimpanan",
-    label: "Jumlah Simpanan",
+    accessorKey: "jumlahSimpanan",
+    header: "Jumlah Simpanan",
   },
   {
-    key: "jumlahLembar",
-    label: "Jumlah Lembar Saham",
+    accessorKey: "jumlahLembar",
+    header: "Jumlah Lembar Saham",
   },
   {
-    key: "persenSaham",
-    label: "% Kepemilikan Saham",
+    accessorKey: "persenSaham",
+    header: "% Kepemilikan Saham",
   },
   {
-    key: "proporsi",
-    label: "Proporsi Bagi Hasil (%)",
+    accessorKey: "proporsi",
+    header: "Proporsi Bagi Hasil (%)",
   },
 ];
 
 export const modalColumns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "jumlah",
-    label: "Jumlah Simpanan",
+    accessorKey: "jumlah",
+    header: "Jumlah Simpanan",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "keterangan",
-    label: "Keterangan",
+    accessorKey: "keterangan",
+    header: "Keterangan",
   },
 ];

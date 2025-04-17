@@ -1,65 +1,65 @@
 export const murabahahColumns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "tujuan",
-    label: "Tujuan Pembiayaan",
+    accessorKey: "tujuan",
+    header: "Tujuan Pembiayaan",
   },
   {
-    key: "pokok",
-    label: "Pokok",
+    accessorKey: "pokok",
+    header: "Pokok",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "total",
-    label: "Total",
+    accessorKey: "total",
+    header: "Total",
   },
   {
-    key: "tempo",
-    label: "Tempo",
+    accessorKey: "tempo",
+    header: "Tempo",
   },
   {
-    key: "angsuran",
-    label: "Angsuran/bulan",
+    accessorKey: "angsuran",
+    header: "Angsuran/bulan",
   },
   {
-    key: "sisa",
-    label: "Sisa Pembiayaan",
+    accessorKey: "sisa",
+    header: "Sisa Pembiayaan",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
 export const angsuranColumns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "noPembiayaan",
-    label: "No Pembiayaan",
+    accessorKey: "noPembiayaan",
+    header: "No Pembiayaan",
   },
   {
-    key: "jumlah",
-    label: "Jumlah Angsuran",
+    accessorKey: "jumlah",
+    header: "Jumlah Angsuran",
   },
   {
-    key: "pokok",
-    label: "Pokok",
+    accessorKey: "pokok",
+    header: "Pokok",
   },
   {
-    key: "margin",
-    label: "Margin",
+    accessorKey: "margin",
+    header: "Margin",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
 ];

@@ -1,29 +1,29 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "jumlah",
-    label: "Jumlah Diajukan",
+    accessorKey: "jumlah",
+    header: "Jumlah Diajukan",
   },
   {
-    key: "tempo",
-    label: "tempo",
+    accessorKey: "tempo",
+    header: "tempo",
   },
   {
-    key: "tujuan",
-    label: "Tujuan Pengajuan",
+    accessorKey: "tujuan",
+    header: "Tujuan Pengajuan",
   },
   {
-    key: "catatan",
-    label: "Catatan",
+    accessorKey: "catatan",
+    header: "Catatan",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
@@ -35,26 +35,26 @@ export const jaminanOptions = [
   "Sudah Dikembalikan",
 ];
 
-export const schema = z.object({
-  pembiayaanId: z.number(),
-  tempo: z.number(),
-  nilai: z.number(),
-  jaminan: z.string(),
-  margin: z.number(),
-  alasan: z.string(),
-  tanggal: z.string(),
-  setuju: z.boolean(),
+export const schema = v.object({
+  pembiayaanId: v.pipe(v.number(), v.minValue(1, "Required")),
+  tempo: v.number(),
+  nilai: v.pipe(v.number(), v.minValue(1, "Required")),
+  jaminan: v.pipe(v.string(), v.minLength(1, "Required")),
+  margin: v.number(),
+  alasan: v.pipe(v.string(), v.minLength(1, "Required")),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+  setuju: v.boolean(),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  pembiayaanId: undefined,
+export const getInitialFormData = (): Schema => ({
+  pembiayaanId: 0,
   alasan: "",
-  nilai: undefined,
-  margin: undefined,
-  tanggal: undefined,
-  tempo: undefined,
-  jaminan: undefined,
-  setuju: undefined,
+  nilai: 0,
+  margin: 0,
+  tanggal: "",
+  tempo: 0,
+  jaminan: "",
+  setuju: false,
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;

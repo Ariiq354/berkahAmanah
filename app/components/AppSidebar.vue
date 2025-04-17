@@ -1,238 +1,266 @@
 <script setup lang="ts">
+  import type { NavigationMenuItem } from "@nuxt/ui";
   import { hasPermission } from "~~/shared/role";
 
   const sidebarState = useSidebarToggle();
   const user = useUser();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const sidebarItems = [
-    {
-      title: "Dashboard",
-      items: [
-        {
-          label: "Dashboard",
-          link: "/dashboard",
-          icon: "i-heroicons-home",
-        },
-      ],
-    },
-    {
-      title: "User",
-      items: [
-        {
-          label: "Shu",
-          icon: "i-heroicons-archive-box",
-        },
-        {
-          label: "Simpanan",
-          icon: "i-heroicons-briefcase",
-          children: [
-            {
-              label: "Setoran",
-              link: "/dashboard/simpanan-setoran",
-            },
-            {
-              label: "Penarikan",
-              link: "/dashboard/simpanan-penarikan",
-            },
-            {
-              label: "Pemindahbukuan",
-              link: "/dashboard/simpanan-pemindahbukuan",
-            },
-            {
-              label: "Monitoring",
-              link: "/dashboard/simpanan-monitoring",
-            },
-          ],
-        },
-        {
-          label: "Pembiayaan",
-          icon: "i-heroicons-banknotes",
-          children: [
-            {
-              label: "Murabahah",
-              link: "/dashboard/pembiayaan-murabahah",
-            },
-            {
-              label: "Angsuran",
-              link: "/dashboard/pembiayaan-angsuran",
-            },
-            {
-              label: "Monitoring",
-              link: "/dashboard/pembiayaan-monitoring",
-            },
-          ],
-        },
-      ],
-    },
-    ...(hasPermission(user.value!, "admin")
-      ? [
+  const sidebarItems: NavigationMenuItem[] | NavigationMenuItem[][] = [
+    [
+      {
+        label: "Dashboard",
+        type: "label",
+      },
+      {
+        label: "Dashboard",
+        to: "/dashboard",
+        icon: "i-heroicons-home",
+      },
+    ],
+    [
+      {
+        label: "User",
+        type: "label",
+      },
+      {
+        label: "Shu",
+        icon: "i-heroicons-archive-box",
+      },
+      {
+        label: "Simpanan",
+        icon: "i-heroicons-briefcase",
+        children: [
           {
-            title: "Admin",
-            items: [
+            label: "Setoran",
+            to: "/dashboard/simpanan-setoran",
+          },
+          {
+            label: "Penarikan",
+            to: "/dashboard/simpanan-penarikan",
+          },
+          {
+            label: "Pemindahbukuan",
+            to: "/dashboard/simpanan-pemindahbukuan",
+          },
+          {
+            label: "Monitoring",
+            to: "/dashboard/simpanan-monitoring",
+          },
+        ],
+      },
+      {
+        label: "Pembiayaan",
+        icon: "i-heroicons-banknotes",
+        children: [
+          {
+            label: "Murabahah",
+            to: "/dashboard/pembiayaan-murabahah",
+          },
+          {
+            label: "Angsuran",
+            to: "/dashboard/pembiayaan-angsuran",
+          },
+          {
+            label: "Monitoring",
+            to: "/dashboard/pembiayaan-monitoring",
+          },
+        ],
+      },
+    ],
+    hasPermission(user.value!, "role:admin")
+      ? ([
+          {
+            label: "Admin",
+            type: "label",
+          },
+          {
+            label: "Nilai Saham",
+            to: "/dashboard/saham",
+            icon: "i-heroicons-chart-bar-square",
+          },
+          {
+            label: "Nilai Athar",
+            to: "/dashboard/athar",
+            icon: "i-heroicons-chart-bar-square",
+          },
+          {
+            label: "Persetujuan",
+            icon: "i-heroicons-clipboard-document-check",
+            children: [
               {
-                label: "Nilai Saham",
-                link: "/dashboard/saham",
-                icon: "i-heroicons-chart-bar-square",
+                label: "Setoran",
+                to: "/dashboard/persetujuan-setoran",
               },
               {
-                label: "Nilai Athar",
-                link: "/dashboard/athar",
-                icon: "i-heroicons-chart-bar-square",
+                label: "Penarikan",
+                to: "/dashboard/persetujuan-penarikan",
               },
               {
-                label: "Persetujuan",
-                icon: "i-heroicons-clipboard-document-check",
-                children: [
-                  {
-                    label: "Setoran",
-                    link: "/dashboard/persetujuan-setoran",
-                  },
-                  {
-                    label: "Penarikan",
-                    link: "/dashboard/persetujuan-penarikan",
-                  },
-                  {
-                    label: "Pemindahbukuan",
-                    link: "/dashboard/persetujuan-pemindahbukuan",
-                  },
-                  {
-                    label: "Murabahah",
-                    link: "/dashboard/persetujuan-murabahah",
-                  },
-                  {
-                    label: "Setoran Angsuran",
-                    link: "/dashboard/persetujuan-angsuran",
-                  },
-                  {
-                    label: "Anggota",
-                    link: "/dashboard/persetujuan-anggota",
-                  },
-                ],
+                label: "Pemindahbukuan",
+                to: "/dashboard/persetujuan-pemindahbukuan",
               },
               {
-                label: "Distributor Athar",
-                icon: "i-heroicons-truck",
-                children: [
-                  {
-                    label: "Pembelian",
-                    link: "/dashboard/athar-pembelian",
-                  },
-                  {
-                    label: "Penjualan",
-                    link: "/dashboard/athar-penjualan",
-                  },
-                  {
-                    label: "Pembayaran Hutang",
-                    link: "/dashboard/athar-pembayaran-hutang",
-                  },
-                  {
-                    label: "Pembayaran",
-                    link: "/dashboard/athar-pembayaran",
-                  },
-                  {
-                    label: "Monitoring",
-                    link: "/dashboard/athar-monitoring",
-                  },
-                ],
+                label: "Murabahah",
+                to: "/dashboard/persetujuan-murabahah",
               },
               {
-                label: "Monitoring",
-                icon: "i-heroicons-presentation-chart-line",
-                children: [
-                  {
-                    label: "Simpanan",
-                    link: "/dashboard/monitoring-simpanan",
-                  },
-                  {
-                    label: "Pembiayaan",
-                    link: "/dashboard/monitoring-pembiayaan",
-                  },
-                  {
-                    label: "SHU",
-                  },
-                  {
-                    label: "Anggota",
-                    link: "/dashboard/monitoring-anggota",
-                  },
-                ],
+                label: "Setoran Angsuran",
+                to: "/dashboard/persetujuan-angsuran",
               },
               {
-                label: "Transaksi",
-                icon: "i-heroicons-calculator",
-                children: [
-                  {
-                    label: "Daftar Akun",
-                    link: "/dashboard/transaksi-akun",
-                  },
-                  {
-                    label: "Daftar Transaksi",
-                    link: "/dashboard/transaksi-transaksi",
-                  },
-                  {
-                    label: "Input Transaksi",
-                    link: "/dashboard/transaksi-input",
-                  },
-                  {
-                    label: "Generate SHU",
-                  },
-                  {
-                    label: "Input Fee Management",
-                    link: "/dashboard/transaksi-fee",
-                  },
-                ],
-              },
-              {
-                label: "Laporan Keuangan",
-                icon: "i-heroicons-scale",
-                children: [
-                  {
-                    label: "Neraca",
-                    link: "/dashboard/keuangan-neraca",
-                  },
-                  {
-                    label: "Laba Rugi",
-                    link: "/dashboard/keuangan-labarugi",
-                  },
-                  {
-                    label: "Posting",
-                  },
-                ],
+                label: "Anggota",
+                to: "/dashboard/persetujuan-anggota",
               },
             ],
           },
-        ]
-      : []),
+          {
+            label: "Distributor Athar",
+            icon: "i-heroicons-truck",
+            children: [
+              {
+                label: "Pembelian",
+                to: "/dashboard/athar-pembelian",
+              },
+              {
+                label: "Penjualan",
+                to: "/dashboard/athar-penjualan",
+              },
+              {
+                label: "Pembayaran Hutang",
+                to: "/dashboard/athar-pembayaran-hutang",
+              },
+              {
+                label: "Pembayaran",
+                to: "/dashboard/athar-pembayaran",
+              },
+              {
+                label: "Monitoring",
+                to: "/dashboard/athar-monitoring",
+              },
+            ],
+          },
+          {
+            label: "Monitoring",
+            icon: "i-heroicons-presentation-chart-line",
+            children: [
+              {
+                label: "Simpanan",
+                to: "/dashboard/monitoring-simpanan",
+              },
+              {
+                label: "Pembiayaan",
+                to: "/dashboard/monitoring-pembiayaan",
+              },
+              {
+                label: "SHU",
+              },
+              {
+                label: "Anggota",
+                to: "/dashboard/monitoring-anggota",
+              },
+            ],
+          },
+          {
+            label: "Transaksi",
+            icon: "i-heroicons-calculator",
+            children: [
+              {
+                label: "Daftar Akun",
+                to: "/dashboard/transaksi-akun",
+              },
+              {
+                label: "Daftar Transaksi",
+                to: "/dashboard/transaksi-transaksi",
+              },
+              {
+                label: "Input Transaksi",
+                to: "/dashboard/transaksi-input",
+              },
+              {
+                label: "Generate SHU",
+              },
+              {
+                label: "Input Fee Management",
+                to: "/dashboard/transaksi-fee",
+              },
+            ],
+          },
+          {
+            label: "Laporan Keuangan",
+            icon: "i-heroicons-scale",
+            children: [
+              {
+                label: "Neraca",
+                to: "/dashboard/keuangan-neraca",
+              },
+              {
+                label: "Laba Rugi",
+                to: "/dashboard/keuangan-labarugi",
+              },
+              {
+                label: "Posting",
+              },
+            ],
+          },
+        ] as NavigationMenuItem[])
+      : [],
   ];
 </script>
 
 <template>
   <aside
-    class="fixed top-0 z-20 h-full w-72 overflow-y-auto border-r border-gray-200 bg-white shadow-xl transition-all duration-200 dark:border-gray-700 dark:bg-gray-900"
+    class="fixed top-0 z-20 hidden h-full w-72 overflow-auto border-r border-gray-200 bg-white shadow-xl transition-all duration-200 md:block dark:border-gray-700 dark:bg-gray-900"
     :class="sidebarState ? '-left-72 md:left-0' : 'left-0 md:-left-72'"
   >
-    <div class="text-primary flex items-center justify-center pb-8 pt-10">
-      <div
-        class="text flex items-center gap-4 text-xl leading-6 tracking-widest"
-      >
-        <NuxtImg src="/logo.webp" class="h-12 w-12" />
+    <div class="flex items-center justify-center pt-8 pb-6 text-(--ui-primary)">
+      <div class="flex items-center text-2xl tracking-widest">
+        <NuxtImg src="/logo.webp" class="h-14 w-14" />
         <span>
           BERKAH <br />
           AMANAH
         </span>
       </div>
     </div>
-    <div v-for="(firstItem, firstIndex) in sidebarItems" :key="firstIndex">
-      <h1 class="text-primary px-8 py-4 text-sm font-bold uppercase">
-        {{ firstItem.title }}
-      </h1>
-      <nav :aria-label="firstItem.title + ' navigation'">
-        <AppSidebarItem :link-item-prop="firstItem.items" :depth="0" />
-      </nav>
-    </div>
+    <UNavigationMenu
+      orientation="vertical"
+      :items="sidebarItems"
+      class="w-full"
+      :ui="{
+        label: 'text-sm uppercase text-(--ui-primary) mb-2',
+        link: 'text-base py-2',
+        root: 'px-4',
+        separator: 'h-0',
+      }"
+    />
   </aside>
   <div
     v-if="!sidebarState"
-    class="fixed left-0 top-0 z-10 h-full w-full bg-black/20 md:hidden"
+    class="fixed top-0 left-0 z-10 h-full w-full bg-black/20 md:hidden"
     @click="sidebarState = true"
   />
+  <ClientOnly>
+    <USlideover
+      v-if="!isDesktop"
+      side="left"
+      :open="!sidebarState"
+      title="Menu"
+      @update:open="(val) => (sidebarState = !val)"
+    >
+      <template #body>
+        <aside class="overflow-auto">
+          <UNavigationMenu
+            orientation="vertical"
+            :items="sidebarItems"
+            class="w-full"
+            :ui="{
+              label: 'text-sm uppercase text-(--ui-primary) mb-2',
+              link: 'text-base py-2',
+              separator: 'h-0',
+            }"
+          />
+        </aside>
+      </template>
+    </USlideover>
+  </ClientOnly>
 </template>

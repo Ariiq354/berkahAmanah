@@ -1,21 +1,23 @@
 import { hash } from "@node-rs/argon2";
-import { z } from "zod";
+import * as v from "valibot";
 
-const bodySchema = z.object({
-  email: z.string(),
-  namaLengkap: z.string(),
-  noTelepon: z.string(),
-  password: z.string().min(8),
+const bodySchema = v.object({
+  email: v.string(),
+  namaLengkap: v.string(),
+  noTelepon: v.string(),
+  password: v.string(),
 });
 
-export default eventHandler(async (event) => {
-  const formData = await readValidatedBody(event, (e) => bodySchema.parse(e));
+export default defineEventHandler(async (event) => {
+  const formData = await readValidatedBody(event, (body) =>
+    v.parse(bodySchema, body)
+  );
 
   const existingUser = await getUserByEmail(formData.email);
   if (existingUser) {
     return createError({
       message: "Email sudah terpakai",
-      statusCode: 401,
+      statusCode: 400,
     });
   }
 

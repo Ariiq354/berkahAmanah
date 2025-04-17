@@ -6,49 +6,6 @@
   });
 
   const { data } = useFetch("/api/dashboard");
-  const dataAthar = computed(() => {
-    return data.value?.dataAthar;
-  });
-  const dataSaham = computed(() => {
-    return data.value?.dataSaham;
-  });
-  const dataPembiayaan = computed(() => {
-    return data.value?.dataPembiayaan;
-  });
-  const dataLaba = computed(() => {
-    return data.value?.dataLaba;
-  });
-
-  const labaDatasets = [
-    {
-      label: "Profit",
-      data: dataLaba.value!,
-      borderWidth: 1,
-    },
-  ];
-  const atharDatasets = [
-    {
-      label: "Penjualan Athar",
-      data: dataAthar.value!,
-      borderWidth: 1,
-    },
-  ];
-  const sahamDatasets = [
-    {
-      label: "Nilai Saham",
-      data: dataSaham.value!,
-      fill: true,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.4,
-    },
-  ];
-  const pembiayaanDatasets = [
-    {
-      label: "Pembiayaan",
-      data: dataPembiayaan.value!,
-      borderWidth: 1,
-    },
-  ];
 </script>
 
 <template>
@@ -108,7 +65,7 @@
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Pertumbuhan Laba</p>
           <div class="p-4">
-            <ChartBar :labels="tahunLabels" :datasets="labaDatasets" />
+            <ChartBar :labels="tahunLabels" :datasets="data?.labaDatasets" />
           </div>
         </div>
       </div>
@@ -118,11 +75,7 @@
         <div class="flex flex-col gap-4">
           <p class="border-b p-4 text-xl">Grafik Penjualan Athar</p>
           <div class="p-4">
-            <ChartBar
-              v-if="data"
-              :labels="bulanLabels"
-              :datasets="atharDatasets"
-            />
+            <ChartBar :labels="bulanLabels" :datasets="data?.atharDatasets" />
           </div>
         </div>
       </div>
@@ -135,7 +88,7 @@
             <ChartLine
               v-if="data"
               :labels="tahunLabels"
-              :datasets="sahamDatasets"
+              :datasets="data!.sahamDatasets"
             />
           </div>
         </div>
@@ -149,7 +102,7 @@
             <ChartBar
               v-if="data"
               :labels="tahunLabels"
-              :datasets="pembiayaanDatasets"
+              :datasets="data!.pembiayaanDatasets"
             />
           </div>
         </div>

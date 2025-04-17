@@ -8,13 +8,13 @@
   const modalOpen = ref(false);
   const jenis = ref();
   const anggotaId = ref();
-  const { data, status } = await useLazyFetch(`/api/monitoring/simpanan`, {
+  const { data, status } = await useFetch(`/api/monitoring/simpanan`, {
     immediate: false,
     query: {
       anggotaId,
     },
   });
-  const { data: dataAnggota } = await useLazyFetch("/api/users");
+  const { data: dataAnggota } = await useFetch("/api/users");
 
   function clickUpdate(item: any) {
     jenis.value = item.jenis;
@@ -23,36 +23,38 @@
 </script>
 
 <template>
+  <Title>Monitoring | Simpanan</Title>
   <main>
-    <Title>Monitoring | Simpanan</Title>
-    <LazyAppModal
-      v-model="modalOpen"
+    <LazyUModal
+      v-model:open="modalOpen"
       :title="jenis === 'Saham' ? 'Detail Saham' : 'Detail Simpanan'"
-      :pending="false"
-      :ui="{ width: 'sm:max-w-4xl' }"
     >
-      <AppTable
-        :label="jenis === 'Saham' ? 'Monitoring Saham' : 'Monitoring Simpanan'"
-        :columns="modalColumns"
-        :data="jenis === 'Saham' ? data?.sahamDetail : data?.simpananDetail"
-        :loading="status === 'pending'"
-        :action="false"
-      >
-        <template #jumlah-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
-        </template>
-      </AppTable>
-    </LazyAppModal>
+      <template #body>
+        <AppTable
+          :label="
+            jenis === 'Saham' ? 'Monitoring Saham' : 'Monitoring Simpanan'
+          "
+          :columns="modalColumns"
+          :data="jenis === 'Saham' ? data?.sahamDetail : data?.simpananDetail"
+          :loading="status === 'pending'"
+          :action="false"
+        >
+          <template #jumlah-cell="{ row }">
+            {{ row.original.nilai.toLocaleString("id-ID") }}
+          </template>
+        </AppTable>
+      </template>
+    </LazyUModal>
     <UCard class="mb-4">
-      <UFormGroup label="Nama Anggota">
+      <UFormField label="Nama Anggota">
         <USelectMenu
           v-model="anggotaId"
-          :options="dataAnggota"
+          :items="dataAnggota"
           placeholde="Pilih Anggota"
-          option-attribute="namaLengkap"
-          value-attribute="id"
+          label-key="namaLengkap"
+          value-key="id"
         />
-      </UFormGroup>
+      </UFormField>
     </UCard>
     <UCard>
       <AppTable
@@ -62,14 +64,22 @@
         :loading="status === 'pending'"
         @edit-click="clickUpdate"
       >
-        <template #jumlahSimpanan-data="{ row }">
-          {{ row.jumlahSimpanan.toLocaleString("id-ID") }}
+        <template #jumlahSimpanan-cell="{ row }">
+          {{ row.original.jumlahSimpanan.toLocaleString("id-ID") }}
         </template>
-        <template #jumlahLembar-data="{ row }">
-          {{ row.jumlahLembar ? row.jumlahLembar.toLocaleString("id-ID") : "" }}
+        <template #jumlahLembar-cell="{ row }">
+          {{
+            row.original.jumlahLembar
+              ? row.original.jumlahLembar.toLocaleString("id-ID")
+              : ""
+          }}
         </template>
-        <template #persenSaham-data="{ row }">
-          {{ row.persenSaham ? (row.persenSaham * 100).toFixed(2) + "%" : "" }}
+        <template #persenSaham-cell="{ row }">
+          {{
+            row.original.persenSaham
+              ? (row.original.persenSaham * 100).toFixed(2) + "%"
+              : ""
+          }}
         </template>
       </AppTable>
     </UCard>

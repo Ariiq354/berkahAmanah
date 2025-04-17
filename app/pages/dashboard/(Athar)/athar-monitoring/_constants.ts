@@ -1,18 +1,18 @@
 export const galonColumns = [
   {
-    key: "price",
-    label: "Harga",
+    accessorKey: "price",
+    header: "Harga",
   },
   {
-    key: "nilaiPembelian",
-    label: "Jumlah Pembelian",
+    accessorKey: "nilaiPembelian",
+    header: "Jumlah Pembelian",
   },
   {
-    key: "nilaiPenjualan",
-    label: "Jumlah Penjualan",
+    accessorKey: "nilaiPenjualan",
+    header: "Jumlah Penjualan",
   },
   {
-    key: "jumlahGalon",
-    label: "Sisa Galon",
+    accessorKey: "jumlahGalon",
+    header: "Sisa Galon",
   },
 ];

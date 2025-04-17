@@ -1,33 +1,33 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "namaLengkap",
-    label: "Nama Anggota",
+    accessorKey: "namaLengkap",
+    header: "Nama Anggota",
   },
   {
-    key: "jenis",
-    label: "Tujuan",
+    accessorKey: "jenis",
+    header: "Tujuan",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "nilai",
-    label: "Nilai",
+    accessorKey: "nilai",
+    header: "Nilai",
   },
   {
-    key: "keterangan",
-    label: "Keterangan",
+    accessorKey: "keterangan",
+    header: "Keterangan",
   },
   {
-    key: "status",
-    label: "Status",
+    accessorKey: "status",
+    header: "Status",
   },
 ];
 
@@ -43,35 +43,33 @@ export const jenisOptions = [
 ];
 
 export function createSchema(max: number = Infinity, min: number = 0) {
-  return z.object({
-    id: z.number().optional(),
-    anggotaId: z.number(),
-    keterangan: z.string(),
-    nilai: z
-      .number()
-      .min(0)
-      .refine((value) => value <= max, {
-        message: `Nilai tidak boleh lebih dari saldo`,
-      })
-      .refine((value) => value >= min, {
-        message: `Nilai tidak boleh kurang dari harga saham`,
-      }),
-    tanggal: z.string(),
-    jenis: z.enum(["Saham", "Anggota"]),
-    noAnggota: z.number(),
-    jumlahSaham: z.number(),
+  return v.object({
+    id: v.optional(v.number()),
+    anggotaId: v.pipe(v.number(), v.minValue(1, "Required")),
+    keterangan: v.string(),
+    nilai: v.pipe(
+      v.number(),
+      v.minValue(0),
+      v.check((value) => value <= max, `Nilai tidak boleh lebih dari saldo`),
+      v.check(
+        (value) => value >= min,
+        `Nilai tidak boleh kurang dari harga saham`
+      )
+    ),
+    tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
+    jenis: v.picklist(["Saham", "Anggota"]),
+    jumlahSaham: v.number(),
   });
 }
 
-export const getInitialFormData = (): Partial<Schema> => ({
+export const getInitialFormData = (): Schema => ({
   id: undefined,
-  anggotaId: undefined,
-  keterangan: undefined,
-  nilai: undefined,
-  tanggal: undefined,
-  jenis: undefined,
+  anggotaId: 0,
+  keterangan: "",
+  nilai: 0,
+  tanggal: "",
+  jenis: "Saham",
   jumlahSaham: 0,
-  noAnggota: 0,
 });
 
-export type Schema = z.output<ReturnType<typeof createSchema>>;
+export type Schema = v.InferOutput<ReturnType<typeof createSchema>>;

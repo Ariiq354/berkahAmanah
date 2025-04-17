@@ -12,8 +12,8 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/fee-management");
-  const { data: anggota } = await useLazyFetch("/api/users/admin");
+  const { data, status, refresh } = await useFetch("/api/fee-management");
+  const { data: anggota } = await useFetch("/api/users/admin");
   const selectedAnggota = computed(() => {
     return anggota.value?.find((i) => i.id === state.value.anggotaId);
   });
@@ -41,73 +41,71 @@
 </script>
 
 <template>
+  <Title>Transaksi | Input Fee Management</Title>
   <main>
-    <Title>Transaksi | Input Fee Management</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Tambah Fee Management"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
-    >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <UFormGroup label="Nama Anggota" name="anggotaId">
-            <USelectMenu
-              v-model="state.anggotaId"
-              :options="anggota"
-              option-attribute="namaLengkap"
-              value-attribute="id"
-              :disabled="isLoading"
-            />
-          </UFormGroup>
-          <UFormGroup label="Nama Anggota">
-            <USelectMenu :model-value="selectedAnggota?.noUser" disabled />
-          </UFormGroup>
-        </div>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <UFormGroup label="Nilai" name="nilai">
-            <USelectMenu
-              v-model="state.nilai"
-              type="number"
-              :disabled="isLoading"
-            />
-          </UFormGroup>
-          <UFormGroup label="Tanggal" name="tanggal">
-            <USelectMenu
-              v-model="state.tanggal"
-              type="date"
-              :disabled="isLoading"
-            />
-          </UFormGroup>
-        </div>
-        <UFormGroup label="Keterangan" name="keterangan">
-          <USelectMenu v-model="state.keterangan" :disabled="isLoading" />
-        </UFormGroup>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Tambah Fee Management">
+      <template #body>
+        <UForm
+          id="transaksi-fee"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <UFormField label="Nama Anggota" name="anggotaId">
+              <USelectMenu
+                v-model="state.anggotaId"
+                :items="anggota"
+                label-key="namaLengkap"
+                value-key="id"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Nama Anggota">
+              <USelectMenu :model-value="selectedAnggota?.noUser" disabled />
+            </UFormField>
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <UFormField label="Nilai" name="nilai">
+              <USelectMenu
+                v-model="state.nilai"
+                type="number"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Tanggal" name="tanggal">
+              <USelectMenu
+                v-model="state.tanggal"
+                type="date"
+                :disabled="isLoading"
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Keterangan" name="keterangan">
+            <USelectMenu v-model="state.keterangan" :disabled="isLoading" />
+          </UFormField>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="transaksi-fee"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard :data="data" :add-function="clickAdd" :delete-button="false" />
       <AppTable
@@ -117,8 +115,8 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

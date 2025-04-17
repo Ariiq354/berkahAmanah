@@ -15,7 +15,7 @@
   const state = ref(getInitialFormData());
   const selectedPrice = ref(0);
   const limitGalon = ref();
-  const { data, status, refresh } = await useLazyFetch("/api/penjualan-athar");
+  const { data, status, refresh } = await useFetch("/api/penjualan-athar");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -44,63 +44,69 @@
 </script>
 
 <template>
+  <Title>Athar | Penjualan</Title>
   <main>
-    <Title>Athar | Penjualan</Title>
-    <LazyAppModal
-      v-model="modalOpen"
-      title="Tambah Penjualan"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-2xl' }"
-    >
-      <UForm
-        :schema="schema(limitGalon)"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <UFormGroup label="Jumlah Galon" name="jumlahGalon">
-            <UInput
-              v-model="state.jumlahGalon"
-              type="number"
-              :disabled="isLoading"
-            />
-          </UFormGroup>
-          <UFormGroup label="Harga / Galon">
-            <UInput
-              :model-value="selectedPrice.toLocaleString('id-ID')"
-              disabled
-            />
-          </UFormGroup>
-        </div>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <UFormGroup label="Nilai" name="nilai">
-            <UInput v-model="state.nilai" type="number" :disabled="isLoading" />
-          </UFormGroup>
-          <UFormGroup label="Tanggal" name="tanggal">
-            <UInput v-model="state.tanggal" type="date" :disabled="isLoading" />
-          </UFormGroup>
-        </div>
-
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+    <LazyUModal v-model:open="modalOpen" title="Tambah Penjualan">
+      <template #body>
+        <UForm
+          id="athar-penjualan"
+          :schema="schema(limitGalon)"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <UFormField label="Jumlah Galon" name="jumlahGalon">
+              <UInput
+                v-model="state.jumlahGalon"
+                type="number"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Harga / Galon">
+              <UInput
+                :model-value="selectedPrice.toLocaleString('id-ID')"
+                disabled
+              />
+            </UFormField>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <UFormField label="Nilai" name="nilai">
+              <UInput
+                v-model="state.nilai"
+                type="number"
+                :disabled="isLoading"
+              />
+            </UFormField>
+            <UFormField label="Tanggal" name="tanggal">
+              <UInput
+                v-model="state.tanggal"
+                type="date"
+                :disabled="isLoading"
+              />
+            </UFormField>
+          </div>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="athar-penjualan"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <AppTable
         label="Daftar Galon"
@@ -109,11 +115,14 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #price-data="{ row }">
-          {{ row.price.toLocaleString("id-ID") }}
+        <template #price-cell="{ row }">
+          {{ row.original.price.toLocaleString("id-ID") }}
         </template>
-        <template #select-data="{ row }">
-          <UButton @click="clickAdd(row.price, row.jumlahGalon)">Pilih</UButton>
+        <template #select-cell="{ row }">
+          <UButton
+            @click="clickAdd(row.original.price, row.original.jumlahGalon)"
+            >Pilih</UButton
+          >
         </template>
       </AppTable>
       <AppTable
@@ -123,20 +132,20 @@
         :loading="status === 'pending'"
         :action="false"
       >
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
             size="xs"
-            :label="row.status ? 'Sudah Dibayar' : 'Belum Dibayar'"
-            :color="row.status ? 'green' : 'red'"
+            :label="row.original.status ? 'Sudah Dibayar' : 'Belum Dibayar'"
+            :color="row.original.status ? 'success' : 'error'"
             variant="solid"
             class="rounded-full"
           />
         </template>
-        <template #nilai-data="{ row }">
-          {{ row.nilai.toLocaleString("id-ID") }}
+        <template #nilai-cell="{ row }">
+          {{ row.original.nilai.toLocaleString("id-ID") }}
         </template>
-        <template #margin-data="{ row }">
-          {{ row.margin.toLocaleString("id-ID") }}
+        <template #margin-cell="{ row }">
+          {{ row.original.margin.toLocaleString("id-ID") }}
         </template>
       </AppTable>
     </UCard>

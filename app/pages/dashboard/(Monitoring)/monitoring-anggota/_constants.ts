@@ -1,47 +1,45 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "namaLengkap",
-    label: "Nama Lengkap",
+    accessorKey: "namaLengkap",
+    header: "Nama Lengkap",
   },
   {
-    key: "noTelepon",
-    label: "No Telepon",
+    accessorKey: "noTelepon",
+    header: "No Telepon",
   },
   {
-    key: "email",
-    label: "Email",
+    accessorKey: "email",
+    header: "Email",
   },
   {
-    key: "role",
-    label: "Role",
+    accessorKey: "role",
+    header: "Role",
   },
 ];
 
-export const schema = z
-  .object({
-    id: z.number().optional(),
-    username: z.string(),
-    password: z.string(),
-  })
-  .refine(
-    (data) => {
+export const schema = v.pipe(
+  v.object({
+    id: v.optional(v.number()),
+    username: v.pipe(v.string(), v.minLength(1, "Required")),
+    password: v.pipe(v.string(), v.minLength(1, "Required")),
+  }),
+  v.forward(
+    v.partialCheck([["id"], ["password"]], (data) => {
       if (!data.id && data.password.length < 8) {
         return false;
       }
       return true;
-    },
-    {
-      message: "Karakter harus 8 atau lebih",
-      path: ["password"],
-    }
-  );
+    }),
+    ["password"]
+  )
+);
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;
 
-export const getInitialFormData = (): Partial<Schema> => ({
-  id: undefined,
-  username: undefined,
-  password: undefined,
+export const getInitialFormData = (): Schema => ({
+  id: 0,
+  username: "",
+  password: "",
 });

@@ -5,7 +5,7 @@
     defineTopbarTitle("Monitoring / Anggota");
   });
 
-  const { data, status } = await useLazyFetch("/api/users");
+  const { data, status } = await useFetch("/api/users");
 </script>
 
 <template>
@@ -19,9 +19,12 @@
         :columns="columns"
         :action="false"
       >
-        <template #noTelepon-data="{ row }">
-          <NuxtLink :href="`https://wa.me/${row.noTelepon}`" target="_blank">
-            {{ row.noTelepon }}
+        <template #noTelepon-cell="{ row }">
+          <NuxtLink
+            :href="`https://wa.me/${row.original.noTelepon}`"
+            target="_blank"
+          >
+            {{ row.original.noTelepon }}
           </NuxtLink>
         </template>
       </AppTable>

@@ -1,15 +1,11 @@
 <script setup lang="ts">
-  import {
-    getPaginationRowModel,
-    type Row,
-    type Table,
-  } from "@tanstack/vue-table";
   import type { TableColumn, TableRow } from "@nuxt/ui";
+  import type { Row, Table } from "@tanstack/vue-table";
 
   const UCheckbox = resolveComponent("UCheckbox");
   const table = useTemplateRef("table");
 
-  const emit = defineEmits(["editClick"]);
+  const emit = defineEmits(["editClick", "pageChange"]);
   const {
     data,
     action = true,
@@ -18,6 +14,7 @@
   } = defineProps<{
     data: any[] | undefined;
     columns: TableColumn<any>[];
+    total: number;
     loading?: boolean;
     action?: boolean;
     select?: boolean;
@@ -68,10 +65,6 @@
   });
 
   const globalFilter = ref("");
-  const pagination = ref({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const selectedRow = defineModel<unknown[]>();
   const rowSelection = ref<Record<string, boolean>>({});
 
@@ -104,15 +97,11 @@
 
       <UTable
         ref="table"
-        v-model:pagination="pagination"
         v-model:global-filter="globalFilter"
         v-model:row-selection="rowSelection"
         :data="data"
         :columns="newColumns"
         :loading="loading"
-        :pagination-options="{
-          getPaginationRowModel: getPaginationRowModel(),
-        }"
         @select="handleSelect"
       >
         <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
@@ -139,16 +128,9 @@
 
     <div class="flex justify-center pt-4">
       <UPagination
-        :default-page="
-          (table?.tableApi?.getState().pagination.pageIndex || 0) + 1
-        "
-        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-        :total="
-          table?.tableApi?.getFilteredRowModel().rows.length! > 0
-            ? table?.tableApi?.getFilteredRowModel().rows.length
-            : data?.length
-        "
-        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+        :items-per-page="10"
+        :total="total"
+        @update:page="(p) => emit('pageChange', p)"
       />
     </div>
   </div>

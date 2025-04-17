@@ -1,36 +1,36 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 export const columns = [
   {
-    key: "kodeTransaksi",
-    label: "Kode Transaksi",
+    accessorKey: "kodeTransaksi",
+    header: "Kode Transaksi",
   },
   {
-    key: "jumlahGalon",
-    label: "Jumlah Galon",
+    accessorKey: "jumlahGalon",
+    header: "Jumlah Galon",
   },
   {
-    key: "nilai",
-    label: "Nilai Transaksi",
+    accessorKey: "nilai",
+    header: "Nilai Transaksi",
   },
   {
-    key: "tanggal",
-    label: "Tanggal",
+    accessorKey: "tanggal",
+    header: "Tanggal",
   },
   {
-    key: "select",
-    label: "Select",
+    accessorKey: "select",
+    header: "Select",
   },
 ];
 
-export const schema = z.object({
-  idPembelian: z.number().optional(),
-  tanggal: z.string(),
+export const schema = v.object({
+  idPembelian: v.optional(v.number()),
+  tanggal: v.pipe(v.string(), v.minLength(1, "Required")),
 });
 
-export const getInitialFormData = (): Partial<Schema> => ({
+export const getInitialFormData = (): Schema => ({
   idPembelian: undefined,
-  tanggal: undefined,
+  tanggal: "",
 });
 
-export type Schema = z.output<typeof schema>;
+export type Schema = v.InferOutput<typeof schema>;

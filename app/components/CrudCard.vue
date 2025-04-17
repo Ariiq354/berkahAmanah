@@ -14,9 +14,9 @@
 
 <template>
   <div
-    class="mb-6 flex items-center justify-between gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+    class="mb-6 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-(--ui-border-accented) p-3"
   >
-    <div v-if="addButton || deleteButton" class="flex gap-2">
+    <div v-if="addButton || deleteButton" class="flex flex-wrap gap-2">
       <UButton
         v-if="addButton"
         icon="i-heroicons-plus"

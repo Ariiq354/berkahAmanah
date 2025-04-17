@@ -8,26 +8,24 @@
 
   const state = ref(getInitialFormData());
 
-  const isLoading = ref(false);
+  const { execute, isLoading } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
-    isLoading.value = true;
-    try {
-      await $fetch("/api/auth/login", {
-        method: "POST",
-        body: event.data,
-      });
-      await navigateTo("/dashboard");
-    } catch (error: any) {
-      useToastError("Login Gagal", error.data.message);
-    } finally {
-      isLoading.value = false;
-    }
+    await execute({
+      path: "/api/auth/login",
+      body: event.data,
+      async onSuccess() {
+        await navigateTo("/dashboard");
+      },
+      onError(error) {
+        useToastError("Login Gagal", error.data.message);
+      },
+    });
   }
 </script>
 
 <template>
+  <Title>Login</Title>
   <main class="flex w-full items-center justify-center">
-    <Title>Login</Title>
     <UCard class="w-full max-w-md">
       <div class="space-y-6">
         <div class="flex flex-col items-center text-center">
@@ -40,7 +38,7 @@
           </div>
           <div class="mt-2 text-center">
             Belum Punya Akun?
-            <NuxtLink href="/register" class="text-primary">
+            <NuxtLink href="/register" class="text-(--ui-primary)">
               Daftar Sekarang!
             </NuxtLink>
           </div>
@@ -51,22 +49,22 @@
           class="w-full space-y-6"
           @submit="onSubmit"
         >
-          <UFormGroup label="Email" name="email">
+          <UFormField label="Email" name="email">
             <UInput
               v-model="state.email"
               icon="i-heroicons-envelope"
               placeholder="Email"
             />
-          </UFormGroup>
+          </UFormField>
 
-          <UFormGroup label="Password" name="password">
+          <UFormField label="Password" name="password">
             <UInput
               v-model="state.password"
               icon="i-heroicons-lock-closed"
               type="password"
               placeholder="Password"
             />
-          </UFormGroup>
+          </UFormField>
 
           <UCheckbox v-model="state.rememberMe" label="Ingat saya" />
 

@@ -12,7 +12,7 @@
   });
 
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useLazyFetch("/api/akun");
+  const { data, status, refresh } = await useFetch("/api/akun");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -58,49 +58,52 @@
 </script>
 
 <template>
+  <Title>Transaksi | Daftar Akun</Title>
   <main>
-    <Title>Transaksi | Daftar Akun</Title>
-    <LazyAppModal
-      v-model="modalOpen"
+    <LazyUModal
+      v-model:open="modalOpen"
       :title="state.id ? 'Edit' : 'Tambah' + ' Akun'"
-      :pending="isLoading"
-      :ui="{ width: 'sm:max-w-4xl' }"
     >
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Kode Akun" name="kodeAkun">
-          <UInput v-model="state.kodeAkun" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Nama Akun" name="namaAkun">
-          <UInput v-model="state.namaAkun" :disabled="isLoading" />
-        </UFormGroup>
-        <UFormGroup label="Status" name="status">
-          <UToggle v-model="state.status" :disabled="isLoading" />
-        </UFormGroup>
+      <template #body>
+        <UForm
+          id="transaksi-a"
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <UFormField label="Kode Akun" name="kodeAkun">
+            <UInput v-model="state.kodeAkun" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Nama Akun" name="namaAkun">
+            <UInput v-model="state.namaAkun" :disabled="isLoading" />
+          </UFormField>
+          <UFormField label="Status" name="status">
+            <UToggle v-model="state.status" :disabled="isLoading" />
+          </UFormField>
 
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="isLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
-      </UForm>
-    </LazyAppModal>
+          <div class="flex w-full justify-end gap-2"></div>
+        </UForm>
+      </template>
+      <template #footer>
+        <UButton
+          icon="i-heroicons-x-mark-16-solid"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="modalOpen = false"
+        >
+          Batal
+        </UButton>
+        <UButton
+          type="submit"
+          icon="i-heroicons-check-16-solid"
+          :loading="isLoading"
+          form="transaksi-akun"
+        >
+          Simpan
+        </UButton>
+      </template>
+    </LazyUModal>
     <UCard>
       <CrudCard
         :data="data"
@@ -116,11 +119,11 @@
         :loading="status === 'pending'"
         @edit-click="(e) => clickUpdate(e)"
       >
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
             size="xs"
-            :label="row.status ? 'Aktif' : 'Tidak Aktif'"
-            :color="row.status ? 'green' : 'red'"
+            :label="row.original.status ? 'Aktif' : 'Tidak Aktif'"
+            :color="row.original.status ? 'success' : 'error'"
             variant="solid"
             class="rounded-full"
           />

@@ -4,3 +4,6 @@ export const useUser = () => {
   const user = useState<UserLucia | null>("user", () => null);
   return user;
 };
+
+export const useUserImpersonation = () =>
+  useState<UserLucia | null>("user-impersonation", () => null);

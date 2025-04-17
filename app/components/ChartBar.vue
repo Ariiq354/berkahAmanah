@@ -21,9 +21,9 @@
     LinearScale
   );
 
-  const { labels, datasets } = defineProps<{
-    labels: string[];
-    datasets: {
+  const { labels = [], datasets = [] } = defineProps<{
+    labels?: string[];
+    datasets?: {
       label: string;
       data: number[];
       borderWidth?: number;
@@ -38,7 +38,7 @@
       datasets,
       labels,
     }"
-    :options="{
+    :items="{
       plugins: {
         legend: {
           position: 'bottom',
