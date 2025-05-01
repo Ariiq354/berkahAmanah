@@ -1,8 +1,5 @@
 <script setup lang="ts">
-
-const {data} = useLazyFetch('/api/akun')
+  const { data } = useLazyFetch("/api/use");
 </script>
 
-<template>
-    <US
-</template>
+<template>hello</template>

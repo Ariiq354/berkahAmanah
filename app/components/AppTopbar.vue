@@ -39,7 +39,7 @@
 </script>
 
 <template>
-  <ModalProfile v-model:open="modalOpen" />
+  <ModalProfile v-model="modalOpen" />
   <header class="mb-8 flex justify-between">
     <div class="flex items-center gap-8">
       <UButton

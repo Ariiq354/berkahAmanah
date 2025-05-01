@@ -1,9 +1,8 @@
-import { eq, like, sql } from "drizzle-orm";
-import type { SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
+import { eq } from "drizzle-orm";
 import type { H3Event } from "h3";
+import { hasPermission, type ResourcePermissions } from "~~/shared/role";
 import { db } from "../database";
 import { userTable } from "../database/schema/auth";
-import { hasPermission, type ResourcePermissions } from "~~/shared/role";
 
 export function protectFunction(event: H3Event) {
   if (!event.context.session) {
@@ -52,34 +51,34 @@ export async function generateRandomNumber() {
   throw new Error("Failed to generate a unique number after 1000 attempts.");
 }
 
-export async function getTransactionCode(
-  code: string,
-  table: SQLiteTableWithColumns<any>
-) {
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
-  const date = `${year}${month}${day}`;
+// export async function getTransactionCode(
+//   code: string,
+//   table: SQLiteTableWithColumns<any>
+// ) {
+//   const currentDate = new Date();
+//   const year = currentDate.getFullYear();
+//   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+//   const day = String(currentDate.getDate()).padStart(2, "0");
+//   const date = `${year}${month}${day}`;
 
-  const num = await db
-    .select({
-      num: sql<string>`
-        CASE
-          WHEN MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) + 1), -3)
-        END`,
-    })
-    .from(table)
-    .where(
-      like(
-        sql`kode_transaksi`,
-        sql`${code + "-"} || strftime('%Y%m%d', 'now') || '-%'`
-      )
-    );
+//   const num = await db
+//     .select({
+//       num: sql<string>`
+//         CASE
+//           WHEN MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) ISNULL then '001'
+//           ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) + 1), -3)
+//         END`,
+//     })
+//     .from(table)
+//     .where(
+//       like(
+//         sql`kode_transaksi`,
+//         sql`${code + "-"} || strftime('%Y%m%d', 'now') || '-%'`
+//       )
+//     );
 
-  return code + "-" + date + "-" + num[0]!.num;
-}
+//   return code + "-" + date + "-" + num[0]!.num;
+// }
 
 export function getCurrentDate() {
   const today = new Date();

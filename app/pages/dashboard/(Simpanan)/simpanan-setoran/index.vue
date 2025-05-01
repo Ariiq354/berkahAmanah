@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import type { FormSubmitEvent } from "#ui/types";
+  import type { SetoranResponse } from "~/types/simpanan/setoran.type";
   import {
     columns,
     getInitialFormData,
@@ -13,17 +14,25 @@
   });
 
   const user = useUser();
-
+  const globalFilter = ref<string>();
   const state = ref(getInitialFormData());
-  const { data, status, refresh } = await useFetch("/api/setoran");
-  const { data: saham } = await useFetch("/api/saham/now");
-  const { data: saldo, refresh: refreshSaldo } = await useFetch(
-    () => `/api/setoran/saldo?anggotaId=${state.value.anggotaId}`,
+
+  const { data, status, refresh } = await useApiFetch<SetoranResponse[]>(
+    "simpanan/setoran",
     {
-      immediate: false,
+      query: {
+        search: globalFilter,
+      },
     }
   );
-  const { data: anggota } = await useFetch("/api/users");
+  // const { data: saham } = await useApiFetch("saham/now");
+  // const { data: saldo, refresh: RSaldo } = await useApiFetch("setoran/saldo", {
+  //   query: {
+  //     anggotaId,
+  //   },
+  //   immediate: false,
+  // });
+  // const { data: anggota } = await useFetch("/api/users");
 
   const modalOpen = ref(false);
   const { isLoading, execute } = useSubmit();
@@ -34,7 +43,7 @@
       onSuccess() {
         modalOpen.value = false;
         refresh();
-        refreshSaldo();
+        // RSaldo();
       },
       onError(error) {
         useToastError(String(error.statusCode), error.data.message);
@@ -58,9 +67,10 @@
 <template>
   <Title>Simpanan | Setoran</Title>
   <main>
-    <LazyUModal
+    <!-- <LazyUModal
       v-model:open="modalOpen"
       :title="(state.id ? 'Detail' : 'Tambah') + ' Setoran'"
+      class="min-w-xl"
     >
       <template #body>
         <UForm
@@ -167,13 +177,25 @@
           Simpan
         </UButton>
       </template>
-    </LazyUModal>
+    </LazyUModal> -->
     <UCard>
       <CrudCard :data="data" :delete-button="false" :add-function="clickAdd" />
+      <div
+        class="flex justify-end border-b border-(--ui-border-accented) py-3.5"
+      >
+        <UInput
+          v-model="globalFilter"
+          class="max-w-xs"
+          leading-icon="i-heroicons-magnifying-glass"
+          placeholder="Filter..."
+        />
+      </div>
       <AppTable
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
+        :select="false"
+        :search-query="globalFilter"
         @edit-click="(e) => clickUpdate(e)"
       >
         <template #status-cell="{ row }">

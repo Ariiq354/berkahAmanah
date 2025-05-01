@@ -245,7 +245,7 @@
       side="left"
       :open="!sidebarState"
       title="Menu"
-      @update:open="(val) => (sidebarState = !val)"
+      @update:open="(val: boolean) => (sidebarState = !val)"
     >
       <template #body>
         <aside class="overflow-auto">

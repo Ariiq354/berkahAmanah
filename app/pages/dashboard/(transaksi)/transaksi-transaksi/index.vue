@@ -82,7 +82,7 @@
               v-model="state.kodeAkun"
               :items="akunOptions"
               label-key="namaAkun"
-              value-key="id"
+              value-key="kodeAkun"
               :disabled="isLoading"
             />
           </UFormField>

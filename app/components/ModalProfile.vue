@@ -14,6 +14,7 @@
   });
 
   watch(modalOpen, () => {
+    console.log(modalOpen.value);
     if (modalOpen.value) {
       state.value = initialFormData();
     }
@@ -43,6 +44,7 @@
   <UModal v-model:open="modalOpen" title="Profil Anda">
     <template #body>
       <UForm
+        id="modal-profile"
         :schema="schema"
         :state="state"
         class="space-y-4"
@@ -66,24 +68,25 @@
             </UFormField>
           </div>
         </div>
-        <div class="flex w-full justify-end gap-2">
-          <UButton
-            icon="i-heroicons-x-mark-16-solid"
-            variant="ghost"
-            :disabled="modalLoading"
-            @click="modalOpen = false"
-          >
-            Batal
-          </UButton>
-          <UButton
-            type="submit"
-            icon="i-heroicons-check-16-solid"
-            :loading="modalLoading"
-          >
-            Simpan
-          </UButton>
-        </div>
       </UForm>
+    </template>
+    <template #footer>
+      <UButton
+        icon="i-heroicons-x-mark-16-solid"
+        variant="ghost"
+        :disabled="modalLoading"
+        @click="modalOpen = false"
+      >
+        Batal
+      </UButton>
+      <UButton
+        type="submit"
+        form="modal-profile"
+        icon="i-heroicons-check-16-solid"
+        :loading="modalLoading"
+      >
+        Simpan
+      </UButton>
     </template>
   </UModal>
 </template>

@@ -2,6 +2,7 @@ import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { timestamp } from "./common";
 import { relations } from "drizzle-orm";
 import { userTable } from "./auth";
+import { persetujuanSetoranTable } from "./persetujuan";
 
 export const setoranTable = sqliteTable("setoran", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -55,6 +56,10 @@ export const setoranRelations = relations(setoranTable, ({ one }) => ({
   anggota: one(userTable, {
     fields: [setoranTable.anggotaId],
     references: [userTable.id],
+  }),
+  persetujuan: one(persetujuanSetoranTable, {
+    fields: [setoranTable.id],
+    references: [persetujuanSetoranTable.setoranId],
   }),
 }));
 

@@ -130,7 +130,7 @@
       <UPagination
         :items-per-page="10"
         :total="total"
-        @update:page="(p) => emit('pageChange', p)"
+        @update:page="(p: number) => emit('pageChange', p)"
       />
     </div>
   </div>

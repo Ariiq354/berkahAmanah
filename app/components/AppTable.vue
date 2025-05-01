@@ -15,12 +15,14 @@
     action = true,
     select = true,
     columns,
+    searchQuery = "",
   } = defineProps<{
     data: any[] | undefined;
     columns: TableColumn<any>[];
     loading?: boolean;
     action?: boolean;
     select?: boolean;
+    searchQuery?: string;
   }>();
   defineSlots<{
     [key: string]: (props: any) => any;
@@ -67,7 +69,7 @@
     ];
   });
 
-  const globalFilter = ref("");
+  const globalFilter = toRef(() => searchQuery);
   const pagination = ref({
     pageIndex: 0,
     pageSize: 10,
@@ -90,52 +92,39 @@
 
 <template>
   <div class="w-full space-y-4 pb-4">
-    <div class="flex w-full flex-1 flex-col">
-      <div
-        class="flex justify-end border-b border-(--ui-border-accented) py-3.5"
-      >
-        <UInput
-          v-model="globalFilter"
-          class="max-w-xs"
-          leading-icon="i-heroicons-magnifying-glass"
-          placeholder="Filter..."
-        />
-      </div>
-
-      <UTable
-        ref="table"
-        v-model:pagination="pagination"
-        v-model:global-filter="globalFilter"
-        v-model:row-selection="rowSelection"
-        :data="data"
-        :columns="newColumns"
-        :loading="loading"
-        :pagination-options="{
-          getPaginationRowModel: getPaginationRowModel(),
-        }"
-        @select="handleSelect"
-      >
-        <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
-          <slot :name="name" v-bind="slotData ?? {}" />
-        </template>
-        <template #actions-header="{ column }">
-          <div class="text-center">{{ column.columnDef.header }}</div>
-        </template>
-        <template #actions-cell="{ row }">
-          <div class="flex justify-center">
-            <UButton
-              icon="i-heroicons-pencil-16-solid"
-              size="xs"
-              variant="outline"
-              :ui="{ base: 'rounded-full' }"
-              square
-              aria-label="Edit item"
-              @click="emit('editClick', row.original)"
-            />
-          </div>
-        </template>
-      </UTable>
-    </div>
+    <UTable
+      ref="table"
+      v-model:pagination="pagination"
+      v-model:global-filter="globalFilter"
+      v-model:row-selection="rowSelection"
+      :data="data"
+      :columns="newColumns"
+      :loading="loading"
+      :pagination-options="{
+        getPaginationRowModel: getPaginationRowModel(),
+      }"
+      @select="handleSelect"
+    >
+      <template v-for="(_, name) in $slots" :key="name" #[name]="slotData">
+        <slot :name="name" v-bind="slotData ?? {}" />
+      </template>
+      <template #actions-header="{ column }">
+        <div class="text-center">{{ column.columnDef.header }}</div>
+      </template>
+      <template #actions-cell="{ row }">
+        <div class="flex justify-center">
+          <UButton
+            icon="i-heroicons-pencil-16-solid"
+            size="xs"
+            variant="outline"
+            :ui="{ base: 'rounded-full' }"
+            square
+            aria-label="Edit item"
+            @click="emit('editClick', row.original)"
+          />
+        </div>
+      </template>
+    </UTable>
 
     <div class="flex justify-center pt-4">
       <UPagination
@@ -148,7 +137,7 @@
             ? table?.tableApi?.getFilteredRowModel().rows.length
             : data?.length
         "
-        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+        @update:page="(p: number) => table?.tableApi?.setPageIndex(p - 1)"
       />
     </div>
   </div>

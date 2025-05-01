@@ -6,12 +6,14 @@
     layout: "auth",
   });
 
+  const config = useRuntimeConfig();
+
   const state = ref(getInitialFormData());
 
   const { execute, isLoading } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/auth/login",
+      path: `${config.public.apiBase}/auth/login`,
       body: event.data,
       async onSuccess() {
         await navigateTo("/dashboard");

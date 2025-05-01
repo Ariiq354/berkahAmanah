@@ -17,9 +17,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
     databaseAuthToken: process.env.DATABASE_AUTH_TOKEN,
+    public: {
+      apiBase: "/api/v1",
+    },
   },
 
-  $production: {
-    ignorePrefix: "_",
-  },
+  ignorePrefix: "_",
 });

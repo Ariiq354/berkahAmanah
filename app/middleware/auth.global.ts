@@ -2,31 +2,32 @@ import type { UserLucia } from "~~/server/database/schema/auth";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = useUser();
-  const userI = useUserImpersonation();
   const requestFetch = useRequestFetch();
 
-  const { data: res } = await useAsyncData(() =>
-    requestFetch<UserLucia | false>("/api/auth/session")
-  );
-  const data = res.value;
-  if (data) {
-    user.value = data;
-    if (!userI.value) {
-      userI.value = data;
+  if (!user.value) {
+    const { data } = await useAsyncData(
+      () => requestFetch<UserLucia | false>("/api/v1/auth/session"),
+      {
+        dedupe: "defer",
+      }
+    );
+    if (data.value) {
+      user.value = data.value;
     }
   }
+
   const currentRoute = to.fullPath;
 
   // Basic Protection
-  if (!data && currentRoute.includes("/dashboard")) {
+  if (!user.value && currentRoute.includes("/dashboard")) {
     return navigateTo("/");
   }
-  if (data && (currentRoute === "/" || currentRoute === "/register")) {
+  if (user.value && (currentRoute === "/" || currentRoute === "/register")) {
     return navigateTo("/dashboard");
   }
 
   // Custom Protection
-  if (data) {
+  if (user.value) {
     const routePermissions: string[] = [
       "/dashboard/athar",
       "/dashboard/saham",
@@ -37,7 +38,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     ];
 
     const isRestricted = routePermissions.some(
-      (route) => currentRoute.includes(route) && data.role !== "admin"
+      (route) => currentRoute.includes(route) && user.value?.role !== "admin"
     );
 
     if (isRestricted) {

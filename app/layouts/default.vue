@@ -5,7 +5,7 @@
 
   async function logout() {
     try {
-      await $fetch("/api/auth/logout", {
+      await $fetch("/api/v1/auth/logout", {
         method: "POST",
       });
       user.value = null;

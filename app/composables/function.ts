@@ -1,8 +1,10 @@
+import type { TPaginationMetadata } from "~~/server/utils/common/type";
+
 type FetchOptions<TBody = any> = {
   path: string;
   body?: TBody;
-  onSuccess?: () => void | Promise<void>;
-  onError?: (error: any) => void;
+  onSuccess: () => void | Promise<void>;
+  onError: (error: any) => void;
 };
 
 export function useSubmit<TResponse = Record<string, any>>() {
@@ -21,10 +23,10 @@ export function useSubmit<TResponse = Record<string, any>>() {
       });
 
       data.value = res;
-      if (onSuccess) await onSuccess();
+      await onSuccess();
     } catch (err: any) {
       error.value = err;
-      if (onError) onError(err);
+      onError(err);
     } finally {
       isLoading.value = false;
     }
@@ -37,3 +39,18 @@ export function useSubmit<TResponse = Record<string, any>>() {
     execute,
   };
 }
+
+export const useApiFetch = async <T>(endpoint: string, options = {}) => {
+  const config = useRuntimeConfig();
+  const { data, refresh, status } = await useFetch<{
+    data: T;
+    metadata: TPaginationMetadata | object;
+  }>(`${config.public.apiBase}/${endpoint}`, options);
+
+  return {
+    data: computed(() => data.value?.data as T),
+    pagination: computed(() => data.value?.metadata),
+    refresh,
+    status,
+  };
+};

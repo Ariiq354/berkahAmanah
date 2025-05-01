@@ -7,11 +7,12 @@
   });
 
   const state = ref(getInitialFormData());
+  const config = useRuntimeConfig();
 
   const { execute, isLoading } = useSubmit();
   async function onSubmit(event: FormSubmitEvent<Schema>) {
     await execute({
-      path: "/api/auth/register",
+      path: `${config.public.apiBase}/auth/register`,
       body: event.data,
       async onSuccess() {
         useToastSuccess(
