@@ -1,5 +1,3 @@
-import type { TPaginationMetadata } from "~~/server/utils/common/type";
-
 type FetchOptions<TBody = any> = {
   path: string;
   body?: TBody;
@@ -40,17 +38,8 @@ export function useSubmit<TResponse = Record<string, any>>() {
   };
 }
 
-export const useApiFetch = async <T>(endpoint: string, options = {}) => {
-  const config = useRuntimeConfig();
-  const { data, refresh, status } = await useFetch<{
-    data: T;
-    metadata: TPaginationMetadata | object;
-  }>(`${config.public.apiBase}/${endpoint}`, options);
+const BASE_URL = "/api/v1";
 
-  return {
-    data: computed(() => data.value?.data as T),
-    pagination: computed(() => data.value?.metadata),
-    refresh,
-    status,
-  };
+export const useApiFetch = <T>(endpoint: string, options = {}) => {
+  return useFetch<T>(`${BASE_URL}/${endpoint}`, options);
 };

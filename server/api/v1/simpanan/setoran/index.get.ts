@@ -1,6 +1,4 @@
 import * as v from "valibot";
-import { HttpResponse } from "~~/server/utils/common/function";
-import type { TPaginationMetadata } from "~~/server/utils/common/type";
 
 export default defineEventHandler(async (event) => {
   const user = protectFunction(event);
@@ -37,8 +35,5 @@ export default defineEventHandler(async (event) => {
     itemPerPage,
   };
 
-  return new HttpResponse<typeof data>()
-    .setData(data)
-    .setMeta(metadata)
-    .getResponse();
+  return HttpResponse(data, metadata);
 });

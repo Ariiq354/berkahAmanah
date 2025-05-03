@@ -35,3 +35,5 @@ export function formatDate(input: string) {
   const formatted = `${day}-${month}-${year}`;
   return formatted;
 }
+
+export const API_BASE = "/api/v1";

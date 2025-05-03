@@ -4,16 +4,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const user = useUser();
   const requestFetch = useRequestFetch();
 
-  if (!user.value) {
-    const { data } = await useAsyncData(
-      () => requestFetch<UserLucia | false>("/api/v1/auth/session"),
-      {
-        dedupe: "defer",
-      }
-    );
-    if (data.value) {
-      user.value = data.value;
+  const { data } = await useAsyncData(
+    () => requestFetch<UserLucia | false>("/api/v1/auth/session"),
+    {
+      dedupe: "defer",
     }
+  );
+  if (data.value) {
+    user.value = data.value;
   }
 
   const currentRoute = to.fullPath;

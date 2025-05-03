@@ -1,16 +1,10 @@
 import { hash } from "@node-rs/argon2";
 import * as v from "valibot";
-
-const bodySchema = v.object({
-  email: v.string(),
-  namaLengkap: v.string(),
-  noTelepon: v.string(),
-  password: v.string(),
-});
+import { CreateRegisterSchema } from "~~/server/services/v1/auth/dto/create-auth.dto";
 
 export default defineEventHandler(async (event) => {
   const formData = await readValidatedBody(event, (body) =>
-    v.parse(bodySchema, body)
+    v.parse(CreateRegisterSchema, body)
   );
 
   const existingUser = await getUserByEmail(formData.email);

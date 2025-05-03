@@ -36,45 +36,24 @@ export async function getTransactionCode(
   }
 }
 
-export class HttpResponse<T> {
-  private statusCode: number;
-  private message: string;
-  private data: T | null;
-  private metadata: object;
+// Overload definitions
+export function HttpResponse(): { statusCode: number; message: string };
+export function HttpResponse<T>(data: T): {
+  statusCode: number;
+  message: string;
+  data: T;
+};
+export function HttpResponse<T, K>(
+  data: T,
+  metadata: K
+): { statusCode: number; message: string; data: T; metadata: K };
 
-  constructor() {
-    this.statusCode = 200;
-    this.message = "Success";
-    this.data = null;
-    this.metadata = {};
-  }
-
-  setMessage(message: string) {
-    this.message = message;
-    return this;
-  }
-
-  setStatusCode(code: number) {
-    this.statusCode = code;
-    return this;
-  }
-
-  setData(data: T | T[] | any) {
-    this.data = data;
-    return this;
-  }
-
-  setMeta(metadata: any) {
-    this.metadata = metadata;
-    return this;
-  }
-
-  getResponse() {
-    return {
-      statusCode: this.statusCode,
-      message: this.message,
-      data: this.data,
-      metadata: this.metadata,
-    };
-  }
+// Implementation
+export function HttpResponse<T, K>(data?: T, metadata?: K) {
+  return {
+    statusCode: 200,
+    message: "Success",
+    ...(data !== undefined && { data }),
+    ...(metadata !== undefined && { metadata }),
+  };
 }

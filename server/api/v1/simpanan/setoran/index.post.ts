@@ -1,6 +1,5 @@
 import * as v from "valibot";
 import { setoranTable } from "~~/server/database/schema/simpanan";
-import { HttpResponse } from "~~/server/utils/common/function";
 import { OSetoranCreate } from "~~/server/utils/v1/setoran/dto/create-setoran.dto";
 
 export default defineEventHandler(async (event) => {
@@ -18,5 +17,5 @@ export default defineEventHandler(async (event) => {
 
   await createSetoran(formData, kodeTransaksi);
 
-  return new HttpResponse().getResponse();
+  return HttpResponse();
 });

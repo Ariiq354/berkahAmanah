@@ -1,6 +1,6 @@
 import * as v from "valibot";
-import { HttpResponse } from "~~/server/utils/common/function";
-import { OSaldoSimpanan } from "~~/server/utils/v1/simpanan/dto/list-simpanan.dto";
+import { OSaldoSimpanan } from "~~/server/services/v1/simpanan/dto/list-simpanan.dto";
+import { getSaldoSimpanan } from "~~/server/services/v1/simpanan/simpanan.service";
 
 export default defineEventHandler(async (event) => {
   const user = protectFunction(event);
@@ -16,9 +16,5 @@ export default defineEventHandler(async (event) => {
     saldo = await getSaldoSimpanan(query);
   }
 
-  return new HttpResponse()
-    .setData({
-      saldo,
-    })
-    .getResponse();
+  return saldo;
 });

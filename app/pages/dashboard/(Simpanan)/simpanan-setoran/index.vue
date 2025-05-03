@@ -8,6 +8,7 @@
     createSchema,
     type Schema,
   } from "./_constants";
+  import { API_BASE } from "~/utils";
 
   onMounted(() => {
     defineTopbarTitle("Simpanan / Setoran");
@@ -17,12 +18,14 @@
   const globalFilter = ref<string>();
   const state = ref(getInitialFormData());
 
-  const { data, status, refresh } = await useApiFetch<SetoranResponse[]>(
-    "simpanan/setoran",
+  const queryParams = reactive({
+    search: "",
+  });
+
+  const { data, status, refresh } = await useFetch(
+    `${API_BASE}/simpanan/setoran`,
     {
-      query: {
-        search: globalFilter,
-      },
+      query: queryParams,
     }
   );
   // const { data: saham } = await useApiFetch("saham/now");
@@ -179,12 +182,16 @@
       </template>
     </LazyUModal> -->
     <UCard>
-      <CrudCard :data="data" :delete-button="false" :add-function="clickAdd" />
+      <CrudCard
+        :data="data?.data"
+        :delete-button="false"
+        :add-function="clickAdd"
+      />
       <div
         class="flex justify-end border-b border-(--ui-border-accented) py-3.5"
       >
         <UInput
-          v-model="globalFilter"
+          v-model="testQuery.search"
           class="max-w-xs"
           leading-icon="i-heroicons-magnifying-glass"
           placeholder="Filter..."
@@ -192,7 +199,7 @@
       </div>
       <AppTable
         :columns="columns"
-        :data="data"
+        :data="data?.data"
         :loading="status === 'pending'"
         :select="false"
         :search-query="globalFilter"
